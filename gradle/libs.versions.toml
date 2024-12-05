@@ -1,0 +1,33 @@
+[versions]
+agp = "8.7.3"
+kotlin = "2.0.0"
+glide = "4.15.1"
+
+[libraries]
+
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = ":1.6.1" }
+androidx-cardview = { group = "androidx.cardview", name = "cardview", version = "1.0.0" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.1.4" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment", version = "1.5.6" }
+androidx-preference = { group = "androidx.preference", name = "preference", version = "1.2.0" }
+androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version = "1.0.0" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version = "1.3.0" }
+androidx-material = { group = "com.google.android.material", name = "material", version = "1.9.0" }
+androidx-multidex = { group = "androidx.multidex", name = "multidex", version = "2.0.1" }
+androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version = "1.1.0" }
+
+okhttp-urlconnection = { group = "com.squareup.okhttp3", name = "okhttp-urlconnection", version = "3.12.12" }
+persistentcookiejar = { group = "com.github.franmontiel", name = "PersistentCookieJar", version = "v1.0.1" }
+jsoup = { group = "org.jsoup", name = "jsoup", version = "1.16.1" }
+acra-core = { group = "ch.acra", name = "acra-core", version = "5.7.0" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
+ambilwarna = { group = "com.github.yukuku", name = "ambilwarna", version = "2.0.1" }
+fastscroll = { group = "me.zhanghai.android.fastscroll", name = "library", version = "1.2.0" }
+localehelper = { group = "com.zeugmasolutions.localehelper", name = "locale-helper-android", version = "1.5.1" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+
