@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.dar.nclientv2"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.dar.nclientv2"
-        minSdk = 14
-        targetSdk = 29
+        minSdk = 21
+        targetSdk = 34
 
         versionCode = 305
         versionName = "3.0.5-stable"
@@ -72,6 +72,13 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.swiperefreshlayout)
+
+    // Compose
+    implementation(libs.androidx.activity.compose)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
 
     // Other
     implementation(libs.okhttp.urlconnection) // Because of min SDK
