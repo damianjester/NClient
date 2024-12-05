@@ -64,6 +64,5 @@ dependencies {
     implementation 'com.github.yukuku:ambilwarna:2.0.1'
     implementation 'me.zhanghai.android.fastscroll:library:1.2.0'
 
-    implementation 'net.opacapp:multiline-collapsingtoolbar:27.1.1'
     implementation 'com.zeugmasolutions.localehelper:locale-helper-android:1.5.1'
 }

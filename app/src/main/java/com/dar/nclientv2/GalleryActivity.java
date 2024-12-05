@@ -45,8 +45,6 @@ import com.dar.nclientv2.utility.Utility;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 
-import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -184,10 +182,8 @@ public class GalleryActivity extends BaseActivity {
     }
 
     private void applyTitle() {
-        CollapsingToolbarLayout collapsing = findViewById(R.id.collapsing);
         ActionBar actionBar = getSupportActionBar();
         final String title = gallery.getTitle();
-        if (collapsing == null || actionBar == null) return;
         View.OnLongClickListener listener = v -> {
             CopyToClipboardActivity.copyTextToClipboard(GalleryActivity.this, title);
             GalleryActivity.this.runOnUiThread(
@@ -196,15 +192,7 @@ public class GalleryActivity extends BaseActivity {
             return true;
         };
 
-        collapsing.setOnLongClickListener(listener);
         findViewById(R.id.toolbar).setOnLongClickListener(listener);
-        if (title.length() > 100) {
-            collapsing.setExpandedTitleTextAppearance(android.R.style.TextAppearance_DeviceDefault_Medium);
-            collapsing.setMaxLines(5);
-        } else {
-            collapsing.setExpandedTitleTextAppearance(android.R.style.TextAppearance_DeviceDefault_Large);
-            collapsing.setMaxLines(4);
-        }
         actionBar.setTitle(title);
 
     }

@@ -6,27 +6,15 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
-
         android:layout_width="match_parent"
-        android:layout_height="192dp">
+        android:layout_height="wrap_content">
 
-        <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
-            android:id="@+id/collapsing"
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:contentScrim="?attr/colorPrimaryVariant"
-            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Large"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
-            app:maxLines="4"
-            app:toolbarId="@+id/toolbar">
+            android:layout_height="?attr/actionBarSize"
+            app:layout_collapseMode="pin" />
 
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin" />
-        </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_gallery" />
