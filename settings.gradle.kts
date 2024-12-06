@@ -21,5 +21,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "NClientV2"
+rootProject.name = "NClient"
 include(":app")

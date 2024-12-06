@@ -5,16 +5,16 @@ plugins {
 }
 
 android {
-    namespace = "com.dar.nclientv2"
+    namespace = "com.github.damianjester.nclient"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.dar.nclientv2"
+        applicationId = "com.github.damianjester.nclient"
         minSdk = 21
         targetSdk = 34
 
-        versionCode = 305
-        versionName = "3.0.5-stable"
+        versionCode = 1
+        versionName = "0.1.0"
 
         multiDexEnabled = true
         vectorDrawables.useSupportLibrary = true
@@ -26,7 +26,7 @@ android {
             isShrinkResources = true
 
             versionNameSuffix = "-release"
-            resValue("string", "app_name", "NClientV2")
+            resValue("string", "app_name", "NClient")
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -36,7 +36,7 @@ android {
         debug {
             applicationIdSuffix = ".debug"
             versionNameSuffix = "-debug"
-            resValue("string", "app_name", "NClientV2 Debug")
+            resValue("string", "app_name", "NClient Debug")
         }
     }
 
