@@ -367,6 +367,36 @@
     <string name="hide">Hide</string>
     <string name="title_user_agent">Change User-Agent</string>
 
+    <string name="comments_load_failed">Failed to load comments</string>
+    <string name="back">Back</string>
+    <string name="no_comments">No comments found\n(☉_☉)</string>
+    <string name="posted_ago">Posted %s ago</string>
+    <string name="just_now">just now</string>
+    <string name="seconds">%d seconds</string>
+    <plurals name="minute">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <plurals name="hour">
+        <item quantity="one">%d hour</item>
+        <item quantity="other">%d hours</item>
+    </plurals>
+    <plurals name="day">
+        <item quantity="one">%d day</item>
+        <item quantity="other">%d days</item>
+    </plurals>
+    <plurals name="week">
+        <item quantity="one">%d week</item>
+        <item quantity="other">%d weeks</item>
+    </plurals>
+    <plurals name="month">
+        <item quantity="one">%d month</item>
+        <item quantity="other">%d months</item>
+    </plurals>
+    <plurals name="year">
+        <item quantity="one">%d year</item>
+        <item quantity="other">%d years</item>
+    </plurals>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>

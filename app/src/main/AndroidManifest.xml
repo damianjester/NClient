@@ -65,7 +65,7 @@
         <activity android:name=".StatusViewerActivity" />
         <activity android:name=".HistoryActivity" />
         <activity android:name=".BookmarkActivity" />
-        <activity android:name=".CommentActivity" />
+        <activity android:name=".comments.CommentsActivity" />
         <activity android:name=".SearchActivity" />
         <activity
             android:name=".MainActivity"

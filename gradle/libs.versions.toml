@@ -4,6 +4,8 @@ kotlin = "2.0.0"
 glide = "4.15.1"
 activityCompose = "1.8.0"
 composeBom = "2024.04.01"
+decompose = "3.2.2"
+ktor = "3.0.2"
 
 [libraries]
 
@@ -23,6 +25,22 @@ androidx-ui = { group = "androidx.compose.ui", name = "ui" }
 androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+androidx-material2 = { group = "androidx.compose.material", name = "material" }
+
+decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
+decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
+
+ktor-client = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktop-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+ktor-client-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.6.1" }
+kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.7.3" }
+
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version = "3.0.4" }
+coil-ktor3 = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version = "3.0.4" }
 
 okhttp-urlconnection = { group = "com.squareup.okhttp3", name = "okhttp-urlconnection", version = "3.12.12" }
 persistentcookiejar = { group = "com.github.franmontiel", name = "PersistentCookieJar", version = "v1.0.1" }
@@ -39,3 +57,10 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
+[bundles]
+ktor = [
+    "ktor-client",
+    "ktop-client-cio",
+    "ktor-client-contentnegotiation",
+    "ktor-client-json"
+]
