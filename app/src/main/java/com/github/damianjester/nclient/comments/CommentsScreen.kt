@@ -94,7 +94,9 @@ fun CommentsScreen(
                             stringResource(R.string.back)
                         )
                     }
-                }
+                },
+                backgroundColor = MaterialTheme.colors.surface,
+                elevation = 0.dp
             )
         },
         snackbarHost = {
