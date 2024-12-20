@@ -31,7 +31,7 @@ import com.github.damianjester.nclient.api.InspectorV3;
 import com.github.damianjester.nclient.api.components.Gallery;
 import com.github.damianjester.nclient.api.components.GenericGallery;
 import com.github.damianjester.nclient.async.database.Queries;
-import com.github.damianjester.nclient.comments.CommentsActivity;
+import com.github.damianjester.nclient.gallery.comments.CommentsActivity;
 import com.github.damianjester.nclient.components.activities.BaseActivity;
 import com.github.damianjester.nclient.components.status.Status;
 import com.github.damianjester.nclient.components.status.StatusManager;

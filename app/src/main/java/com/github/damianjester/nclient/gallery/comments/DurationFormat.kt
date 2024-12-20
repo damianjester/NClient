@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.comments
+package com.github.damianjester.nclient.gallery.comments
 
 import android.content.Context
 import androidx.annotation.PluralsRes

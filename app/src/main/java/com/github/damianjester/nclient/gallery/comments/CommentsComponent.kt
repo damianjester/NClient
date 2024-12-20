@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.comments
+package com.github.damianjester.nclient.gallery.comments
 
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
