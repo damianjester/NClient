@@ -120,11 +120,8 @@
                 android:value="com.github.damianjester.nclient.MainActivity" />
         </activity>
         <activity
-            android:name=".ZoomActivity"
-            android:configChanges="orientation|screenSize"
-            android:label="@string/title_activity_zoom"
-            android:parentActivityName=".GalleryActivity"
-            android:theme="@style/DarkTheme.NoTitle" />
+            android:name=".gallery.pager.GalleryPagerActivity"
+            android:theme="@style/Theme.NClient" />
         <activity
             android:name=".LocalActivity"
             android:configChanges="orientation|screenSize"

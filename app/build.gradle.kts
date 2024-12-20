@@ -82,6 +82,10 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material2)
+    implementation(libs.androidx.material.icons)
+
+    implementation(platform(libs.koin.bom))
+    implementation(libs.bundles.koin)
 
     implementation(libs.decompose)
     implementation(libs.decompose.compose)
@@ -90,7 +94,9 @@ dependencies {
     implementation(libs.bundles.ktor)
     implementation(libs.kotlinx.datetime)
     implementation(libs.coil.compose)
-    implementation(libs.coil.ktor3)
+    implementation(libs.coil.gif)
+    implementation(libs.telescope)
+    implementation(libs.coil.okhttp)
 
     // Other
     implementation(libs.okhttp.urlconnection) // Because of min SDK

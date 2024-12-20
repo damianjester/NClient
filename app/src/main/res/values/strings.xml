@@ -369,6 +369,8 @@
 
     <string name="comments_load_failed">Failed to load comments</string>
     <string name="back">Back</string>
+    <string name="download_page">Download page</string>
+    <string name="share_page">Share page</string>
     <string name="no_comments">No comments found\n(☉_☉)</string>
     <string name="posted_ago">Posted %s ago</string>
     <string name="just_now">just now</string>
@@ -397,6 +399,14 @@
         <item quantity="one">%d year</item>
         <item quantity="other">%d years</item>
     </plurals>
+
+    <string name="cd_page_backwards">backwards one page</string>
+    <string name="cd_page_forwards">forwards one page</string>
+    <string name="jump_to_page">Jump to page</string>
+    <string name="jump">Jump</string>
+    <string name="gallery_page_saved">Page saved to Pictures</string>
+    <string name="gallery_page_save_failed">Failed to save page to Pictures</string>
+    <string name="gallery_page_share_failed">Failed to share page</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>

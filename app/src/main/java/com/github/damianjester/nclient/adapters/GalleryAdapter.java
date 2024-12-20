@@ -17,7 +17,7 @@ import com.github.damianjester.nclient.CopyToClipboardActivity;
 import com.github.damianjester.nclient.GalleryActivity;
 import com.github.damianjester.nclient.MainActivity;
 import com.github.damianjester.nclient.R;
-import com.github.damianjester.nclient.ZoomActivity;
+import com.github.damianjester.nclient.gallery.pager.GalleryPagerActivity;
 import com.github.damianjester.nclient.api.components.Gallery;
 import com.github.damianjester.nclient.api.components.GalleryData;
 import com.github.damianjester.nclient.api.components.GenericGallery;
@@ -359,7 +359,7 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             );
             return;
         }
-        Intent intent = new Intent(context, ZoomActivity.class);
+        Intent intent = new Intent(context, GalleryPagerActivity.class);
         intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
         intent.putExtra(context.getPackageName() + ".DIRECTORY", directory);
         intent.putExtra(context.getPackageName() + ".PAGE", page);

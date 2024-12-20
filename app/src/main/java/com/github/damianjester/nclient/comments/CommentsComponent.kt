@@ -5,20 +5,17 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
-import com.arkivanov.essenty.lifecycle.doOnDestroy
 import com.github.damianjester.nclient.NHentaiUrl
 import com.github.damianjester.nclient.coroutineScope
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.request.get
-import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
-import kotlinx.serialization.json.Json
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.time.Duration
 
 interface CommentsComponent {
@@ -59,25 +56,16 @@ interface CommentsComponent {
 class DefaultCommentsComponent(
     componentContext: ComponentContext,
     private val galleryId: Long,
-) : CommentsComponent, ComponentContext by componentContext {
+) : CommentsComponent, ComponentContext by componentContext, KoinComponent {
 
     override val model = MutableValue(CommentsComponent.Model())
     private val scope = coroutineScope(Dispatchers.IO)
 
-    private val httpClient = HttpClient(CIO.create()) {
-        install(ContentNegotiation) {
-            json(
-                json = Json { ignoreUnknownKeys = true }
-            )
-        }
-    }
+    private val httpClient: HttpClient by inject()
 
     init {
         componentContext.doOnCreate {
             loadComments(pullToRefresh = false)
-        }
-        componentContext.doOnDestroy {
-            httpClient.close()
         }
     }
 

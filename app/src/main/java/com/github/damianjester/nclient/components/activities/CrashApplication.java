@@ -7,10 +7,13 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
 
 import com.github.damianjester.nclient.BuildConfig;
+import com.github.damianjester.nclient.KoinKt;
+import com.github.damianjester.nclient.NHentaiSingletonImageLoader;
 import com.github.damianjester.nclient.R;
 import com.github.damianjester.nclient.api.local.LocalGallery;
 import com.github.damianjester.nclient.async.ScrapeTags;
@@ -33,6 +36,8 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import coil3.ImageLoader;
+import coil3.SingletonImageLoader;
 
 @AcraCore(buildConfigClass = BuildConfig.class, reportSenderFactoryClasses = MySenderFactory.class, reportContent = {
     ReportField.PACKAGE_NAME,
@@ -42,7 +47,7 @@ import java.security.NoSuchAlgorithmException;
     ReportField.ANDROID_VERSION,
     ReportField.LOGCAT
 })
-public class CrashApplication extends MultiDexApplication {
+public class CrashApplication extends MultiDexApplication implements SingletonImageLoader.Factory {
     private static final String SIGNATURE_GITHUB = "ce96fdbcc89991f083320140c148db5f";
 
     @Override
@@ -62,6 +67,7 @@ public class CrashApplication extends MultiDexApplication {
         TagV2.initMinCount(this);
         TagV2.initSortByName(this);
         DownloadGalleryV2.loadDownloads(this);
+        KoinKt.setupNClientKoin(this);
     }
 
     private boolean signatureCheck() {
@@ -129,5 +135,11 @@ public class CrashApplication extends MultiDexApplication {
         super.attachBaseContext(newBase);
         ACRA.init(this);
         ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings", 0).getBoolean(getString(R.string.key_send_report), false));
+    }
+
+    @NonNull
+    @Override
+    public ImageLoader newImageLoader(@NonNull Context context) {
+        return new NHentaiSingletonImageLoader().newImageLoader(context);
     }
 }

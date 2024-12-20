@@ -2,10 +2,11 @@
 agp = "8.7.3"
 kotlin = "2.0.0"
 glide = "4.15.1"
-activityCompose = "1.8.0"
-composeBom = "2024.04.01"
+activityCompose = "1.9.3"
+composeBom = "2024.12.01"
 decompose = "3.2.2"
 ktor = "3.0.2"
+koin-bom = "4.0.0"
 
 [libraries]
 
@@ -27,12 +28,20 @@ androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-material2 = { group = "androidx.compose.material", name = "material" }
+androidx-material-icons = { group = "androidx.compose.material", name = "material-icons-extended" }
+
+koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
+koin-core = { module = "io.insert-koin:koin-core" }
+koin-android = { module = "io.insert-koin:koin-android" }
+koin-compose = { module = "io.insert-koin:koin-compose" }
 
 decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
 decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
 
 ktor-client = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktop-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+ktop-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
+ktop-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
@@ -40,7 +49,11 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.7.3" }
 
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version = "3.0.4" }
+coil-gif = { group = "io.coil-kt.coil3", name = "coil-gif", version = "3.0.4" }
 coil-ktor3 = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version = "3.0.4" }
+coil-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version = "3.0.4" }
+
+telescope = "me.saket.telephoto:zoomable-image-coil3:0.14.0"
 
 okhttp-urlconnection = { group = "com.squareup.okhttp3", name = "okhttp-urlconnection", version = "3.12.12" }
 persistentcookiejar = { group = "com.github.franmontiel", name = "PersistentCookieJar", version = "v1.0.1" }
@@ -60,7 +73,13 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 [bundles]
 ktor = [
     "ktor-client",
-    "ktop-client-cio",
+    "ktop-client-okhttp",
     "ktor-client-contentnegotiation",
     "ktor-client-json"
+]
+
+koin = [
+    "koin-core",
+    "koin-android",
+    "koin-compose",
 ]

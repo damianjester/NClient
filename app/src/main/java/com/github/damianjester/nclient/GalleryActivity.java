@@ -37,6 +37,7 @@ import com.github.damianjester.nclient.components.status.Status;
 import com.github.damianjester.nclient.components.status.StatusManager;
 import com.github.damianjester.nclient.components.views.RangeSelector;
 import com.github.damianjester.nclient.components.widgets.CustomGridLayoutManager;
+import com.github.damianjester.nclient.gallery.pager.GalleryPagerActivity;
 import com.github.damianjester.nclient.settings.AuthRequest;
 import com.github.damianjester.nclient.settings.Favorites;
 import com.github.damianjester.nclient.settings.Global;
@@ -159,7 +160,7 @@ public class GalleryActivity extends BaseActivity {
         recycler.setAdapter(adapter);
         lookup();
         if (zoom > 0 && Global.getDownloadPolicy() != Global.DataUsageType.NONE) {
-            Intent intent = new Intent(this, ZoomActivity.class);
+            Intent intent = new Intent(this, GalleryPagerActivity.class);
             intent.putExtra(getPackageName() + ".GALLERY", this.gallery);
             intent.putExtra(getPackageName() + ".DIRECTORY", adapter.getDirectory());
             intent.putExtra(getPackageName() + ".PAGE", zoom);
