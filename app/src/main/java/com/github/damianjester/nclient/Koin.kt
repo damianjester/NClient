@@ -12,6 +12,8 @@ import kotlinx.serialization.json.Json
 import okhttp3.OkHttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
+import org.koin.dsl.bind
+import org.koin.dsl.binds
 import org.koin.dsl.module
 
 val httpModule = module {
@@ -44,6 +46,10 @@ val httpModule = module {
             callFactory = { get<OkHttpClient>() }
         )
     }
+
+    single {
+        ScrapperNHentaiHttpClient(get())
+    } bind NHentaiHttpClient::class
 
 }
 
