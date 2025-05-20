@@ -110,4 +110,6 @@ dependencies {
     implementation(libs.ambilwarna)
     implementation(libs.fastscroll)
     implementation(libs.localehelper)
+
+    implementation(libs.apache.commons.text)
 }

@@ -65,6 +65,8 @@ ambilwarna = { group = "com.github.yukuku", name = "ambilwarna", version = "2.0.
 fastscroll = { group = "me.zhanghai.android.fastscroll", name = "library", version = "1.2.0" }
 localehelper = { group = "com.zeugmasolutions.localehelper", name = "locale-helper-android", version = "1.5.1" }
 
+apache-commons-text = "org.apache.commons:commons-text:1.13.1"
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
