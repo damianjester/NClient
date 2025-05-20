@@ -22,6 +22,7 @@ interface CommentsComponent {
     val model: Value<Model>
 
     fun loadComments(pullToRefresh: Boolean)
+    fun navigateBack()
 
     data class Model(
         val commentsState: CommentsState = CommentsState.Loading(false),
@@ -56,6 +57,7 @@ interface CommentsComponent {
 class DefaultCommentsComponent(
     componentContext: ComponentContext,
     private val galleryId: Long,
+    private val onNavigateBack: () -> Unit
 ) : CommentsComponent, ComponentContext by componentContext, KoinComponent {
 
     override val model = MutableValue(CommentsComponent.Model())
@@ -96,6 +98,10 @@ class DefaultCommentsComponent(
                 }
             }
         }
+    }
+
+    override fun navigateBack() {
+        onNavigateBack()
     }
 
     private fun CommentResponse.toStateModel(now: Instant): CommentsComponent.Comment {

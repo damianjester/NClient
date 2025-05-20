@@ -7,6 +7,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
+import com.github.damianjester.nclient.DefaultRootComponent
 import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.api.components.Gallery
 import com.github.damianjester.nclient.api.components.GenericGallery
@@ -23,6 +24,7 @@ import java.io.File
 
 interface GalleryDetailsComponent {
 
+    val config: DefaultRootComponent.Config.GalleryDetails
     val model: Value<Model>
 
     fun copyToClipboard(metadata: MetadataCopy)
@@ -30,6 +32,8 @@ interface GalleryDetailsComponent {
     fun setGalleryFavoriteStatus(favorite: Boolean)
 
     fun toggleGridMode()
+
+    fun navigateBack()
 
     data class Model(
         val gridMode: GridMode = GridMode.TWO_COLUMNS,
@@ -120,11 +124,39 @@ interface GalleryDetailsComponent {
 
 }
 
+class NewGalleryDetailsComponent(
+    componentContext: ComponentContext,
+    override val config: DefaultRootComponent.Config.GalleryDetails,
+    private val onPageClick: (Long, Int) -> Unit,
+    private val onNavigateBack: () -> Unit
+) : GalleryDetailsComponent, ComponentContext by componentContext {
+    override val model = MutableValue(GalleryDetailsComponent.Model())
+
+    override fun copyToClipboard(metadata: GalleryDetailsComponent.MetadataCopy) {
+        TODO("Not yet implemented")
+    }
+
+    override fun setGalleryFavoriteStatus(favorite: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun toggleGridMode() {
+        TODO("Not yet implemented")
+    }
+
+    override fun navigateBack() {
+        onNavigateBack()
+    }
+}
+
 class DefaultGalleryDetailsComponent(
     componentContext: ComponentContext,
     private val gallery: GenericGallery?,
     private val applicationContext: Context,
 ) : GalleryDetailsComponent, ComponentContext by componentContext {
+
+    override val config: DefaultRootComponent.Config.GalleryDetails
+        get() = TODO("Not yet implemented")
     override val model = MutableValue(GalleryDetailsComponent.Model())
 
     init {
@@ -305,5 +337,9 @@ class DefaultGalleryDetailsComponent(
 
             state.copy(gridMode = newGridMode)
         }
+    }
+
+    override fun navigateBack() {
+        TODO("Not yet implemented")
     }
 }

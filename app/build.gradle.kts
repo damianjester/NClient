@@ -89,6 +89,7 @@ dependencies {
 
     implementation(libs.decompose)
     implementation(libs.decompose.compose)
+    implementation(libs.essenty)
     implementation(libs.kotlinx.serialization.json)
 
     implementation(libs.bundles.ktor)

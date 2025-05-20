@@ -37,6 +37,7 @@ koin-compose = { module = "io.insert-koin:koin-compose" }
 
 decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
 decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
+essenty = { group = "com.arkivanov.essenty", name = "lifecycle", version = "2.5.0" }
 
 ktor-client = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktop-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }

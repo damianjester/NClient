@@ -56,6 +56,18 @@ import coil3.request.crossfade
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.github.damianjester.nclient.R
 
+@Composable
+fun GalleryCommentsRootContent(
+    component: CommentsComponent,
+    modifier: Modifier = Modifier
+) {
+    CommentsScreen(
+        modifier = modifier,
+        component = component,
+        onBack = component::navigateBack
+    )
+}
+
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CommentsScreen(

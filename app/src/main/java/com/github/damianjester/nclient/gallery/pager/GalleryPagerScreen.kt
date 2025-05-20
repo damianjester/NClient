@@ -21,6 +21,21 @@ import com.github.damianjester.nclient.R
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
+fun GalleryPagerRootContent(
+    component: GalleryPagerComponent,
+    modifier: Modifier = Modifier
+) {
+    GalleryPagerScreen(
+        modifier = modifier,
+        component = component,
+        initialPage = component.config.pageIndex ?: 0,
+        onBack = { component.navigateBack() },
+        onDownloadPage = { page -> component.savePageToGallery(page) },
+        onSharePage = { page, includeUrl -> component.sharePage(page, includeUrl) },
+    )
+}
+
+@Composable
 @OptIn(ExperimentalLayoutApi::class)
 fun GalleryPagerScreen(
     modifier: Modifier,

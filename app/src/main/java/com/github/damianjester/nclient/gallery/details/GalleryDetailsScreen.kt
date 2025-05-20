@@ -12,6 +12,22 @@ import androidx.compose.ui.graphics.Color
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 
 @Composable
+fun GalleryDetailsRootContent(
+    component: GalleryDetailsComponent,
+    modifier: Modifier = Modifier
+) {
+    GalleryDetailsScreen(
+        modifier = modifier,
+        component = component,
+        onBack = { component.navigateBack() },
+        onTagClick = { TODO() },
+        onPageClick = { TODO() },
+        onRelatedGalleryClick = { TODO() },
+        onCopyMetadata = { component.copyToClipboard(it) }
+    )
+}
+
+@Composable
 fun GalleryDetailsScreen(
     modifier: Modifier = Modifier,
     component: GalleryDetailsComponent,

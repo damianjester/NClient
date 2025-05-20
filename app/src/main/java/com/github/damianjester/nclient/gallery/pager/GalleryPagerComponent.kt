@@ -15,6 +15,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
+import com.github.damianjester.nclient.DefaultRootComponent
 import com.github.damianjester.nclient.api.components.GenericGallery
 import com.github.damianjester.nclient.coroutineScope
 import com.github.damianjester.nclient.utility.LogUtility
@@ -42,11 +43,14 @@ import kotlin.uuid.Uuid
 interface GalleryPagerComponent {
 
     val model: Value<Model>
+    val config: DefaultRootComponent.Config.GalleryPager
     val snackbarMessage: Flow<SnackbarMessage>
 
     fun savePageToGallery(page: GalleryPage)
 
     fun sharePage(page: GalleryPage, withUrl: Boolean)
+
+    fun navigateBack()
 
     data class Model(
         val loading: Boolean = true,
@@ -78,8 +82,35 @@ interface GalleryPagerComponent {
 
     sealed interface GalleryPageImage {
         val webpageUrl: String
+
         data class Remote(override val webpageUrl: String, val url: String) : GalleryPageImage
         data class Local(override val webpageUrl: String, val file: File) : GalleryPageImage
+    }
+
+}
+
+class NewGalleryPagerComponent(
+    componentContext: ComponentContext,
+    override val config: DefaultRootComponent.Config.GalleryPager,
+    val onNavigateBack: () -> Unit
+) : GalleryPagerComponent, ComponentContext by componentContext, KoinComponent {
+
+    override val model: Value<GalleryPagerComponent.Model>
+        get() = TODO("Not yet implemented")
+
+    override val snackbarMessage: Flow<GalleryPagerComponent.SnackbarMessage>
+        get() = TODO("Not yet implemented")
+
+    override fun savePageToGallery(page: GalleryPagerComponent.GalleryPage) {
+        TODO("Not yet implemented")
+    }
+
+    override fun sharePage(page: GalleryPagerComponent.GalleryPage, withUrl: Boolean) {
+        TODO("Not yet implemented")
+    }
+
+    override fun navigateBack() {
+        onNavigateBack()
     }
 
 }
@@ -89,6 +120,9 @@ class DefaultGalleryPagerComponent(
     componentContext: ComponentContext,
     val context: Context,
 ) : GalleryPagerComponent, ComponentContext by componentContext, KoinComponent {
+
+    override val config: DefaultRootComponent.Config.GalleryPager
+        get() = TODO("Not yet implemented")
 
     private val _snackbarMessage = MutableSharedFlow<GalleryPagerComponent.SnackbarMessage>()
     override val snackbarMessage: Flow<GalleryPagerComponent.SnackbarMessage> = _snackbarMessage
@@ -134,7 +168,11 @@ class DefaultGalleryPagerComponent(
         scope.launch {
             try {
                 val file = when (page.image) {
-                    is GalleryPagerComponent.GalleryPageImage.Remote -> downloadGalleryPage(gallery, page)
+                    is GalleryPagerComponent.GalleryPageImage.Remote -> downloadGalleryPage(
+                        gallery,
+                        page
+                    )
+
                     is GalleryPagerComponent.GalleryPageImage.Local -> page.image.file
                 }
                 saveGalleryPageToExternalStorage(gallery, page, file)
@@ -184,6 +222,10 @@ class DefaultGalleryPagerComponent(
                 _snackbarMessage.emit(GalleryPagerComponent.SnackbarMessage.PageShareFailed)
             }
         }
+    }
+
+    override fun navigateBack() {
+        TODO("Not yet implemented")
     }
 
     @OptIn(ExperimentalUuidApi::class)
