@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.adapters;
+package com.github.damianjester.nclient.gallery.details;
 
 import android.content.Intent;
 import android.util.SparseIntArray;
@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.damianjester.nclient.CopyToClipboardActivity;
-import com.github.damianjester.nclient.GalleryActivity;
+import com.github.damianjester.nclient.adapters.ListAdapter;
 import com.github.damianjester.nclient.MainActivity;
 import com.github.damianjester.nclient.R;
 import com.github.damianjester.nclient.gallery.pager.GalleryPagerActivity;

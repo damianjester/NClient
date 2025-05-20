@@ -8,7 +8,7 @@ import android.net.Uri;
 
 import androidx.core.app.NotificationCompat;
 
-import com.github.damianjester.nclient.GalleryActivity;
+import com.github.damianjester.nclient.gallery.details.GalleryActivity;
 import com.github.damianjester.nclient.R;
 import com.github.damianjester.nclient.api.components.Gallery;
 import com.github.damianjester.nclient.settings.Global;

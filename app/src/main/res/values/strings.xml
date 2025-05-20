@@ -407,6 +407,9 @@
     <string name="gallery_page_saved">Page saved to Pictures</string>
     <string name="gallery_page_save_failed">Failed to save page to Pictures</string>
     <string name="gallery_page_share_failed">Failed to share page</string>
+    <string name="clipboard_gallery_id">gallery ID</string>
+    <string name="clipboard_gallery_tag">gallery tag</string>
+    <string name="clipboard_gallery_title">gallery title</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>

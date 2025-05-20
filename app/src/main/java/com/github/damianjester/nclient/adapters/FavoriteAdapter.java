@@ -15,7 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.damianjester.nclient.FavoriteActivity;
-import com.github.damianjester.nclient.GalleryActivity;
+import com.github.damianjester.nclient.gallery.details.GalleryActivity;
 import com.github.damianjester.nclient.R;
 import com.github.damianjester.nclient.api.components.Gallery;
 import com.github.damianjester.nclient.async.database.Queries;

@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient;
+package com.github.damianjester.nclient.gallery.details;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -26,7 +26,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 
-import com.github.damianjester.nclient.adapters.GalleryAdapter;
+import com.github.damianjester.nclient.CopyToClipboardActivity;
+import com.github.damianjester.nclient.R;
 import com.github.damianjester.nclient.api.InspectorV3;
 import com.github.damianjester.nclient.api.components.Gallery;
 import com.github.damianjester.nclient.api.components.GenericGallery;

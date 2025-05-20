@@ -97,7 +97,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GalleryActivity"
+            android:name=".gallery.details.GalleryActivity"
             android:exported="true"
             android:label="@string/title_activity_gallery"
             android:parentActivityName=".MainActivity"
@@ -118,6 +118,21 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.github.damianjester.nclient.MainActivity" />
+        </activity>
+        <activity
+            android:name=".gallery.details.GalleryDetailsActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="nhentai.net"/>
+                <data android:pathPattern="/g/.*"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".gallery.pager.GalleryPagerActivity"

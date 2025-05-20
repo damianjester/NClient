@@ -15,6 +15,7 @@ import androidx.core.widget.ImageViewCompat;
 import com.github.damianjester.nclient.api.RandomLoader;
 import com.github.damianjester.nclient.api.components.Gallery;
 import com.github.damianjester.nclient.components.activities.GeneralActivity;
+import com.github.damianjester.nclient.gallery.details.GalleryActivity;
 import com.github.damianjester.nclient.settings.Favorites;
 import com.github.damianjester.nclient.settings.Global;
 import com.github.damianjester.nclient.utility.ImageDownloadUtility;
