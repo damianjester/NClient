@@ -4,11 +4,11 @@ import com.github.damianjester.nclient.GalleriesResponse
 import com.github.damianjester.nclient.GalleryEntity
 import com.github.damianjester.nclient.NClientDispatchers
 import com.github.damianjester.nclient.NHentaiHttpClient
-import com.github.damianjester.nclient.core.GalleryPageLoader.*
+import com.github.damianjester.nclient.core.GalleryPagePager.*
 import com.github.damianjester.nclient.db.GalleryEntityRepository
 import kotlinx.coroutines.withContext
 
-interface GalleryPageLoader {
+interface GalleryPagePager {
     suspend fun load(page: Int): Result
 
     sealed interface Result {
@@ -17,11 +17,11 @@ interface GalleryPageLoader {
     }
 }
 
-class DefaultGalleryPageLoader(
+class DefaultGalleryPagePager(
     private val client: NHentaiHttpClient,
     private val dispatchers: NClientDispatchers,
     private val galleryEntityRepository: GalleryEntityRepository
-) : GalleryPageLoader {
+) : GalleryPagePager {
     override suspend fun load(page: Int): Result = withContext(dispatchers.IO) {
 
         val response: GalleriesResponse

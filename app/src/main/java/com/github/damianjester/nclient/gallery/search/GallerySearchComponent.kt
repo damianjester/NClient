@@ -7,7 +7,7 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.github.damianjester.nclient.GallerySearchItem
 import com.github.damianjester.nclient.GalleryId
-import com.github.damianjester.nclient.core.GalleryPageLoader
+import com.github.damianjester.nclient.core.GalleryPagePager
 import com.github.damianjester.nclient.core.GallerySearcher
 import com.github.damianjester.nclient.coroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,7 +34,7 @@ interface GallerySearchComponent {
 
 class DefaultGallerySearchComponent(
     componentContext: ComponentContext,
-    private val loader: GalleryPageLoader,
+    private val pager: GalleryPagePager,
     private val searcher: GallerySearcher,
     val onNavigateGallery: (GalleryId) -> Unit,
 ) : GallerySearchComponent, ComponentContext by componentContext, KoinComponent {
@@ -51,7 +51,7 @@ class DefaultGallerySearchComponent(
             // TODO: Preload tags? Refresh tags?
 
             lifecyleScope.launch {
-                loader.load(1)
+                pager.load(1)
             }
 
             lifecyleScope.launch {

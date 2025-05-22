@@ -4,6 +4,6 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val coreModule = module {
-    single { DefaultGalleryPageLoader(get(), get(), get()) } bind GalleryPageLoader::class
+    single { DefaultGalleryPagePager(get(), get(), get()) } bind GalleryPagePager::class
     single { DefaultGallerySearcher(get()) } bind GallerySearcher::class
 }

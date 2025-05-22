@@ -66,7 +66,7 @@ class DefaultRootComponent(
     private fun gallerySearchComponent(componentContext: ComponentContext): GallerySearchComponent =
         DefaultGallerySearchComponent(
             componentContext = componentContext,
-            loader = get(),
+            pager = get(),
             searcher = get(),
             onNavigateGallery = { id -> navigation.pushNew(Config.GalleryDetails(id.value)) },
         )
