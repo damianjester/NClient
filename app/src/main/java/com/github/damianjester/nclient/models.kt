@@ -16,7 +16,7 @@ sealed interface GalleryLanguage {
     data object English : GalleryLanguage
     data object Chinese : GalleryLanguage
     data object Japanese : GalleryLanguage
-    data class Unknown(val locale: String) : GalleryLanguage
+    data object Unknown : GalleryLanguage
 }
 
 sealed interface GalleryGridItemImage {

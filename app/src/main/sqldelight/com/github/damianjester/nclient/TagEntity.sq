@@ -1,0 +1,11 @@
+CREATE TABLE tagEntity (
+  id INTEGER PRIMARY KEY NOT NULL,
+  type TEXT NOT NULL,
+  name TEXT NOT NULL,
+  count TEXT NOT NULL
+  -- url TEXT NOT NULL, maybe?
+);
+
+insertTag:
+INSERT INTO tagEntity(id, type, name, count)
+VALUES ?;

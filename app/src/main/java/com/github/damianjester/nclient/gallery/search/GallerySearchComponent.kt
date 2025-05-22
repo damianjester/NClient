@@ -11,6 +11,8 @@ import com.github.damianjester.nclient.GalleryGridItemImage
 import com.github.damianjester.nclient.GalleryId
 import com.github.damianjester.nclient.GalleryLanguage
 import com.github.damianjester.nclient.NHentaiHttpClient
+import com.github.damianjester.nclient.core.GalleryPageLoader
+import com.github.damianjester.nclient.core.GallerySearcher
 import com.github.damianjester.nclient.coroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -38,14 +40,14 @@ interface GallerySearchComponent {
 
 class DefaultGallerySearchComponent(
     componentContext: ComponentContext,
+    private val loader: GalleryPageLoader,
+    private val searcher: GallerySearcher,
     val onNavigateGallery: (GalleryId) -> Unit,
 ) : GallerySearchComponent, ComponentContext by componentContext, KoinComponent {
 
     private val lifecyleScope = coroutineScope(Dispatchers.Default)
     private val _model = MutableValue(GallerySearchComponent.Model())
     override val model: Value<GallerySearchComponent.Model> = _model
-
-    private val client by inject<NHentaiHttpClient>()
 
     init {
         lifecycle.doOnCreate {
@@ -55,27 +57,16 @@ class DefaultGallerySearchComponent(
             // TODO: Preload tags? Refresh tags?
 
             lifecyleScope.launch {
-                val galleries = fetchGalleries()
-                _model.update { it.copy(galleries = galleries) }
+                loader.load(1)
+            }
+
+            lifecyleScope.launch {
+                searcher.search()
+                    .collect { galleries ->
+                        _model.update { it.copy(galleries = galleries) }
+                    }
             }
         }
-    }
-
-    suspend fun fetchGalleries(): List<GalleryGridItem> = withContext(Dispatchers.IO) {
-
-        val response = client.getGalleries(1)
-        response.galleries
-            .map { gal ->
-                GalleryGridItem(
-                    id = gal.id,
-                    title = gal.title,
-                    language = GalleryLanguage.Unknown(""),
-                    image = GalleryGridItemImage.Remote(
-                        thumbnailUrl = gal.coverThumbnailUrl,
-                        coverUrl = gal.coverThumbnailUrl,
-                    )
-                )
-            }
     }
 
     override fun navigateToGallery(gallery: GalleryGridItem) {

@@ -231,11 +231,7 @@ class DefaultGalleryDetailsComponent(
                                 Language.ENGLISH -> GalleryLanguage.English
                                 Language.CHINESE -> GalleryLanguage.Chinese
                                 Language.JAPANESE -> GalleryLanguage.Japanese
-                                null, Language.UNKNOWN -> GalleryLanguage.Unknown(
-                                    "unknown"
-                                )
-
-                                Language.ALL -> GalleryLanguage.Unknown("all")
+                                else -> GalleryLanguage.Unknown
                             }
                         )
                     }

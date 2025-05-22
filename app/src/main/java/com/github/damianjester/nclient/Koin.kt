@@ -2,6 +2,8 @@ package com.github.damianjester.nclient
 
 import android.app.Application
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
+import com.github.damianjester.nclient.core.coreModule
+import com.github.damianjester.nclient.db.dbModule
 import com.github.damianjester.nclient.settings.Global
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -16,6 +18,8 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val httpModule = module {
+
+    single { NClientDispatchers() }
 
     single { Global.client }
 
@@ -55,6 +59,6 @@ val httpModule = module {
 fun Application.setupNClientKoin() {
     startKoin {
         androidContext(this@setupNClientKoin)
-        modules(httpModule)
+        modules(httpModule, coreModule, dbModule)
     }
 }

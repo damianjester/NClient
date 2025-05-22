@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("kotlin-parcelize")
     kotlin("plugin.serialization") version "2.0.0"
+    id("app.cash.sqldelight") version "2.1.0"
 }
 
 android {
@@ -113,4 +114,14 @@ dependencies {
     implementation(libs.localehelper)
 
     implementation(libs.apache.commons.text)
+    implementation("app.cash.sqldelight:android-driver:2.1.0")
+    implementation("app.cash.sqldelight:coroutines-extensions:2.1.0")
+}
+
+sqldelight {
+    databases {
+        create("Database") {
+            packageName.set("com.github.damianjester.nclient")
+        }
+    }
 }

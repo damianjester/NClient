@@ -1,0 +1,21 @@
+CREATE TABLE galleryEntity (
+  id INTEGER PRIMARY KEY NOT NULL,
+  title TEXT NOT NULL,
+  mediaId INTEGER NOT NULL,
+  coverThumbnailUrl TEXT NOT NULL
+);
+
+selectAll:
+SELECT *
+FROM galleryEntity;
+
+selectAllTest:
+SELECT galleryEntity.*, gt.* FROM galleryEntity
+INNER JOIN galleryHasTag AS gt ON galleryEntity.id = gt.galleryId;
+
+insertGallery:
+INSERT INTO galleryEntity(id, title, mediaId, coverThumbnailUrl)
+VALUES ?;
+
+deleteAll:
+DELETE FROM galleryEntity;

@@ -18,6 +18,7 @@ import com.github.damianjester.nclient.gallery.search.DefaultGallerySearchCompon
 import com.github.damianjester.nclient.gallery.search.GallerySearchComponent
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 
 interface RootComponent {
     val stack: Value<ChildStack<*, Child>>
@@ -65,6 +66,8 @@ class DefaultRootComponent(
     private fun gallerySearchComponent(componentContext: ComponentContext): GallerySearchComponent =
         DefaultGallerySearchComponent(
             componentContext = componentContext,
+            loader = get(),
+            searcher = get(),
             onNavigateGallery = { id -> navigation.pushNew(Config.GalleryDetails(id.value)) },
         )
 
