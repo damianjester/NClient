@@ -1,6 +1,6 @@
 package com.github.damianjester.nclient.core
 
-import com.github.damianjester.nclient.GalleryGridItem
+import com.github.damianjester.nclient.GallerySearchItem
 import com.github.damianjester.nclient.GalleryGridItemImage
 import com.github.damianjester.nclient.GalleryId
 import com.github.damianjester.nclient.GalleryLanguage
@@ -14,17 +14,17 @@ const val LANGUAGE_ENGLISH = 12227L
 const val LANGUAGE_CHINESE = 29963L
 
 interface GallerySearcher {
-    fun search(): Flow<List<GalleryGridItem>>
+    fun search(): Flow<List<GallerySearchItem>>
 }
 
 class DefaultGallerySearcher(
     private val galleryEntityRepository: GalleryEntityRepository,
 ) : GallerySearcher {
-    override fun search(): Flow<List<GalleryGridItem>> {
+    override fun search(): Flow<List<GallerySearchItem>> {
         return galleryEntityRepository.selectAll()
             .map { galleries ->
                 galleries.map { gal ->
-                    GalleryGridItem(
+                    GallerySearchItem(
                         id = GalleryId(gal.id),
                         title = gal.title,
                         language = determineGalleryLanguage(gal.tagIds),

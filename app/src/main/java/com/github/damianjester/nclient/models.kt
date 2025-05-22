@@ -34,7 +34,7 @@ sealed interface GalleryGridItemImage {
     ) : GalleryGridItemImage
 }
 
-data class GalleryGridItem(
+data class GallerySearchItem(
     val id: GalleryId,
     val title: String,
     val language: GalleryLanguage,

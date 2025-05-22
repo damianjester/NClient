@@ -10,14 +10,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.github.damianjester.nclient.GalleryGridItem
+import com.github.damianjester.nclient.GallerySearchItem
 import com.github.damianjester.nclient.gallery.GalleryGridItem
 
 @Composable
 fun GallerySearchGrid(
     modifier: Modifier = Modifier,
-    galleries: List<GalleryGridItem>,
-    onGalleryClick: (GalleryGridItem) -> Unit
+    galleries: List<GallerySearchItem>,
+    onGalleryClick: (GallerySearchItem) -> Unit
 ) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
