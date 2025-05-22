@@ -2,7 +2,9 @@ CREATE TABLE galleryEntity (
   id INTEGER PRIMARY KEY NOT NULL,
   title TEXT NOT NULL,
   mediaId INTEGER NOT NULL,
-  coverThumbnailUrl TEXT NOT NULL
+  coverThumbnailUrl TEXT NOT NULL,
+  page INTEGER NOT NULL,
+  orderIndex INTEGER NOT NULL
 );
 
 selectAll:
@@ -11,10 +13,11 @@ FROM galleryEntity;
 
 selectAllTest:
 SELECT galleryEntity.*, gt.* FROM galleryEntity
-INNER JOIN galleryHasTag AS gt ON galleryEntity.id = gt.galleryId;
+INNER JOIN galleryHasTag AS gt ON galleryEntity.id = gt.galleryId
+ORDER BY galleryEntity.orderIndex ASC;
 
 insertGallery:
-INSERT INTO galleryEntity(id, title, mediaId, coverThumbnailUrl)
+INSERT INTO galleryEntity(id, title, mediaId, coverThumbnailUrl, page, orderIndex)
 VALUES ?;
 
 deleteAll:

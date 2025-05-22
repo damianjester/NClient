@@ -33,12 +33,14 @@ class DefaultGalleryPagePager(
         }
 
         val galleryEntities = response.galleries
-            .map { gal ->
+            .mapIndexed { i, gal ->
                 GalleryEntity(
                     id = gal.id.value,
                     title = gal.title,
                     mediaId = gal.mediaId,
-                    coverThumbnailUrl = gal.coverThumbnailUrl.toString()
+                    coverThumbnailUrl = gal.coverThumbnailUrl.toString(),
+                    page = page.toLong(),
+                    orderIndex = i.toLong()
                 )
             }
 
