@@ -13,14 +13,14 @@ const val LANGUAGE_JAPANESE = 6346L
 const val LANGUAGE_ENGLISH = 12227L
 const val LANGUAGE_CHINESE = 29963L
 
-interface GallerySearcher {
-    fun search(): Flow<List<GallerySearchItem>>
+interface GalleriesFetcher {
+    fun fetch(): Flow<List<GallerySearchItem>>
 }
 
-class DefaultGallerySearcher(
+class DefaultGalleriesFetcher(
     private val galleryEntityRepository: GalleryEntityRepository,
-) : GallerySearcher {
-    override fun search(): Flow<List<GallerySearchItem>> {
+) : GalleriesFetcher {
+    override fun fetch(): Flow<List<GallerySearchItem>> {
         return galleryEntityRepository.selectAll()
             .map { galleries ->
                 galleries.map { gal ->
