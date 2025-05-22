@@ -1,21 +1,79 @@
 package com.github.damianjester.nclient.gallery.search
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.AppBarDefaults
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.res.stringResource
+import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.github.damianjester.nclient.R
 
 @Composable
 fun GallerySearchRootContent(
     component: GallerySearchComponent,
     modifier: Modifier = Modifier,
 ) {
-    Box(modifier.fillMaxSize()) {
-        Text(
-            "Gallery Search",
-            modifier = Modifier.align(Alignment.Center)
-        )
+    // TODO: Gallery list
+    // TODO: Pager controls
+    // TODO: Drawer
+
+    val state = component.model.subscribeAsState()
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                windowInsets = AppBarDefaults.topAppBarWindowInsets,
+                title = {
+                    Text(
+                        stringResource(R.string.app_name)
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { TODO("Open navigation drawer") }) {
+                        Icon(Icons.Default.Menu, contentDescription = "Menu")
+                    }
+                },
+                actions = {
+                    IconButton({ TODO("Toggle TopAppbar search mode") }) {
+                        Icon(
+                            Icons.Default.Search,
+                            contentDescription = stringResource(R.string.search)
+                        )
+                    }
+                    IconButton({ TODO("Show language selector dialog") }) {
+                        Icon(
+                            Icons.Default.Language,
+                            contentDescription = stringResource(R.string.languages)
+                        )
+                    }
+                }
+            )
+        }
+    ) { padding ->
+        Column(
+            modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
+            GallerySearchGrid(
+                galleries = state.value.galleries,
+                onGalleryClick = component::navigateToGallery
+            )
+        }
     }
 }

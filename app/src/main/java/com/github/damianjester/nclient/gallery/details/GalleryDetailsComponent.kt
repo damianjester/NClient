@@ -8,6 +8,7 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.github.damianjester.nclient.DefaultRootComponent
+import com.github.damianjester.nclient.GalleryLanguage
 import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.api.components.Gallery
 import com.github.damianjester.nclient.api.components.GenericGallery
@@ -112,15 +113,8 @@ interface GalleryDetailsComponent {
         val id: Long,
         val title: String,
         val coverImageUrl: String,
-        val locale: GalleryLocale
+        val language: GalleryLanguage
     )
-
-    sealed interface GalleryLocale {
-        data object English : GalleryLocale
-        data object Chinese : GalleryLocale
-        data object Japanese : GalleryLocale
-        data class Unknown(val locale: String) : GalleryLocale
-    }
 
 }
 
@@ -233,15 +227,15 @@ class DefaultGalleryDetailsComponent(
                             id = it.id.toLong(),
                             title = it.title,
                             coverImageUrl = it.thumbnail.toString(),
-                            locale = when (it.language) {
-                                Language.ENGLISH -> GalleryDetailsComponent.GalleryLocale.English
-                                Language.CHINESE -> GalleryDetailsComponent.GalleryLocale.Chinese
-                                Language.JAPANESE -> GalleryDetailsComponent.GalleryLocale.Japanese
-                                null, Language.UNKNOWN -> GalleryDetailsComponent.GalleryLocale.Unknown(
+                            language = when (it.language) {
+                                Language.ENGLISH -> GalleryLanguage.English
+                                Language.CHINESE -> GalleryLanguage.Chinese
+                                Language.JAPANESE -> GalleryLanguage.Japanese
+                                null, Language.UNKNOWN -> GalleryLanguage.Unknown(
                                     "unknown"
                                 )
 
-                                Language.ALL -> GalleryDetailsComponent.GalleryLocale.Unknown("all")
+                                Language.ALL -> GalleryLanguage.Unknown("all")
                             }
                         )
                     }

@@ -55,14 +55,6 @@ data class GalleryImage(
     val h: Int,
 )
 
-@JvmInline
-@Serializable
-value class GalleryId(val id: Long)
-
-@JvmInline
-@Serializable
-value class GalleryTagId(val id: Long)
-
 @Serializable
 data class GalleryTag(
     val id: GalleryTagId,
@@ -108,7 +100,7 @@ class ScrapperNHentaiHttpClient(
     override suspend fun getGallery(id: GalleryId): GalleryResponse {
 
         // https://nhentai.net/g/{gallery_id}
-        val response = client.get("https://nhentai.net/g/${id.id}")
+        val response = client.get("https://nhentai.net/g/${id.value}")
         val bodyInputStream = response.bodyAsChannel().toInputStream()
 
         val document = Jsoup.parse(bodyInputStream, "UTF-8", "https://nhentai.net/")

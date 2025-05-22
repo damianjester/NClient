@@ -65,7 +65,7 @@ class DefaultRootComponent(
     private fun gallerySearchComponent(componentContext: ComponentContext): GallerySearchComponent =
         DefaultGallerySearchComponent(
             componentContext = componentContext,
-            onGalleryClick = { id -> navigation.pushNew(Config.GalleryDetails(id)) },
+            onNavigateGallery = { id -> navigation.pushNew(Config.GalleryDetails(id.value)) },
         )
 
     private fun galleryDetailsComponent(
