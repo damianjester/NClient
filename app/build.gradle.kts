@@ -116,6 +116,7 @@ dependencies {
     implementation(libs.apache.commons.text)
     implementation("app.cash.sqldelight:android-driver:2.1.0")
     implementation("app.cash.sqldelight:coroutines-extensions:2.1.0")
+    implementation("org.slf4j:slf4j-android:1.7.36")
 }
 
 sqldelight {

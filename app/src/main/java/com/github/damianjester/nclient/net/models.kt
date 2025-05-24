@@ -1,0 +1,68 @@
+package com.github.damianjester.nclient.net
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import com.github.damianjester.nclient.GalleryId
+import com.github.damianjester.nclient.GalleryTagId
+import io.ktor.http.Url
+
+data class ListGallery(
+    val id: GalleryId,
+    val title: String,
+    val mediaId: Long,
+    val coverThumbnailUrl: Url,
+    val tagIds: List<GalleryTagId>, // Also contains language, see SpecialTagIds
+)
+
+@Serializable
+data class DetailsGallery(
+    val id: GalleryId,
+    @SerialName("media_id") val mediaId: Long,
+    val title: GalleryTitle,
+    val images: GalleryImages,
+    val scanlator: String,
+    @SerialName("upload_date") val uploadDate: Long,
+    val tags: List<GalleryTag>,
+    @SerialName("num_pages") val numPages: Int,
+    @SerialName("num_favorites") val numFavorites: Int,
+)
+
+@Serializable
+data class GalleryTitle(
+    val english: String?,
+    val japanese: String?,
+    val pretty: String,
+)
+
+@Serializable
+data class GalleryImages(
+    val pages: List<GalleryImage>,
+    val cover: GalleryImage,
+    val thumbnail: GalleryImage,
+)
+
+@Serializable
+data class GalleryImage(
+    val t: String, // Either "w" or ???
+    val w: Int,
+    val h: Int,
+)
+
+@Serializable
+data class GalleryTag(
+    val id: GalleryTagId,
+    val type: String, // "tag", "language", "category", "parody", "character"
+    val name: String,
+    val url: String, // Actually path, e.g. /tag/big-breasts/
+    val count: Int,
+)
+
+data class GalleriesResponse(
+    val galleries: List<ListGallery>,
+)
+
+data class GalleryResponse(
+    val gallery: DetailsGallery,
+    val related: List<ListGallery>,
+    val isUserFavorite: Boolean,
+)
