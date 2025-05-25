@@ -2,8 +2,8 @@ package com.github.damianjester.nclient.net
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import com.github.damianjester.nclient.GalleryId
-import com.github.damianjester.nclient.GalleryTagId
+import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.core.GalleryTagId
 import io.ktor.http.Url
 
 data class ListGallery(

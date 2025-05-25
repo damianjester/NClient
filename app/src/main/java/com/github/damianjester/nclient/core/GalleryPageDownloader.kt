@@ -2,10 +2,7 @@ package com.github.damianjester.nclient.core
 
 import android.content.Context
 import android.util.Log
-import com.github.damianjester.nclient.GalleryId
-import com.github.damianjester.nclient.GalleryPage
-import com.github.damianjester.nclient.GalleryPageImage
-import com.github.damianjester.nclient.NClientDispatchers
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result.Failure
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result.Success

@@ -2,14 +2,14 @@ package com.github.damianjester.nclient.core
 
 import com.github.damianjester.nclient.net.GalleriesResponse
 import com.github.damianjester.nclient.GalleryEntity
-import com.github.damianjester.nclient.NClientDispatchers
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.net.NHentaiHttpClient
 import com.github.damianjester.nclient.core.GallerySearchPager.*
 import com.github.damianjester.nclient.db.GalleryRepository
 import kotlinx.coroutines.withContext
 
 interface GallerySearchPager {
-    suspend fun load(page: Int): Result
+    suspend fun fetch(page: Int): Result
 
     sealed interface Result {
         data object Success : Result
@@ -22,7 +22,7 @@ class DefaultGallerySearchPager(
     private val dispatchers: NClientDispatchers,
     private val galleryRepository: GalleryRepository
 ) : GallerySearchPager {
-    override suspend fun load(page: Int): Result = withContext(dispatchers.IO) {
+    override suspend fun fetch(page: Int): Result = withContext(dispatchers.IO) {
 
         val response: GalleriesResponse
 

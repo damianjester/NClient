@@ -1,9 +1,5 @@
 package com.github.damianjester.nclient.core
 
-import com.github.damianjester.nclient.GalleryId
-import com.github.damianjester.nclient.GalleryTag
-import com.github.damianjester.nclient.GalleryTagId
-import com.github.damianjester.nclient.GalleryTagType
 import com.github.damianjester.nclient.db.TagRepository
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow

@@ -5,8 +5,8 @@ import app.cash.sqldelight.coroutines.mapToList
 import com.github.damianjester.nclient.Database
 import com.github.damianjester.nclient.CommentEntity
 import com.github.damianjester.nclient.CommentPosterEntity
-import com.github.damianjester.nclient.GalleryId
-import com.github.damianjester.nclient.NClientDispatchers
+import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 

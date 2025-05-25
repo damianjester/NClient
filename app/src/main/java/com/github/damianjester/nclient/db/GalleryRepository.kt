@@ -1,9 +1,7 @@
 package com.github.damianjester.nclient.db
 
-import androidx.compose.ui.graphics.vector.Path
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
-import app.cash.sqldelight.coroutines.mapToOne
 import app.cash.sqldelight.coroutines.mapToOneNotNull
 import com.github.damianjester.nclient.Database
 import com.github.damianjester.nclient.GalleryDetailsEntity
@@ -12,12 +10,12 @@ import com.github.damianjester.nclient.GalleryEntity
 import com.github.damianjester.nclient.GalleryEntityQueries
 import com.github.damianjester.nclient.GalleryHasTag
 import com.github.damianjester.nclient.GalleryHasTagQueries
-import com.github.damianjester.nclient.GalleryId
+import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.GalleryPageEntity
 import com.github.damianjester.nclient.GalleryPageEntityQueries
-import com.github.damianjester.nclient.GalleryTagId
-import com.github.damianjester.nclient.MediaId
-import com.github.damianjester.nclient.NClientDispatchers
+import com.github.damianjester.nclient.core.GalleryTagId
+import com.github.damianjester.nclient.core.MediaId
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.TagEntity
 import com.github.damianjester.nclient.TagEntityQueries
 import kotlinx.coroutines.flow.Flow

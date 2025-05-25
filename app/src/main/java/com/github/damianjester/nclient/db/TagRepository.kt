@@ -3,8 +3,8 @@ package com.github.damianjester.nclient.db
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import com.github.damianjester.nclient.Database
-import com.github.damianjester.nclient.GalleryId
-import com.github.damianjester.nclient.NClientDispatchers
+import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.TagEntity
 import com.github.damianjester.nclient.TagEntityQueries
 import kotlinx.coroutines.flow.Flow

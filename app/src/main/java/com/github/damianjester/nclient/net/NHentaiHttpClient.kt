@@ -1,8 +1,8 @@
 package com.github.damianjester.nclient.net
 
-import com.github.damianjester.nclient.GalleryId
-import com.github.damianjester.nclient.GalleryTagId
-import com.github.damianjester.nclient.NClientDispatchers
+import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.core.GalleryTagId
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
