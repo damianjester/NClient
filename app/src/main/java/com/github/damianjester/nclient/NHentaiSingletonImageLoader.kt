@@ -6,11 +6,10 @@ import coil3.SingletonImageLoader
 import coil3.network.NetworkFetcher
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import org.koin.core.qualifier.named
 
 class NHentaiSingletonImageLoader : SingletonImageLoader.Factory, KoinComponent {
 
-    private val factory by inject<NetworkFetcher.Factory>(named("ktor-coil"))
+    private val factory by inject<NetworkFetcher.Factory>()
 
     override fun newImageLoader(context: PlatformContext): ImageLoader {
         return ImageLoader.Builder(context)

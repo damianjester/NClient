@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.github.damianjester.nclient.TagFilterActivity">
+    tools:context="com.github.damianjester.nclient.legacy.TagFilterActivity">
     <item
         android:id="@+id/search"
         android:icon="@drawable/ic_search"

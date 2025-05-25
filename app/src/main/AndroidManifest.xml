@@ -13,7 +13,7 @@
     <uses-sdk tools:overrideLibrary="me.zhanghai.android.fastscroll" />
 
     <application
-        android:name=".components.activities.CrashApplication"
+        android:name=".legacy.components.activities.CrashApplication"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_content"
         android:icon="@mipmap/ic_launcher"
@@ -23,9 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/DarkTheme">
 
-        <activity android:name=".StatusManagerActivity" />
+        <activity android:name=".legacy.StatusManagerActivity" />
         <activity
-            android:name=".PINActivity"
+            android:name=".legacy.PINActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:label="@string/app_name"
@@ -42,7 +42,7 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:roundIcon="@mipmap/ic_launcher"
-            android:targetActivity=".PINActivity">
+            android:targetActivity=".legacy.PINActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -55,25 +55,24 @@
             android:icon="@mipmap/ic_launcher_calculator"
             android:label="@string/app_name_fake_calculator"
             android:roundIcon="@mipmap/ic_launcher_calculator_round"
-            android:targetActivity=".PINActivity">
+            android:targetActivity=".legacy.PINActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity-alias>
 
-        <activity android:name=".StatusViewerActivity" />
-        <activity android:name=".HistoryActivity" />
-        <activity android:name=".BookmarkActivity" />
-        <activity android:name=".gallery.comments.CommentsActivity" />
-        <activity android:name=".SearchActivity" />
+        <activity android:name=".legacy.StatusViewerActivity" />
+        <activity android:name=".legacy.HistoryActivity" />
+        <activity android:name=".legacy.BookmarkActivity" />
+        <activity android:name=".legacy.SearchActivity" />
         <activity
-            android:name=".MainActivity"
+            android:name=".legacy.MainActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:label="@string/app_name"
-            android:parentActivityName=".PINActivity"
+            android:parentActivityName=".legacy.PINActivity"
             android:theme="@style/DarkTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -100,7 +99,7 @@
             android:name=".gallery.details.GalleryActivity"
             android:exported="true"
             android:label="@string/title_activity_gallery"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".legacy.MainActivity"
             android:theme="@style/DarkTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -117,22 +116,22 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.github.damianjester.nclient.MainActivity" />
+                android:value="com.github.damianjester.nclient.legacy.MainActivity" />
         </activity>
         <activity
             android:name=".gallery.pager.GalleryPagerActivity"
             android:theme="@style/Theme.NClient" />
         <activity
-            android:name=".LocalActivity"
+            android:name=".legacy.LocalActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".legacy.MainActivity"
             android:theme="@style/DarkTheme" />
         <activity
-            android:name=".TagFilterActivity"
+            android:name=".legacy.TagFilterActivity"
             android:configChanges="orientation|screenSize"
             android:exported="true"
             android:label="@string/title_activity_tag_filter"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".legacy.MainActivity"
             android:theme="@style/DarkTheme">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -152,11 +151,11 @@
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.github.damianjester.nclient.MainActivity" />
+                android:value="com.github.damianjester.nclient.legacy.MainActivity" />
         </activity>
-        <activity android:name=".SettingsActivity" />
+        <activity android:name=".legacy.SettingsActivity" />
         <activity
-            android:name=".RandomActivity"
+            android:name=".legacy.RandomActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -171,21 +170,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".FavoriteActivity"
+            android:name=".legacy.FavoriteActivity"
             android:configChanges="orientation|screenSize"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".legacy.MainActivity" />
         <activity
-            android:name=".CopyToClipboardActivity"
+            android:name=".legacy.CopyToClipboardActivity"
             android:icon="@drawable/ic_content_copy"
             android:label="@string/copyURL" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".legacy.LoginActivity"
             android:label="@string/title_activity_login"
             android:exported="true"
-            android:parentActivityName=".MainActivity">
+            android:parentActivityName=".legacy.MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.github.damianjester.nclient.MainActivity" />
+                android:value="com.github.damianjester.nclient.legacy.MainActivity" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -230,22 +229,22 @@
         </provider>
 
         <service
-            android:name=".async.downloader.DownloadGalleryV2"
+            android:name=".legacy.async.downloader.DownloadGalleryV2"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".async.converters.CreatePDF"
+            android:name=".legacy.async.converters.CreatePDF"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".async.converters.CreateZIP"
+            android:name=".legacy.async.converters.CreateZIP"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <service
-            android:name=".async.ScrapeTags"
+            android:name=".legacy.async.ScrapeTags"
             android:enabled="true"
             android:exported="true"
             android:permission="android.permission.BIND_JOB_SERVICE" />
@@ -258,6 +257,6 @@
         </intent>
     </queries>
     <meta-data
-        android:name="com.github.damianjester.nclient.components.classes.integration.OkHttpGlideModule"
+        android:name="com.github.damianjester.nclient.legacy.components.classes.integration.OkHttpGlideModule"
         android:value="GlideModule" />
 </manifest>

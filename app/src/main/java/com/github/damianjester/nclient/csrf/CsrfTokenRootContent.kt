@@ -11,7 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import com.github.damianjester.nclient.settings.Global
+import com.github.damianjester.nclient.legacy.settings.Global
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 

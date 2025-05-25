@@ -18,7 +18,7 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <com.github.damianjester.nclient.github.chrisbanes.photoview.PhotoView
+        <com.github.damianjester.nclient.legacy.photoview.PhotoView
             android:id="@+id/image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

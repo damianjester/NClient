@@ -2,13 +2,14 @@ package com.github.damianjester.nclient
 
 import android.app.Application
 import android.util.Log
+import coil3.network.NetworkFetcher
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import com.github.damianjester.nclient.core.coreModule
 import com.github.damianjester.nclient.db.dbModule
 import com.github.damianjester.nclient.net.NHentaiHttpClient
 import com.github.damianjester.nclient.net.ScrapperNHentaiHttpClient
-import com.github.damianjester.nclient.settings.Global
+import com.github.damianjester.nclient.legacy.settings.Global
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.android.AndroidClientEngine
@@ -82,20 +83,12 @@ val httpModule = module {
 
     single { NClientDispatchers() }
 
-    single { Global.client }
-
-    single(qualifier = named("okhttp")) {
-        OkHttp.create {
-            preconfigured = get()
-        }
-    } bind HttpClientEngine::class
-
-    single(qualifier = named("android")) {
+    single {
         AndroidClientEngine(AndroidEngineConfig())
     } bind HttpClientEngine::class
 
     single {
-        HttpClient(get(qualifier = named("android"))) {
+        HttpClient(get()) {
             install(UserAgent) {
                 agent = "Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N)"
             }
@@ -120,15 +113,9 @@ val httpModule = module {
         }
     }
 
-    single(named("okhttp-coil")) {
-        OkHttpNetworkFetcherFactory(
-            callFactory = { get<OkHttpClient>() }
-        )
-    }
-
-    single(named("ktor-coil")) {
+    single {
         KtorNetworkFetcherFactory(get<HttpClient>())
-    }
+    } bind NetworkFetcher.Factory::class
 
     single {
         ScrapperNHentaiHttpClient(get(), get())

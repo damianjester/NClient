@@ -32,7 +32,7 @@
   public *;
 }
 
--assumenosideeffects class com.github.damianjester.nclient.utility.LogUtility {
+-assumenosideeffects class com.github.damianjester.nclient.legacy.utility.LogUtility {
     public static void d(...);
     public static void i(...);
     public static void e(...);

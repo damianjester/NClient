@@ -1,25 +1,5 @@
 package com.github.damianjester.nclient.gallery.details;
 
-import android.content.Intent
-import android.graphics.Color
-import android.os.Build
-import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
-import androidx.activity.ComponentActivity
-import androidx.activity.SystemBarStyle
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.Modifier
-import com.arkivanov.decompose.defaultComponentContext
-import com.github.damianjester.nclient.api.components.Gallery
-import com.github.damianjester.nclient.api.components.GenericGallery
-import com.github.damianjester.nclient.gallery.pager.GalleryPagerActivity
-import com.github.damianjester.nclient.settings.Global
-import com.github.damianjester.nclient.theme.NClientTheme
-import com.github.damianjester.nclient.utility.LogUtility
-
 //class GalleryDetailsActivity : ComponentActivity() {
 //
 //    override fun onCreate(savedInstanceState: Bundle?) {

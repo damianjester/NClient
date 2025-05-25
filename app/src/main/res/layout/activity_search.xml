@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.github.damianjester.nclient.components.widgets.CustomSearchView
+                <com.github.damianjester.nclient.legacy.components.widgets.CustomSearchView
                     android:id="@+id/search"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SettingsActivity">
+    tools:context=".legacy.SettingsActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
@@ -28,7 +28,7 @@
 
         <fragment
             android:id="@+id/fragment"
-            android:name="com.github.damianjester.nclient.components.views.GeneralPreferenceFragment"
+            android:name="com.github.damianjester.nclient.legacy.components.views.GeneralPreferenceFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>

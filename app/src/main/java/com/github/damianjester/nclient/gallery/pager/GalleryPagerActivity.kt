@@ -11,8 +11,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.defaultComponentContext
-import com.github.damianjester.nclient.api.components.GenericGallery
-import com.github.damianjester.nclient.settings.Global
+import com.github.damianjester.nclient.legacy.api.components.GenericGallery
+import com.github.damianjester.nclient.legacy.settings.Global
 import com.github.damianjester.nclient.theme.NClientTheme
 
 class GalleryPagerActivity : ComponentActivity() {

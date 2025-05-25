@@ -1,8 +1,5 @@
 package com.github.damianjester.nclient.gallery.pager
 
-import com.github.damianjester.nclient.api.components.Gallery
-import com.github.damianjester.nclient.api.components.GenericGallery
-
 //fun GenericGallery.toModel(): GalleryPagerComponent.Gallery {
 //
 //    val pages = if (isLocal) {

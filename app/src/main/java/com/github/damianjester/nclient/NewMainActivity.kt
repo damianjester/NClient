@@ -15,7 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.arkivanov.decompose.defaultComponentContext
 import com.github.damianjester.nclient.core.GalleryPageSharer
-import com.github.damianjester.nclient.settings.Global
+import com.github.damianjester.nclient.legacy.settings.Global
 import com.github.damianjester.nclient.theme.NClientTheme
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

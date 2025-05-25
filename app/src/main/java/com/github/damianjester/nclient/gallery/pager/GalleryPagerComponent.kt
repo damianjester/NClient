@@ -7,7 +7,7 @@ import com.arkivanov.decompose.value.Value
 import com.github.damianjester.nclient.DefaultRootComponent
 import com.github.damianjester.nclient.Gallery
 import com.github.damianjester.nclient.GalleryPage
-import com.github.damianjester.nclient.api.components.GenericGallery
+import com.github.damianjester.nclient.legacy.api.components.GenericGallery
 import com.github.damianjester.nclient.coroutineScope
 import com.github.damianjester.nclient.gallery.pager.GalleryPagerComponent.SnackbarMessage
 import io.ktor.client.HttpClient
