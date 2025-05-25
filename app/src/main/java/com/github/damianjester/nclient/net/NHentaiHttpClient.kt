@@ -1,15 +1,15 @@
 package com.github.damianjester.nclient.net
 
-import android.util.Log
 import com.github.damianjester.nclient.GalleryId
 import com.github.damianjester.nclient.GalleryTagId
+import com.github.damianjester.nclient.NClientDispatchers
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsChannel
 import io.ktor.http.Url
 import io.ktor.utils.io.jvm.javaio.toInputStream
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import org.apache.commons.text.StringEscapeUtils
 import org.jsoup.Jsoup
@@ -18,13 +18,15 @@ import org.jsoup.nodes.Element
 interface NHentaiHttpClient {
     suspend fun getGalleries(page: Int): GalleriesResponse
     suspend fun getGallery(id: GalleryId): GalleryResponse
+    suspend fun getComments(id: GalleryId): List<CommentResponse>
 }
 
 class ScrapperNHentaiHttpClient(
     private val client: HttpClient,
+    private val dispatchers: NClientDispatchers,
 ) : NHentaiHttpClient {
 
-    override suspend fun getGalleries(page: Int): GalleriesResponse {
+    override suspend fun getGalleries(page: Int): GalleriesResponse = withContext(dispatchers.IO) {
 
         // https://nhentai.net/?page={page}
         val response = client.get("https://nhentai.net/?page=$page")
@@ -35,10 +37,10 @@ class ScrapperNHentaiHttpClient(
 
         val galleries = gallery.map { element -> scrapeListGallery(element) }
 
-        return GalleriesResponse(galleries)
+        GalleriesResponse(galleries)
     }
 
-    override suspend fun getGallery(id: GalleryId): GalleryResponse {
+    override suspend fun getGallery(id: GalleryId): GalleryResponse = withContext(dispatchers.IO) {
 
         // https://nhentai.net/g/{gallery_id}
         val response = client.get("https://nhentai.net/g/${id.value}/")
@@ -66,11 +68,16 @@ class ScrapperNHentaiHttpClient(
             false
         }
 
-        return GalleryResponse(
+        GalleryResponse(
             gallery = detailsGallery,
             related = related,
             isUserFavorite = isFavorite
         )
+    }
+
+    override suspend fun getComments(id: GalleryId): List<CommentResponse> {
+        return client.get(NHentaiUrl.commentsUrl(id.value))
+            .body<List<CommentResponse>>()
     }
 
     private fun scrapeListGallery(element: Element): ListGallery {

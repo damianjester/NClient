@@ -97,6 +97,7 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.coil.compose)
     implementation(libs.coil.gif)
+    implementation(libs.coil.ktor3)
     implementation(libs.telescope)
     implementation(libs.coil.okhttp)
 

@@ -66,3 +66,18 @@ data class GalleryResponse(
     val related: List<ListGallery>,
     val isUserFavorite: Boolean,
 )
+
+@Serializable
+data class CommentResponse(
+    val id: Long,
+    val poster: PosterResponse,
+    @SerialName("post_date") val postDate: Long,
+    val body: String,
+)
+
+@Serializable
+data class PosterResponse(
+    val id: Long,
+    val username: String,
+    @SerialName("avatar_url") val avatarUrl: String,
+)

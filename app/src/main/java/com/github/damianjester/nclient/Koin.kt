@@ -2,6 +2,7 @@ package com.github.damianjester.nclient
 
 import android.app.Application
 import android.util.Log
+import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.network.okhttp.OkHttpNetworkFetcherFactory
 import com.github.damianjester.nclient.core.coreModule
 import com.github.damianjester.nclient.db.dbModule
@@ -119,14 +120,18 @@ val httpModule = module {
         }
     }
 
-    single {
+    single(named("okhttp-coil")) {
         OkHttpNetworkFetcherFactory(
             callFactory = { get<OkHttpClient>() }
         )
     }
 
+    single(named("ktor-coil")) {
+        KtorNetworkFetcherFactory(get<HttpClient>())
+    }
+
     single {
-        ScrapperNHentaiHttpClient(get())
+        ScrapperNHentaiHttpClient(get(), get())
     } bind NHentaiHttpClient::class
 
 }
