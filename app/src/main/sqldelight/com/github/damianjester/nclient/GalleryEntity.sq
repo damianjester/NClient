@@ -16,6 +16,9 @@ SELECT galleryEntity.*, gt.* FROM galleryEntity
 INNER JOIN galleryHasTag AS gt ON galleryEntity.id = gt.galleryId
 ORDER BY galleryEntity.orderIndex ASC;
 
+selectMediaId:
+SELECT galleryEntity.mediaId FROM galleryEntity WHERE galleryEntity.id = ?;
+
 insertGallery:
 INSERT INTO galleryEntity(id, title, mediaId, coverThumbnailUrl, page, orderIndex)
 VALUES ?;

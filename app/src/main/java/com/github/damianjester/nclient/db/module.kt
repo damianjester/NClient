@@ -16,6 +16,10 @@ val dbModule = module {
         Database(get())
     }
 
-    single { SqlDelightGalleryEntityRepository(get(), get()) } bind GalleryEntityRepository::class
+    single { SqlDelightGalleryRepository(get(), get()) } bind GalleryRepository::class
+
+    single { SqlDelightTagRepository(get(), get()) } bind TagRepository::class
+
+    single { SqlDelightCommentRepository(get(), get()) } bind CommentRepository::class
 
 }

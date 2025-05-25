@@ -2,10 +2,15 @@ CREATE TABLE tagEntity (
   id INTEGER PRIMARY KEY NOT NULL,
   type TEXT NOT NULL,
   name TEXT NOT NULL,
-  count TEXT NOT NULL
-  -- url TEXT NOT NULL, maybe?
+  count INTEGER NOT NULL,
+  urlPath TEXT NOT NULL
 );
 
 insertTag:
-INSERT INTO tagEntity(id, type, name, count)
+INSERT OR REPLACE INTO tagEntity(id, type, name, count, urlPath)
 VALUES ?;
+
+selectTagsForGallery:
+SELECT tagEntity.* FROM tagEntity
+    INNER JOIN galleryHasTag AS gt ON tagEntity.id = gt.tagId
+WHERE gt.galleryId = ?;
