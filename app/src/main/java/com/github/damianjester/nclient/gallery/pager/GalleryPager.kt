@@ -20,7 +20,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.request.ImageRequest
-import com.github.damianjester.nclient.gallery.pager.GalleryPagerComponent.GalleryPageImage
+import com.github.damianjester.nclient.GalleryPage
+import com.github.damianjester.nclient.GalleryPageImage
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
@@ -31,7 +32,7 @@ import me.saket.telephoto.zoomable.rememberZoomableState
 fun GalleryPager(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    pages: List<GalleryPagerComponent.GalleryPage>,
+    pages: List<GalleryPage>,
     onPageClick: () -> Unit,
 ) {
     Box(
@@ -52,8 +53,8 @@ fun GalleryPager(
         ) { i ->
 
             val model: Any = when (val model = pages[i].image) {
-                is GalleryPageImage.Local -> model.file
-                is GalleryPageImage.Remote -> model.url
+                is GalleryPageImage.Local -> model.originalFile
+                is GalleryPageImage.Remote -> model.originalUrl.toString()
             }
 
             ZoomableAsyncImage(

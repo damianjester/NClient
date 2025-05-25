@@ -32,7 +32,6 @@ import com.github.damianjester.nclient.api.InspectorV3;
 import com.github.damianjester.nclient.api.components.Gallery;
 import com.github.damianjester.nclient.api.components.GenericGallery;
 import com.github.damianjester.nclient.async.database.Queries;
-import com.github.damianjester.nclient.gallery.comments.CommentsActivity;
 import com.github.damianjester.nclient.components.activities.BaseActivity;
 import com.github.damianjester.nclient.components.status.Status;
 import com.github.damianjester.nclient.components.status.StatusManager;
@@ -272,11 +271,7 @@ public class GalleryActivity extends BaseActivity {
         else if (id == R.id.load_internet) toInternet();
         else if (id == R.id.manage_status) updateStatus();
         else if (id == R.id.share) Global.shareGallery(this, gallery);
-        else if (id == R.id.comments) {
-            Intent i = new Intent(this, CommentsActivity.class);
-            i.putExtra(getPackageName() + ".GALLERYID", gallery.getId());
-            startActivity(i);
-        } else if (id == R.id.related) {
+        else if (id == R.id.related) {
             recycler.smoothScrollToPosition(recycler.getAdapter().getItemCount());
         } else if (id == R.id.favorite_manager) {
             if (isLocalFavorite) {

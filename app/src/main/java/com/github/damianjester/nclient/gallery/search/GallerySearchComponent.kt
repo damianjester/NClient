@@ -7,8 +7,8 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.github.damianjester.nclient.GallerySearchItem
 import com.github.damianjester.nclient.GalleryId
-import com.github.damianjester.nclient.core.GalleryPager
-import com.github.damianjester.nclient.core.GalleriesFetcher
+import com.github.damianjester.nclient.core.GallerySearchPager
+import com.github.damianjester.nclient.core.GallerySearchFetcher
 import com.github.damianjester.nclient.coroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,8 +34,8 @@ interface GallerySearchComponent {
 
 class DefaultGallerySearchComponent(
     componentContext: ComponentContext,
-    private val pager: GalleryPager,
-    private val fetcher: GalleriesFetcher,
+    private val pager: GallerySearchPager,
+    private val fetcher: GallerySearchFetcher,
     val onNavigateGallery: (GalleryId) -> Unit,
 ) : GallerySearchComponent, ComponentContext by componentContext, KoinComponent {
 

@@ -6,6 +6,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.statusBarsIgnoringVisibility
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
@@ -13,10 +15,16 @@ import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Comment
+import androidx.compose.material.icons.filled.Comment
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -34,8 +42,11 @@ fun GalleryDetailsTopAppBar(
     onBackClick: () -> Unit,
     onTitleLongClick: (String) -> Unit,
     onFavoriteClick: (Boolean) -> Unit,
-    onGridModeClick: () -> Unit
+    onGridModeClick: () -> Unit,
+    onCommentsClick: () -> Unit
 ) {
+    var showMenu by remember { mutableStateOf(false) }
+
     TopAppBar(
         title = {
             if (galleryTitle != null) {
@@ -83,6 +94,21 @@ fun GalleryDetailsTopAppBar(
                     painterResource(icon),
                     stringResource(R.string.change_view)
                 )
+            }
+            IconButton(onClick = { showMenu = !showMenu }) {
+                Icon(
+                    Icons.Default.MoreVert,
+                    contentDescription = null // TODO
+                )
+            }
+            DropdownMenu(
+                expanded = showMenu,
+                onDismissRequest = { showMenu = false }
+            ) {
+                DropdownMenuItem(onCommentsClick) {
+                    Icon(Icons.AutoMirrored.Default.Comment, contentDescription = null)
+                    Text("Show comments")
+                }
             }
         },
         backgroundColor = MaterialTheme.colors.surface,

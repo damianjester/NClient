@@ -10,6 +10,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.github.damianjester.nclient.GalleryPage
+import com.github.damianjester.nclient.GallerySearchItem
+import com.github.damianjester.nclient.GalleryTag
+import com.github.damianjester.nclient.RelatedGallery
 
 @Composable
 fun GalleryDetailsRootContent(
@@ -21,7 +25,7 @@ fun GalleryDetailsRootContent(
         component = component,
         onBack = { component.navigateBack() },
         onTagClick = { TODO() },
-        onPageClick = { TODO() },
+        onPageClick = { page -> component.navigateToPage(page.index) },
         onRelatedGalleryClick = { TODO() },
         onCopyMetadata = { component.copyToClipboard(it) }
     )
@@ -32,9 +36,9 @@ fun GalleryDetailsScreen(
     modifier: Modifier = Modifier,
     component: GalleryDetailsComponent,
     onBack: () -> Unit,
-    onTagClick: (GalleryDetailsComponent.GalleryTag) -> Unit,
-    onPageClick: (GalleryDetailsComponent.GalleryPage) -> Unit,
-    onRelatedGalleryClick: (GalleryDetailsComponent.RelatedGallery) -> Unit,
+    onTagClick: (GalleryTag) -> Unit,
+    onPageClick: (GalleryPage) -> Unit,
+    onRelatedGalleryClick: (RelatedGallery) -> Unit,
     onCopyMetadata: (GalleryDetailsComponent.MetadataCopy) -> Unit
 ) {
     val model by component.model.subscribeAsState()
@@ -49,12 +53,17 @@ fun GalleryDetailsScreen(
                 else -> null
             }
             val isGalleryFavorite = when (galleryState) {
-                is GalleryDetailsComponent.GalleryState.Loaded -> galleryState.gallery.isFavorite
-                else -> false
+                is GalleryDetailsComponent.GalleryState.Loaded -> {
+//                    galleryState.gallery.isFavorite // TODO: Add favorite property
+                    false
+                }
+                else -> {
+                    false
+                }
             }
 
             GalleryDetailsTopAppBar(
-                galleryTitle = galleryTitle,
+                galleryTitle = galleryTitle?.pretty,
                 isGalleryFavorite = isGalleryFavorite,
                 onBackClick = onBack,
                 onTitleLongClick = {
@@ -62,7 +71,8 @@ fun GalleryDetailsScreen(
                 },
                 onFavoriteClick = component::setGalleryFavoriteStatus,
                 gridMode = model.gridMode,
-                onGridModeClick = component::toggleGridMode
+                onGridModeClick = component::toggleGridMode,
+                onCommentsClick = component::navigateToComments
             )
         }
     ) { innerPadding ->
@@ -72,6 +82,9 @@ fun GalleryDetailsScreen(
                     .padding(innerPadding)
                     .fillMaxSize(),
                 gallery = galleryState.gallery,
+                pages = galleryState.pages,
+                tags = galleryState.tags,
+                related = galleryState.related,
                 gridMode = model.gridMode,
                 onPageClick = onPageClick,
                 onRelatedGalleryClick = onRelatedGalleryClick,

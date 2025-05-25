@@ -1,5 +1,6 @@
 package com.github.damianjester.nclient.gallery.pager
 
+import android.util.Log
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.areSystemBarsVisible
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -17,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.github.damianjester.nclient.GalleryPage
 import com.github.damianjester.nclient.R
 import kotlinx.coroutines.flow.collectLatest
 
@@ -42,8 +45,8 @@ fun GalleryPagerScreen(
     component: GalleryPagerComponent,
     initialPage: Int = 0,
     onBack: () -> Unit,
-    onDownloadPage: (GalleryPagerComponent.GalleryPage) -> Unit,
-    onSharePage: (GalleryPagerComponent.GalleryPage, Boolean) -> Unit,
+    onDownloadPage: (GalleryPage) -> Unit,
+    onSharePage: (GalleryPage, Boolean) -> Unit,
 ) {
     val state by component.model.subscribeAsState()
     val galleryState = state.gallery
@@ -63,8 +66,11 @@ fun GalleryPagerScreen(
         }
     }
 
-    LaunchedEffect(uiVisible) {
+    DisposableEffect(uiVisible) {
         windowInsetsController.setSystemBarsVisibility(uiVisible)
+        onDispose {
+            windowInsetsController.setSystemBarsVisibility(true)
+        }
     }
 
     LaunchedEffect(component.snackbarMessage) {
@@ -83,13 +89,13 @@ fun GalleryPagerScreen(
     }
 
     val galleryTitle = when (galleryState) {
-        is GalleryPagerComponent.GalleryState.Loaded -> galleryState.gallery.title
+        is GalleryPagerComponent.GalleryState.Loaded -> galleryState.gallery.title.pretty
         else -> null
     }
 
     val pagerState = rememberPagerState(initialPage = initialPage) {
         if (galleryState is GalleryPagerComponent.GalleryState.Loaded) {
-            galleryState.gallery.pages.size
+            galleryState.pages.size
         } else {
             0
         }
@@ -107,7 +113,7 @@ fun GalleryPagerScreen(
                 onDownloadPage = {
                     val page =
                         (if (galleryState is GalleryPagerComponent.GalleryState.Loaded) galleryState else null)
-                            ?.let { it.gallery.pages[pagerState.currentPage] }
+                            ?.let { it.pages[pagerState.currentPage] }
                             ?: return@TopAppBar
                     onDownloadPage(page)
                 },
@@ -131,7 +137,7 @@ fun GalleryPagerScreen(
                     .padding(innerPadding)
                     .fillMaxSize(),
                 pagerState = pagerState,
-                pages = galleryState.gallery.pages,
+                pages = galleryState.pages,
                 onPageClick = {
                     uiVisible = !uiVisible
                 }
@@ -151,7 +157,7 @@ fun GalleryPagerScreen(
                 onShare = { includeUrl ->
                     val page =
                         (if (galleryState is GalleryPagerComponent.GalleryState.Loaded) galleryState else null)
-                            ?.let { it.gallery.pages[pagerState.currentPage] }
+                            ?.let { it.pages[pagerState.currentPage] }
                             ?: return@SharePageDialog
                     onSharePage(page, includeUrl)
                     shareDialogVisible = false

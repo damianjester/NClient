@@ -28,12 +28,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.damianjester.nclient.GalleryLanguage
+import com.github.damianjester.nclient.RelatedGallery
+import io.ktor.http.Url
 
 @Composable
 fun RelatedGalleriesSection(
     modifier: Modifier = Modifier,
-    galleries: List<GalleryDetailsComponent.RelatedGallery>,
-    onGalleryClick: (GalleryDetailsComponent.RelatedGallery) -> Unit
+    galleries: List<RelatedGallery>,
+    onGalleryClick: (RelatedGallery) -> Unit
 ) {
     Column(modifier) {
 
@@ -55,8 +57,8 @@ fun RelatedGalleriesSection(
 @Composable
 fun RelatedGalleryScroller(
     modifier: Modifier = Modifier,
-    galleries: List<GalleryDetailsComponent.RelatedGallery>,
-    onGalleryClick: (GalleryDetailsComponent.RelatedGallery) -> Unit
+    galleries: List<RelatedGallery>,
+    onGalleryClick: (RelatedGallery) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -66,7 +68,7 @@ fun RelatedGalleryScroller(
         galleries.forEach { gal ->
             RelatedGalleryCover(
                 title = gal.title,
-                coverImageUrl = gal.coverImageUrl,
+                coverImageUrl = gal.image.coverUrl,
                 language = gal.language,
                 onGalleryClick = { onGalleryClick(gal) }
             )
@@ -78,7 +80,7 @@ fun RelatedGalleryScroller(
 fun RelatedGalleryCover(
     modifier: Modifier = Modifier,
     title: String,
-    coverImageUrl: String,
+    coverImageUrl: Url,
     language: GalleryLanguage,
     onGalleryClick: () -> Unit
 ) {
@@ -92,7 +94,7 @@ fun RelatedGalleryCover(
     ) {
 
         AsyncImage(
-            model = coverImageUrl,
+            model = coverImageUrl.toString(),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop

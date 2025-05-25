@@ -1,14 +1,14 @@
 package com.github.damianjester.nclient.core
 
-import com.github.damianjester.nclient.GalleriesResponse
+import com.github.damianjester.nclient.net.GalleriesResponse
 import com.github.damianjester.nclient.GalleryEntity
 import com.github.damianjester.nclient.NClientDispatchers
-import com.github.damianjester.nclient.NHentaiHttpClient
-import com.github.damianjester.nclient.core.GalleryPager.*
-import com.github.damianjester.nclient.db.GalleryEntityRepository
+import com.github.damianjester.nclient.net.NHentaiHttpClient
+import com.github.damianjester.nclient.core.GallerySearchPager.*
+import com.github.damianjester.nclient.db.GalleryRepository
 import kotlinx.coroutines.withContext
 
-interface GalleryPager {
+interface GallerySearchPager {
     suspend fun load(page: Int): Result
 
     sealed interface Result {
@@ -17,11 +17,11 @@ interface GalleryPager {
     }
 }
 
-class DefaultGalleryPager(
+class DefaultGallerySearchPager(
     private val client: NHentaiHttpClient,
     private val dispatchers: NClientDispatchers,
-    private val galleryEntityRepository: GalleryEntityRepository
-) : GalleryPager {
+    private val galleryRepository: GalleryRepository
+) : GallerySearchPager {
     override suspend fun load(page: Int): Result = withContext(dispatchers.IO) {
 
         val response: GalleriesResponse
@@ -48,7 +48,7 @@ class DefaultGalleryPager(
             .associate { gal -> gal to response.galleries.first { it.id.value == gal.id }.tagIds }
 
         try {
-            galleryEntityRepository.insertAll(galleryEntities, galleryHasTag)
+            galleryRepository.insertAll(galleryEntities, galleryHasTag)
         } catch (ex: Exception) {
             return@withContext Result.Failure(ex)
         }

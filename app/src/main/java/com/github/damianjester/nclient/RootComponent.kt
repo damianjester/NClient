@@ -8,6 +8,8 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.value.Value
 import com.github.damianjester.nclient.RootComponent.Child
+import com.github.damianjester.nclient.csrf.CsrfTokenComponent
+import com.github.damianjester.nclient.csrf.DefaultCsrfTokenComponent
 import com.github.damianjester.nclient.gallery.comments.CommentsComponent
 import com.github.damianjester.nclient.gallery.comments.DefaultCommentsComponent
 import com.github.damianjester.nclient.gallery.details.GalleryDetailsComponent
@@ -28,6 +30,7 @@ interface RootComponent {
         class GalleryDetails(val component: GalleryDetailsComponent) : Child()
         class GalleryPager(val component: GalleryPagerComponent) : Child()
         class GalleryComments(val component: CommentsComponent) : Child()
+        class CsrfToken(val component: CsrfTokenComponent) : Child()
     }
 }
 
@@ -61,6 +64,10 @@ class DefaultRootComponent(
             is Config.GalleryComments -> Child.GalleryComments(
                 galleryCommentsComponent(context, config)
             )
+
+            is Config.CsrfToken -> Child.CsrfToken(
+                csrfTokenComponent(context)
+            )
         }
 
     private fun gallerySearchComponent(componentContext: ComponentContext): GallerySearchComponent =
@@ -68,7 +75,7 @@ class DefaultRootComponent(
             componentContext = componentContext,
             pager = get(),
             fetcher = get(),
-            onNavigateGallery = { id -> navigation.pushNew(Config.GalleryDetails(id.value)) },
+            onNavigateGallery = { id -> navigation.pushNew(Config.GalleryDetails(id)) },
         )
 
     private fun galleryDetailsComponent(
@@ -77,10 +84,19 @@ class DefaultRootComponent(
     ): GalleryDetailsComponent =
         NewGalleryDetailsComponent(
             componentContext = componentContext,
+            applicationContext = get(),
             config = config,
+            dispatchers = get(),
+            galleryLoader = get(),
+            galleryFetcher = get(),
+            pagesFetcher = get(),
+            tagsFetcher = get(),
             onNavigateBack = { navigation.pop() },
-            onPageClick = { id, index ->
-                navigation.pushNew(Config.GalleryPager(id, index))
+            onNavigatePage = { index ->
+                navigation.pushNew(Config.GalleryPager(config.id, index))
+            },
+            onNavigateComments = {
+                navigation.pushNew(Config.GalleryComments(config.id))
             }
         )
 
@@ -91,7 +107,11 @@ class DefaultRootComponent(
         NewGalleryPagerComponent(
             componentContext = componentContext,
             config = config,
-            onNavigateBack = { navigation.pop() }
+            onNavigateBack = { navigation.pop() },
+            galleryFetcher = get(),
+            pagesFetcher = get(),
+            pageSaver =  get(),
+            pageSharer = get(),
         )
 
     private fun galleryCommentsComponent(
@@ -100,8 +120,17 @@ class DefaultRootComponent(
     ): CommentsComponent =
         DefaultCommentsComponent(
             componentContext = componentContext,
-            galleryId = config.galleryId,
-            onNavigateBack = { navigation.pop() }
+            galleryId = config.id,
+            onNavigateBack = { navigation.pop() },
+            fetcher = get(),
+            observer = get(),
+        )
+
+    private fun csrfTokenComponent(
+        componentContext: ComponentContext,
+    ): CsrfTokenComponent =
+        DefaultCsrfTokenComponent(
+            componentContext = componentContext
         )
 
     @Serializable
@@ -111,12 +140,15 @@ class DefaultRootComponent(
         data object GallerySearch : Config
 
         @Serializable
-        data class GalleryDetails(val galleryId: Long) : Config
+        data class GalleryDetails(val id: GalleryId) : Config
 
         @Serializable
-        data class GalleryPager(val galleryId: Long, val pageIndex: Int?) : Config
+        data class GalleryPager(val id: GalleryId, val pageIndex: Int?) : Config
 
         @Serializable
-        data class GalleryComments(val galleryId: Long) : Config
+        data class GalleryComments(val id: GalleryId) : Config
+
+        @Serializable
+        data object CsrfToken : Config
     }
 }

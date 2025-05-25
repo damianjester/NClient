@@ -4,7 +4,7 @@ import com.github.damianjester.nclient.GallerySearchItem
 import com.github.damianjester.nclient.GalleryGridItemImage
 import com.github.damianjester.nclient.GalleryId
 import com.github.damianjester.nclient.GalleryLanguage
-import com.github.damianjester.nclient.db.GalleryEntityRepository
+import com.github.damianjester.nclient.db.GalleryRepository
 import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -13,15 +13,15 @@ const val LANGUAGE_JAPANESE = 6346L
 const val LANGUAGE_ENGLISH = 12227L
 const val LANGUAGE_CHINESE = 29963L
 
-interface GalleriesFetcher {
+interface GallerySearchFetcher {
     fun fetch(): Flow<List<GallerySearchItem>>
 }
 
-class DefaultGalleriesFetcher(
-    private val galleryEntityRepository: GalleryEntityRepository,
-) : GalleriesFetcher {
+class DefaultGallerySearchFetcher(
+    private val galleryRepository: GalleryRepository,
+) : GallerySearchFetcher {
     override fun fetch(): Flow<List<GallerySearchItem>> {
-        return galleryEntityRepository.selectAll()
+        return galleryRepository.selectAll()
             .map { galleries ->
                 galleries.map { gal ->
                     GallerySearchItem(

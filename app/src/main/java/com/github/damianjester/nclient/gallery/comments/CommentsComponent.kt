@@ -5,18 +5,14 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
-import com.github.damianjester.nclient.NHentaiUrl
+import com.github.damianjester.nclient.Comment
+import com.github.damianjester.nclient.GalleryId
+import com.github.damianjester.nclient.core.DefaultGalleryCommentsObserver
+import com.github.damianjester.nclient.core.GalleryCommentsFetcher
 import com.github.damianjester.nclient.coroutineScope
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import kotlin.time.Duration
 
 interface CommentsComponent {
     val model: Value<Model>
@@ -37,87 +33,51 @@ interface CommentsComponent {
 
     sealed interface CommentsState {
         data class Loading(val userRefresh: Boolean) : CommentsState
-        data class Error(val exception: Exception) : CommentsState
+        data object Error : CommentsState
         data object Loaded : CommentsState
     }
 
-    data class Comment(
-        val id: Long,
-        val poster: User,
-        val postedDuration: Duration,
-        val body: String,
-    )
-
-    data class User(
-        val username: String,
-        val avatarUrl: String?,
-    )
 }
 
 class DefaultCommentsComponent(
     componentContext: ComponentContext,
-    private val galleryId: Long,
-    private val onNavigateBack: () -> Unit
+    private val galleryId: GalleryId,
+    private val onNavigateBack: () -> Unit,
+    private val fetcher: GalleryCommentsFetcher,
+    private val observer: DefaultGalleryCommentsObserver,
 ) : CommentsComponent, ComponentContext by componentContext, KoinComponent {
 
     override val model = MutableValue(CommentsComponent.Model())
-    private val scope = coroutineScope(Dispatchers.IO)
-
-    private val httpClient: HttpClient by inject()
+    private val coroutineScope = coroutineScope(Dispatchers.IO)
 
     init {
         componentContext.doOnCreate {
             loadComments(pullToRefresh = false)
+
+            coroutineScope.launch {
+                observer.comments(galleryId)
+                    .collect { comments ->
+                        model.update { it.copy(comments = comments) }
+                    }
+            }
         }
     }
 
     override fun loadComments(pullToRefresh: Boolean) {
-        model.update {
-            it.copy(
-                commentsState = CommentsComponent.CommentsState.Loading(pullToRefresh),
-            )
-        }
-        scope.launch {
-            try {
-                val response = httpClient.get(NHentaiUrl.commentsUrl(galleryId))
-                val now = Clock.System.now()
-                val comments = response.body<List<CommentResponse>>()
-                    .map { it.toStateModel(now) }
+        model.update { it.copy(CommentsComponent.CommentsState.Loading(pullToRefresh)) }
+        coroutineScope.launch {
 
-                model.update { model ->
-                    model.copy(
-                        commentsState = CommentsComponent.CommentsState.Loaded,
-                        comments = comments,
-                    )
-                }
-            } catch (ex: Exception) {
-                model.update { model ->
-                    model.copy(
-                        commentsState = CommentsComponent.CommentsState.Error(ex),
-                    )
-                }
+            val state = when (fetcher.fetch(galleryId)) {
+                GalleryCommentsFetcher.Result.Success -> CommentsComponent.CommentsState.Loaded
+                is GalleryCommentsFetcher.Result.Failure -> CommentsComponent.CommentsState.Error
             }
+
+            model.update { it.copy(state) }
         }
     }
 
     override fun navigateBack() {
         onNavigateBack()
-    }
-
-    private fun CommentResponse.toStateModel(now: Instant): CommentsComponent.Comment {
-        return CommentsComponent.Comment(
-            id = id,
-            poster = poster.toStateModel(),
-            postedDuration = now.minus(Instant.fromEpochSeconds(postDate)),
-            body = body.trim()
-        )
-    }
-
-    private fun PosterResponse.toStateModel(): CommentsComponent.User {
-        return CommentsComponent.User(
-            username = username,
-            avatarUrl = NHentaiUrl.avatarUrl(avatarUrl) // avatarUrl is actually the URL path
-        )
     }
 
 }

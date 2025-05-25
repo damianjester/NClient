@@ -37,6 +37,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.github.damianjester.nclient.Gallery
+import com.github.damianjester.nclient.GalleryId
+import com.github.damianjester.nclient.GalleryPage
+import com.github.damianjester.nclient.GalleryPageImage
+import com.github.damianjester.nclient.GallerySearchItem
+import com.github.damianjester.nclient.GalleryTag
+import com.github.damianjester.nclient.GalleryTagType
+import com.github.damianjester.nclient.RelatedGallery
+import com.github.damianjester.nclient.gallery.details.GalleryDetailsComponent.GalleryTags
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.Padding
@@ -45,11 +54,14 @@ import kotlinx.datetime.format.char
 @Composable
 fun GalleryPagesLazyGrid(
     modifier: Modifier = Modifier,
-    gallery: GalleryDetailsComponent.Gallery,
+    gallery: Gallery,
+    pages: List<GalleryPage>,
+    tags: GalleryTags,
+    related: List<RelatedGallery>,
     gridMode: GalleryDetailsComponent.GridMode,
-    onPageClick: (GalleryDetailsComponent.GalleryPage) -> Unit,
-    onRelatedGalleryClick: (GalleryDetailsComponent.RelatedGallery) -> Unit,
-    onTagClick: (GalleryDetailsComponent.GalleryTag) -> Unit,
+    onPageClick: (GalleryPage) -> Unit,
+    onRelatedGalleryClick: (RelatedGallery) -> Unit,
+    onTagClick: (GalleryTag) -> Unit,
     onCopyMetadata: (GalleryDetailsComponent.MetadataCopy) -> Unit,
 ) {
     LazyVerticalGrid(
@@ -74,7 +86,7 @@ fun GalleryPagesLazyGrid(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
-                tags = gallery.tags,
+                tags = tags,
                 onTagClick = onTagClick,
                 onTagLongClick = {
                     onCopyMetadata(GalleryDetailsComponent.MetadataCopy.Tag(it))
@@ -102,15 +114,16 @@ fun GalleryPagesLazyGrid(
                 }
 
                 Text("Uploaded on ${formatter.format(gallery.updated)}")
-                Text("${gallery.pages.size} pages")
+                Text("${pages.size} pages")
                 Text("${gallery.favoriteCount} favorites")
             }
         }
 
-        items(gallery.pages, key = { it.index }) { page ->
+        items(pages, key = { it.index }) { page ->
             GalleryPage(
                 modifier = Modifier.fillMaxSize(),
                 page = page,
+                showHighRes = gridMode == GalleryDetailsComponent.GridMode.ONE_COLUMN,
                 onClick = remember(page.index) { { onPageClick(page) } }
             )
         }
@@ -118,7 +131,7 @@ fun GalleryPagesLazyGrid(
         item(key = "related", span = { GridItemSpan(gridMode.count) }) {
             RelatedGalleriesSection(
                 modifier = Modifier.fillMaxWidth(),
-                galleries = gallery.related,
+                galleries = related,
                 onGalleryClick = onRelatedGalleryClick,
             )
         }
@@ -132,7 +145,7 @@ fun GalleryPagesLazyGrid(
 @Composable
 @OptIn(ExperimentalFoundationApi::class)
 private fun GalleryId(
-    galleryId: Long,
+    id: GalleryId,
     modifier: Modifier = Modifier,
     onLongClick: () -> Unit,
 ) {
@@ -143,7 +156,7 @@ private fun GalleryId(
         )
         Spacer(Modifier.width(8.dp))
         Text(
-            "$galleryId",
+            "${id.value}",
             modifier = Modifier
                 .combinedClickable(
                     interactionSource = remember { MutableInteractionSource() },
@@ -158,21 +171,21 @@ private fun GalleryId(
 }
 
 val tagTypes = setOf(
-    GalleryDetailsComponent.GalleryTagType.Parody,
-    GalleryDetailsComponent.GalleryTagType.General,
-    GalleryDetailsComponent.GalleryTagType.Artist,
-    GalleryDetailsComponent.GalleryTagType.Group,
-    GalleryDetailsComponent.GalleryTagType.Language,
-    GalleryDetailsComponent.GalleryTagType.Category,
+    GalleryTagType.Parody,
+    GalleryTagType.General,
+    GalleryTagType.Artist,
+    GalleryTagType.Group,
+    GalleryTagType.Language,
+    GalleryTagType.Category,
 )
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
 fun GalleryTags(
     modifier: Modifier,
-    tags: GalleryDetailsComponent.GalleryTags,
-    onTagClick: (GalleryDetailsComponent.GalleryTag) -> Unit,
-    onTagLongClick: (GalleryDetailsComponent.GalleryTag) -> Unit,
+    tags: GalleryTags,
+    onTagClick: (GalleryTag) -> Unit,
+    onTagLongClick: (GalleryTag) -> Unit,
 ) {
     Column(
         modifier = modifier,
@@ -182,24 +195,24 @@ fun GalleryTags(
         for (type in tagTypes) {
 
             val heading = when (type) {
-                GalleryDetailsComponent.GalleryTagType.Parody -> "Parody"
-                GalleryDetailsComponent.GalleryTagType.Character -> "Character"
-                GalleryDetailsComponent.GalleryTagType.General -> "Tags"
-                GalleryDetailsComponent.GalleryTagType.Artist -> "Artist"
-                GalleryDetailsComponent.GalleryTagType.Group -> "Group"
-                GalleryDetailsComponent.GalleryTagType.Language -> "Language"
-                GalleryDetailsComponent.GalleryTagType.Category -> "Category"
+                GalleryTagType.Parody -> "Parody"
+                GalleryTagType.Character -> "Character"
+                GalleryTagType.General -> "Tags"
+                GalleryTagType.Artist -> "Artist"
+                GalleryTagType.Group -> "Group"
+                GalleryTagType.Language -> "Language"
+                GalleryTagType.Category -> "Category"
                 else -> continue
             } + ":"
 
             val sectionTags = when (type) {
-                GalleryDetailsComponent.GalleryTagType.Parody -> tags.parody
-                GalleryDetailsComponent.GalleryTagType.Character -> tags.character
-                GalleryDetailsComponent.GalleryTagType.General -> tags.general
-                GalleryDetailsComponent.GalleryTagType.Artist -> tags.artist
-                GalleryDetailsComponent.GalleryTagType.Group -> tags.group
-                GalleryDetailsComponent.GalleryTagType.Language -> tags.language
-                GalleryDetailsComponent.GalleryTagType.Category -> tags.category
+                GalleryTagType.Parody -> tags.parody
+                GalleryTagType.Character -> tags.character
+                GalleryTagType.General -> tags.general
+                GalleryTagType.Artist -> tags.artist
+                GalleryTagType.Group -> tags.group
+                GalleryTagType.Language -> tags.language
+                GalleryTagType.Category -> tags.category
                 else -> continue
             }
 
@@ -233,7 +246,8 @@ fun GalleryTags(
 @Composable
 fun GalleryPage(
     modifier: Modifier = Modifier,
-    page: GalleryDetailsComponent.GalleryPage,
+    page: GalleryPage,
+    showHighRes: Boolean = false,
     onClick: () -> Unit,
 ) {
     Box(
@@ -246,11 +260,8 @@ fun GalleryPage(
     ) {
 
         val imageModel: Any = when (val image = page.image) {
-            is GalleryDetailsComponent.GalleryPageImage.Local -> image.file
-            is GalleryDetailsComponent.GalleryPageImage.Remote -> {
-                // TODO: Or original if grid has one cell
-                image.thumbnailUrl
-            }
+            is GalleryPageImage.Local -> if (showHighRes) image.originalFile else image.thumbnailFile
+            is GalleryPageImage.Remote -> if (showHighRes) image.originalUrl.toString() else image.thumbnailUrl.toString()
         }
 
         AsyncImage(

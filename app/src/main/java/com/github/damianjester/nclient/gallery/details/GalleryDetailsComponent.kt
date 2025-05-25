@@ -3,25 +3,32 @@ package com.github.damianjester.nclient.gallery.details
 import android.content.ClipData
 import android.content.Context
 import android.os.Build
+import android.util.Log
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
+import com.arkivanov.essenty.lifecycle.doOnResume
 import com.github.damianjester.nclient.DefaultRootComponent
-import com.github.damianjester.nclient.GalleryLanguage
+import com.github.damianjester.nclient.Gallery
+import com.github.damianjester.nclient.GalleryId
+import com.github.damianjester.nclient.GalleryPage
+import com.github.damianjester.nclient.GalleryTag
+import com.github.damianjester.nclient.GalleryTagType
+import com.github.damianjester.nclient.NClientDispatchers
 import com.github.damianjester.nclient.R
-import com.github.damianjester.nclient.api.components.Gallery
-import com.github.damianjester.nclient.api.components.GenericGallery
-import com.github.damianjester.nclient.api.enums.Language
-import com.github.damianjester.nclient.api.enums.TagType
+import com.github.damianjester.nclient.RelatedGallery
 import com.github.damianjester.nclient.clipboardManager
+import com.github.damianjester.nclient.core.GalleryDetailsLoader
+import com.github.damianjester.nclient.core.GalleryFetcher
+import com.github.damianjester.nclient.core.GalleryPagesFetcher
+import com.github.damianjester.nclient.core.GalleryTagsFetcher
+import com.github.damianjester.nclient.coroutineScope
+import com.github.damianjester.nclient.gallery.details.GalleryDetailsComponent.GalleryState.Loaded
+import com.github.damianjester.nclient.gallery.details.GalleryDetailsComponent.GalleryState.Loading
 import com.github.damianjester.nclient.legacyClipboardManager
-import com.github.damianjester.nclient.settings.Favorites
-import kotlinx.datetime.Instant
-import kotlinx.datetime.LocalDateTime
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
-import java.io.File
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.launch
 
 interface GalleryDetailsComponent {
 
@@ -34,29 +41,28 @@ interface GalleryDetailsComponent {
 
     fun toggleGridMode()
 
+    fun navigateToPage(index: Int)
+
+    fun navigateToComments()
+
     fun navigateBack()
 
     data class Model(
         val gridMode: GridMode = GridMode.TWO_COLUMNS,
-        val galleryState: GalleryState = GalleryState.Loading,
+        val galleryState: GalleryState = Loading,
     )
 
     sealed interface GalleryState {
         data object Loading : GalleryState
-        data class Loaded(val gallery: Gallery) : GalleryState
+        data class Loaded(
+            val gallery: Gallery,
+            val pages: List<GalleryPage>,
+            val tags: GalleryTags,
+            val related: List<RelatedGallery>,
+        ) : GalleryState
+
         data object NotFound : GalleryState
     }
-
-    data class Gallery(
-        val id: Long,
-        val title: String,
-        val tags: GalleryTags,
-        val pages: List<GalleryPage>,
-        val updated: LocalDateTime,
-        val favoriteCount: Int,
-        val isFavorite: Boolean,
-        val related: List<RelatedGallery>
-    )
 
     data class GalleryTags(
         val all: List<GalleryTag>,
@@ -69,38 +75,8 @@ interface GalleryDetailsComponent {
         val category: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Category) },
     )
 
-    data class GalleryTag(
-        val id: Long,
-        val name: String,
-        val type: GalleryTagType
-    )
-
-    enum class GalleryTagType {
-        Parody, Character, General, Artist, Group, Language, Category, Unknown
-    }
-
-    data class GalleryPage(
-        val index: Int,
-        val image: GalleryPageImage,
-    )
-
-    sealed interface GalleryPageImage {
-        val webpageUrl: String
-
-        data class Remote(
-            override val webpageUrl: String,
-            val originalUrl: String,
-            val thumbnailUrl: String
-        ) : GalleryPageImage
-
-        data class Local(
-            override val webpageUrl: String,
-            val file: File,
-        ) : GalleryPageImage
-    }
-
     sealed interface MetadataCopy {
-        data class Id(val id: Long) : MetadataCopy
+        data class Id(val id: GalleryId) : MetadataCopy
         data class Tag(val tag: GalleryTag) : MetadataCopy
         data class Title(val value: String) : MetadataCopy
     }
@@ -109,159 +85,60 @@ interface GalleryDetailsComponent {
         ONE_COLUMN(1), TWO_COLUMNS(2), THREE_COLUMNS(3), FOUR_COLUMNS(4)
     }
 
-    data class RelatedGallery(
-        val id: Long,
-        val title: String,
-        val coverImageUrl: String,
-        val language: GalleryLanguage
-    )
-
 }
 
+// DefaultGalleryDetailsComponent
 class NewGalleryDetailsComponent(
     componentContext: ComponentContext,
+    dispatchers: NClientDispatchers,
     override val config: DefaultRootComponent.Config.GalleryDetails,
-    private val onPageClick: (Long, Int) -> Unit,
-    private val onNavigateBack: () -> Unit
-) : GalleryDetailsComponent, ComponentContext by componentContext {
-    override val model = MutableValue(GalleryDetailsComponent.Model())
-
-    override fun copyToClipboard(metadata: GalleryDetailsComponent.MetadataCopy) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setGalleryFavoriteStatus(favorite: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    override fun toggleGridMode() {
-        TODO("Not yet implemented")
-    }
-
-    override fun navigateBack() {
-        onNavigateBack()
-    }
-}
-
-class DefaultGalleryDetailsComponent(
-    componentContext: ComponentContext,
-    private val gallery: GenericGallery?,
     private val applicationContext: Context,
+    private val galleryLoader: GalleryDetailsLoader,
+    private val galleryFetcher: GalleryFetcher,
+    private val pagesFetcher: GalleryPagesFetcher,
+    private val tagsFetcher: GalleryTagsFetcher,
+    private val onNavigatePage: (Int) -> Unit,
+    private val onNavigateComments: (GalleryId) -> Unit,
+    private val onNavigateBack: () -> Unit,
 ) : GalleryDetailsComponent, ComponentContext by componentContext {
 
-    override val config: DefaultRootComponent.Config.GalleryDetails
-        get() = TODO("Not yet implemented")
-    override val model = MutableValue(GalleryDetailsComponent.Model())
+    private val lifecycleScope = coroutineScope(dispatchers.Default)
+    private val _model = MutableValue(GalleryDetailsComponent.Model())
+    override val model: Value<GalleryDetailsComponent.Model>
+        get() = _model
 
     init {
-        loadGallery(gallery)
-        // TODO: If gallery is not local, add to history
-    }
 
-    private fun loadGallery(gallery: GenericGallery?) {
-        if (gallery == null) {
-            model.update { it.copy(galleryState = GalleryDetailsComponent.GalleryState.NotFound) }
-            return
-        }
+        // TODO: GallerySearchItem could not exist in DB yet when deep linking, check and load if needed
 
-        val pages: List<GalleryDetailsComponent.GalleryPage> = if (gallery.isLocal) {
-            buildList {
-                repeat(gallery.pageCount) { i ->
-                    add(
-                        GalleryDetailsComponent.GalleryPage(
-                            index = i,
-                            image = GalleryDetailsComponent.GalleryPageImage.Local(
-                                webpageUrl = gallery.sharePageUrl(i).toString(),
-                                file = gallery.galleryFolder.getPage(i + 1)
-                            )
-                        )
-                    )
-                }
-            }
-        } else {
-            buildList {
-                val gal = gallery as Gallery
-                repeat(gal.pageCount) { i ->
-                    add(
-                        GalleryDetailsComponent.GalleryPage(
-                            index = i,
-                            image = GalleryDetailsComponent.GalleryPageImage.Remote(
-                                webpageUrl = gal.sharePageUrl(i).toString(),
-                                originalUrl = gal.getPageUrl(i).toString(),
-                                thumbnailUrl = gal.getLowPage(i).toString(),
-                            )
-                        )
-                    )
-                }
-            }
-        }
+        doOnResume {
+            lifecycleScope.launch {
 
-        val tags = gallery.galleryData.tags
-            .allTagsList
-            .map { tag ->
 
-                val type = when (tag.type) {
-                    TagType.PARODY -> GalleryDetailsComponent.GalleryTagType.Parody
-                    TagType.CHARACTER -> GalleryDetailsComponent.GalleryTagType.Character
-                    TagType.TAG -> GalleryDetailsComponent.GalleryTagType.General
-                    TagType.ARTIST -> GalleryDetailsComponent.GalleryTagType.Artist
-                    TagType.GROUP -> GalleryDetailsComponent.GalleryTagType.Group
-                    TagType.LANGUAGE -> GalleryDetailsComponent.GalleryTagType.Language
-                    TagType.CATEGORY -> GalleryDetailsComponent.GalleryTagType.Category
-                    else -> GalleryDetailsComponent.GalleryTagType.Unknown
+                val result = galleryLoader.load(config.id)
+                if (result is GalleryDetailsLoader.Result.Failure) {
+                    Log.e("component", "Failed to load gallery details", result.exception)
+                    // TODO: Update state to reflect error state
                 }
 
-                GalleryDetailsComponent.GalleryTag(
-                    id = tag.id.toLong(),
-                    name = tag.name,
-                    type = type
-                )
-            }
-
-        val related: List<GalleryDetailsComponent.RelatedGallery> = if (!gallery.isLocal) {
-            val gal = gallery as Gallery
-            if (gal.isRelatedLoaded) {
-                gal.related
-                    .map {
-                        GalleryDetailsComponent.RelatedGallery(
-                            id = it.id.toLong(),
-                            title = it.title,
-                            coverImageUrl = it.thumbnail.toString(),
-                            language = when (it.language) {
-                                Language.ENGLISH -> GalleryLanguage.English
-                                Language.CHINESE -> GalleryLanguage.Chinese
-                                Language.JAPANESE -> GalleryLanguage.Japanese
-                                else -> GalleryLanguage.Unknown
-                            }
+                combine(
+                    galleryFetcher.fetch(config.id),
+                    pagesFetcher.fetch(config.id),
+                    tagsFetcher.fetch(config.id),
+                    // TODO: Related galleries
+                ) { gallery, pages, tags ->
+                    Loaded(gallery, pages, GalleryDetailsComponent.GalleryTags(tags), emptyList())
+                }.collect { state ->
+                    _model.update {
+                        it.copy(
+                            galleryState = state
                         )
                     }
-            } else {
-                emptyList()
+                }
             }
-        } else {
-            emptyList()
-        }
-
-        val gal = GalleryDetailsComponent.Gallery(
-            id = gallery.id.toLong(),
-            title = gallery.title,
-            tags = GalleryDetailsComponent.GalleryTags(tags),
-            pages = pages,
-            updated = Instant.fromEpochMilliseconds(gallery.galleryData.uploadDate.time)
-                .toLocalDateTime(TimeZone.currentSystemDefault()),
-            favoriteCount = gallery.galleryData.favoriteCount,
-            isFavorite = Favorites.isFavorite(gallery),
-            related = related
-        )
-
-        model.update { model ->
-            model.copy(
-                galleryState = GalleryDetailsComponent.GalleryState.Loaded(gal)
-            )
         }
     }
 
-    @Suppress("DEPRECATION")
     override fun copyToClipboard(metadata: GalleryDetailsComponent.MetadataCopy) {
 
         val content = when (metadata) {
@@ -275,8 +152,10 @@ class DefaultGalleryDetailsComponent(
             val label = when (metadata) {
                 is GalleryDetailsComponent.MetadataCopy.Id ->
                     applicationContext.getString(R.string.clipboard_gallery_id)
+
                 is GalleryDetailsComponent.MetadataCopy.Tag ->
                     applicationContext.getString(R.string.clipboard_gallery_tag)
+
                 is GalleryDetailsComponent.MetadataCopy.Title ->
                     applicationContext.getString(R.string.clipboard_gallery_title)
             }
@@ -288,36 +167,11 @@ class DefaultGalleryDetailsComponent(
     }
 
     override fun setGalleryFavoriteStatus(favorite: Boolean) {
-
-        if (gallery == null) {
-            return
-        }
-
-        if (favorite) {
-            if (gallery is Gallery) {
-                Favorites.addFavorite(gallery)
-            }
-        } else {
-            Favorites.removeFavorite(gallery)
-        }
-
-        model.update { state ->
-            if (state.galleryState is GalleryDetailsComponent.GalleryState.Loaded) {
-                state.copy(
-                    galleryState = GalleryDetailsComponent.GalleryState.Loaded(
-                        state.galleryState.gallery.copy(
-                            isFavorite = Favorites.isFavorite(gallery)
-                        )
-                    )
-                )
-            } else {
-                state
-            }
-        }
+        TODO("Not yet implemented")
     }
 
     override fun toggleGridMode() {
-        model.update { state ->
+        _model.update { state ->
             val entries = GalleryDetailsComponent.GridMode.entries
             val newGridMode = if (entries.size > (entries.indexOf(state.gridMode) + 1)) {
                 entries[entries.indexOf(state.gridMode) + 1]
@@ -329,7 +183,10 @@ class DefaultGalleryDetailsComponent(
         }
     }
 
-    override fun navigateBack() {
-        TODO("Not yet implemented")
-    }
+    override fun navigateToPage(index: Int) = onNavigatePage(index)
+
+    override fun navigateToComments() = onNavigateComments(config.id)
+
+    override fun navigateBack() = onNavigateBack()
+
 }

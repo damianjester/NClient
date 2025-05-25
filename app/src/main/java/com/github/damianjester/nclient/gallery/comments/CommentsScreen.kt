@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.AppBarDefaults
 import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
@@ -54,6 +55,7 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.github.damianjester.nclient.Comment
 import com.github.damianjester.nclient.R
 
 @Composable
@@ -98,6 +100,7 @@ fun CommentsScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
+                windowInsets = AppBarDefaults.topAppBarWindowInsets,
                 title = { Text(stringResource(R.string.comments)) },
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
@@ -164,14 +167,14 @@ fun CommentsScreen(
 @Composable
 fun CommentsList(
     modifier: Modifier,
-    comments: List<CommentsComponent.Comment>,
+    comments: List<Comment>,
 ) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(comments, key = { it.id }) { comment ->
+        items(comments, key = { it.id.value }) { comment ->
             CommentItem(
                 modifier = Modifier.fillMaxWidth(),
                 comment = comment
@@ -183,7 +186,7 @@ fun CommentsList(
 @Composable
 fun CommentItem(
     modifier: Modifier = Modifier,
-    comment: CommentsComponent.Comment,
+    comment: Comment,
 ) {
     Card(
         modifier = modifier,
@@ -192,10 +195,10 @@ fun CommentItem(
             modifier = Modifier
                 .padding(16.dp)
         ) {
-            if (comment.poster.avatarUrl != null) {
+            if (comment.poster.avatar != null) {
                 AsyncImage(
                     model = ImageRequest.Builder(LocalContext.current)
-                        .data(comment.poster.avatarUrl)
+                        .data(comment.poster.avatar.toString())
                         .crossfade(true)
                         .build(),
                     contentDescription = null,
@@ -234,7 +237,7 @@ fun CommentItem(
 
                 val context = LocalContext.current
                 Text(
-                    formatCommentPostDate(context, comment.postedDuration),
+                    formatCommentPostDate(context, comment.elapsedTime),
                     modifier = Modifier.alpha(0.6f),
                     fontSize = 14.sp,
                 )

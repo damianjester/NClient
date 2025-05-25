@@ -1,5 +1,6 @@
 package com.github.damianjester.nclient.gallery.pager
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -74,7 +75,7 @@ fun GalleryPagerBottomBar(
                     mutableFloatStateOf((pagerState.currentPage + 1).toFloat() / pagerState.pageCount)
                 }
 
-                LaunchedEffect(pagerState.currentPage) {
+                LaunchedEffect(pagerState.currentPage, pagerState.pageCount) {
                     sliderValue = (pagerState.currentPage + 1).toFloat() / pagerState.pageCount
                 }
 
