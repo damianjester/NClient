@@ -21,7 +21,6 @@ import com.github.damianjester.nclient.api.components.GenericGallery;
 import com.github.damianjester.nclient.api.enums.Language;
 import com.github.damianjester.nclient.async.database.Queries;
 import com.github.damianjester.nclient.components.activities.BaseActivity;
-import com.github.damianjester.nclient.gallery.details.GalleryDetailsActivity;
 import com.github.damianjester.nclient.settings.Global;
 import com.github.damianjester.nclient.settings.TagV2;
 import com.github.damianjester.nclient.utility.ImageDownloadUtility;
@@ -175,8 +174,7 @@ public class ListAdapter extends RecyclerView.Adapter<GenericAdapter.ViewHolder>
                     }
                     return;
                 }
-//                Intent intent = new Intent(context, GalleryActivity.class);
-                Intent intent = new Intent(context, GalleryDetailsActivity.class);
+                Intent intent = new Intent(context, GalleryActivity.class);
                 LogUtility.d(galleries.get(0).toString());
                 intent.putExtra(context.getPackageName() + ".GALLERY", galleries.get(0));
                 context.runOnUiThread(() -> context.startActivity(intent));

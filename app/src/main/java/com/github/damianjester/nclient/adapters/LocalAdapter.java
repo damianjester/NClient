@@ -31,7 +31,6 @@ import com.github.damianjester.nclient.async.downloader.DownloadObserver;
 import com.github.damianjester.nclient.async.downloader.DownloadQueue;
 import com.github.damianjester.nclient.async.downloader.GalleryDownloaderV2;
 import com.github.damianjester.nclient.components.classes.MultichoiceAdapter;
-import com.github.damianjester.nclient.gallery.details.GalleryDetailsActivity;
 import com.github.damianjester.nclient.settings.Global;
 import com.github.damianjester.nclient.utility.ImageDownloadUtility;
 import com.github.damianjester.nclient.utility.LogUtility;
@@ -145,8 +144,7 @@ public class LocalAdapter extends MultichoiceAdapter<Object, LocalAdapter.ViewHo
         LocalGallery ent = new LocalGallery(directory);
         ent.calculateSizes();
         new Thread(() -> {
-//            Intent intent = new Intent(context, GalleryActivity.class);
-            Intent intent = new Intent(context, GalleryDetailsActivity.class);
+            Intent intent = new Intent(context, GalleryActivity.class);
             intent.putExtra(context.getPackageName() + ".GALLERY", ent);
             intent.putExtra(context.getPackageName() + ".ISLOCAL", true);
             context.runOnUiThread(() -> context.startActivity(intent));
