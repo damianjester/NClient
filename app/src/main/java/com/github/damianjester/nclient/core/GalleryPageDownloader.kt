@@ -63,6 +63,7 @@ class DefaultGalleryPageDownloader(
 
         val file = File(context.cacheDir, filename)
             .also {
+                // TODO: Catch IO exceptions
                 if (it.exists()) it.delete()
                 it.createNewFile()
             }
@@ -70,6 +71,8 @@ class DefaultGalleryPageDownloader(
         logger.i(LogTags.downloader, "Downloading page ${page.index + 1} from gallery $id.")
 
         withContext(dispatchers.IO) {
+            // TODO: Move to client
+            // TODO: Catch exceptions
             httpClient.prepareGet(url).execute { response ->
                 val channel: ByteReadChannel = response.body<ByteReadChannel>()
                 while (!channel.isClosedForRead) {

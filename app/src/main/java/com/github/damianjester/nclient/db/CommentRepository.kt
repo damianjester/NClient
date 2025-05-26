@@ -60,6 +60,9 @@ class SqlDelightCommentRepository(
         comments: List<CommentEntity>,
         posters: List<CommentPosterEntity>,
     ) = withContext(dispatchers.IO) {
+
+        // TODO: Check size
+
         logger.i(
             LogTags.comments,
             "Inserting ${comments.size} comments for gallery #${comments.first().galleryId} and " +

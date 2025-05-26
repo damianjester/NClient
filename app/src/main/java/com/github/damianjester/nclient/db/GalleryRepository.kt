@@ -70,6 +70,7 @@ class SqlDelightGalleryRepository(
     private val dispatchers: NClientDispatchers,
     private val logger: Logger,
 ) : GalleryRepository {
+
     private val galleryQueries: GalleryEntityQueries
         get() = database.galleryEntityQueries
     private val galleryDetailsEntityQueries: GalleryDetailsEntityQueries
@@ -148,6 +149,7 @@ class SqlDelightGalleryRepository(
                 "${galleryHasTag.values.size} has-tag associations."
         )
         database.transaction {
+            // TODO: Fix UNIQUE constraint failure
             galleries.forEach { galleryQueries.insertGallery(it) }
             galleryHasTag
                 .map { (gal, v) -> v.map { tagId -> GalleryHasTag(gal.id, tagId.value) } }
@@ -161,7 +163,6 @@ class SqlDelightGalleryRepository(
         pages: List<GalleryPageEntity>,
         tags: List<TagEntity>,
     ) = withContext(dispatchers.IO) {
-        // TODO: Make tag associations if needed
         logger.i(
             LogTags.gallery,
             "Inserting details for gallery #${details.galleryId} with " +
@@ -169,6 +170,7 @@ class SqlDelightGalleryRepository(
         )
 
         database.transaction {
+            // TODO: Make tag associations if needed
             galleryDetailsEntityQueries.insertDetails(details)
             pages.forEach { galleryPageQueries.insertPage(it) }
             tags.forEach { tagEntityQueries.insertTag(it) }

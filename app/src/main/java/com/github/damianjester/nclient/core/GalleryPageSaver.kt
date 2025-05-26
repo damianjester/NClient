@@ -114,12 +114,14 @@ class DefaultGalleryPageSaver(
             return Failure.NullContentUri
         }
 
+        // TODO: Catch FileNotFoundException
         val fileDescriptor = contentResolver.openFileDescriptor(uri, "w")
         if (fileDescriptor == null) {
             logger.e(LogTags.saver, "Content resolver returned a null FileDescriptor.")
             return Failure.NullFileDescriptor
         }
 
+        // TODO: Catch exceptions
         withContext(dispatchers.IO) {
             fileDescriptor.use { pfd ->
                 FileOutputStream(pfd.fileDescriptor).use { output ->
