@@ -97,8 +97,8 @@ class DefaultGalleryPageSharer(
 
     private suspend fun pageFile(id: GalleryId, page: GalleryPage) =
         when (val image = page.image) {
-            is GalleryPageImage.Local -> FileOrFailure.Success(image.originalFile)
-            is GalleryPageImage.Remote -> {
+            is GalleryPageImages.Local -> FileOrFailure.Success(image.localOriginal.file)
+            is GalleryPageImages.Remote -> {
                 when (val result = downloader.download(id, page)) {
                     is GalleryPageDownloader.Result.Failure ->
                         FileOrFailure.Failure(Failure.DownloaderFailed(result))

@@ -24,10 +24,9 @@ class DefaultGallerySearchObserver(
                         id = GalleryId(gal.id),
                         title = gal.title,
                         language = determineGalleryLanguage(gal.tagIds),
-                        image = GalleryGridItemImage.Remote(
-                            thumbnailUrl = Url(gal.coverThumbnailUrl),
-                            coverUrl = Url("https://t1.nhentai.net/galleries/${gal.mediaId}/cover.webp") // TODO: Extract to function
-                        ),
+                        images = GallerySearchItemImages.Remote(
+                            thumbnail = GalleryImage.Remote(Url(gal.coverThumbnailUrl))
+                        )
                     )
                 }
             }

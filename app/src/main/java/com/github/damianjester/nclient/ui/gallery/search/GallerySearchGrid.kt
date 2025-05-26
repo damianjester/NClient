@@ -34,7 +34,7 @@ fun GallerySearchGrid(
                 modifier = Modifier.fillMaxWidth(),
                 title = gal.title,
                 language = gal.language,
-                image = gal.image,
+                image = gal.images,
                 onClick = onClick
             )
         }

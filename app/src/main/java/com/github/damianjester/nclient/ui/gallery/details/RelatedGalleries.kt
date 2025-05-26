@@ -67,7 +67,7 @@ fun RelatedGalleryScroller(
         galleries.forEach { gal ->
             RelatedGalleryCover(
                 title = gal.title,
-                coverImageUrl = gal.image.coverUrl,
+                coverImageUrl = gal.image.url,
                 language = gal.language,
                 onGalleryClick = { onGalleryClick(gal) }
             )

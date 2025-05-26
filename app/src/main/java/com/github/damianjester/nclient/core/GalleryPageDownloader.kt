@@ -39,8 +39,10 @@ class DefaultGalleryPageDownloader(
 ) : GalleryPageDownloader {
     override suspend fun download(id: GalleryId, page: GalleryPage): Result {
         val url = when (val image = page.image) {
-            is GalleryPageImage.Remote -> image.originalUrl
-            is GalleryPageImage.Local -> return Failure.AlreadyDownloaded
+            is GalleryPageImages.Remote -> image.remoteOriginal.url
+            is GalleryPageImages.Local -> {
+                return Failure.AlreadyDownloaded
+            }
         }
 
         val filename = filename(url)

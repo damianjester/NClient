@@ -32,32 +32,31 @@ sealed interface GalleryLanguage {
     data object Unknown : GalleryLanguage
 }
 
-sealed interface GalleryGridItemImage {
-    data class Remote(
-        val thumbnailUrl: Url,
-        val coverUrl: Url
-    ) : GalleryGridItemImage
+sealed interface GalleryImage {
+    data class Remote(val url: Url) : GalleryImage
+    data class Local(val file: File) : GalleryImage
+}
 
+sealed interface GallerySearchItemImages {
+    data class Remote(val thumbnail: GalleryImage.Remote) : GallerySearchItemImages
     data class Local(
-        val thumbnailUrl: Url,
-        val thumbnailFile: File,
-        val coverUrl: Url,
-        val coverFile: File,
-    ) : GalleryGridItemImage
+        val cover: GalleryImage.Local,
+        val thumbnail: GalleryImage.Local,
+    ) : GallerySearchItemImages
 }
 
 data class GallerySearchItem(
     val id: GalleryId,
     val title: String,
     val language: GalleryLanguage,
-    val image: GalleryGridItemImage,
+    val images: GallerySearchItemImages,
 )
 
 data class RelatedGallery(
     val id: GalleryId,
     val title: String,
     val language: GalleryLanguage,
-    val image: GalleryGridItemImage.Remote,
+    val image: GalleryImage.Remote,
 )
 
 data class GalleryTitle(
@@ -75,7 +74,7 @@ data class Resolution(val width: Int, val height: Int)
 
 data class GalleryPage(
     val index: Int,
-    val image: GalleryPageImage,
+    val image: GalleryPageImages,
     val resolution: Resolution
 )
 
@@ -139,21 +138,21 @@ sealed class GalleryPageImageFileType() {
     }
 }
 
-sealed interface GalleryPageImage {
-    val thumbnailUrl: Url
-    val originalUrl: Url
+sealed interface GalleryPageImages {
+    val remoteThumbnail: GalleryImage.Remote
+    val remoteOriginal: GalleryImage.Remote
 
     data class Remote(
-        override val thumbnailUrl: Url,
-        override val originalUrl: Url
-    ) : GalleryPageImage
+        override val remoteThumbnail: GalleryImage.Remote,
+        override val remoteOriginal: GalleryImage.Remote
+    ) : GalleryPageImages
 
     data class Local(
-        override val thumbnailUrl: Url,
-        override val originalUrl: Url,
-        val thumbnailFile: File,
-        val originalFile: File,
-    ) : GalleryPageImage
+        override val remoteThumbnail: GalleryImage.Remote,
+        override val remoteOriginal: GalleryImage.Remote,
+        val localThumbnail: GalleryImage.Local,
+        val localOriginal: GalleryImage.Local,
+    ) : GalleryPageImages
 }
 
 sealed interface GalleryTagType {

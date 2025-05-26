@@ -18,7 +18,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.github.damianjester.nclient.core.GalleryGridItemImage
+import com.github.damianjester.nclient.core.GalleryImage
+import com.github.damianjester.nclient.core.GallerySearchItemImages
 import com.github.damianjester.nclient.core.GalleryLanguage
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
 import io.ktor.http.Url
@@ -28,7 +29,7 @@ fun GalleryGridItem(
     modifier: Modifier = Modifier,
     title: String,
     language: GalleryLanguage,
-    image: GalleryGridItemImage,
+    image: GallerySearchItemImages,
     showHighRes: Boolean = false,
     onClick: () -> Unit,
 ) {
@@ -109,25 +110,18 @@ private fun LanguageIndicator(
 @Composable
 private fun Image(
     modifier: Modifier = Modifier,
-    image: GalleryGridItemImage,
+    image: GallerySearchItemImages,
     showHighRes: Boolean,
 ) {
     val model: Any = when (image) {
-        is GalleryGridItemImage.Local -> {
+        is GallerySearchItemImages.Local -> {
             if (showHighRes) {
-                image.coverFile
+                image.cover
             } else {
-                image.thumbnailFile
+                image.thumbnail
             }
         }
-
-        is GalleryGridItemImage.Remote -> {
-            if (showHighRes) {
-                image.coverUrl.toString()
-            } else {
-                image.thumbnailUrl.toString()
-            }
-        }
+        is GallerySearchItemImages.Remote -> image.thumbnail.url.toString()
     }
 
     AsyncImage(
@@ -148,9 +142,8 @@ private fun GalleryGridItemPreview() {
         GalleryGridItem(
             title = "Title",
             language = GalleryLanguage.English,
-            image = GalleryGridItemImage.Remote(
-                thumbnailUrl = Url("https://t1.nhentai.net/galleries/{galleryId}/thumb.jpg"),
-                coverUrl = Url("https://t1.nhentai.net/galleries/{galleryId}/cover.jpg")
+            image = GallerySearchItemImages.Remote(
+                thumbnail = GalleryImage.Remote(Url("https://t1.nhentai.net/galleries/{galleryId}/thumb.jpg")),
             ),
             onClick = {}
         )

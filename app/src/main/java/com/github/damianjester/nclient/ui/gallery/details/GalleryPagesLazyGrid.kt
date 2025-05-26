@@ -40,7 +40,7 @@ import coil3.compose.AsyncImage
 import com.github.damianjester.nclient.core.Gallery
 import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.core.GalleryPage
-import com.github.damianjester.nclient.core.GalleryPageImage
+import com.github.damianjester.nclient.core.GalleryPageImages
 import com.github.damianjester.nclient.core.GalleryTag
 import com.github.damianjester.nclient.core.GalleryTagType
 import com.github.damianjester.nclient.core.RelatedGallery
@@ -253,8 +253,20 @@ fun GalleryPage(
             .clickable { onClick() },
     ) {
         val imageModel: Any = when (val image = page.image) {
-            is GalleryPageImage.Local -> if (showHighRes) image.originalFile else image.thumbnailFile
-            is GalleryPageImage.Remote -> if (showHighRes) image.originalUrl.toString() else image.thumbnailUrl.toString()
+            is GalleryPageImages.Local -> {
+                if (showHighRes) {
+                    image.localOriginal
+                } else {
+                    image.localThumbnail
+                }
+            }
+            is GalleryPageImages.Remote -> {
+                if (showHighRes) {
+                    image.remoteOriginal.url.toString()
+                } else {
+                    image.remoteThumbnail.url.toString()
+                }
+            }
         }
 
         AsyncImage(

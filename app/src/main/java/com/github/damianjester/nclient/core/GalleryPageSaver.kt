@@ -57,12 +57,14 @@ class DefaultGalleryPageSaver(
         page: GalleryPage,
     ): GalleryPageSaver.Result {
         val file = when (page.image) {
-            is GalleryPageImage.Remote -> when (val result = downloader.download(id, page)) {
-                is GalleryPageDownloader.Result.Failure -> return Failure.DownloaderFailed(result)
+            is GalleryPageImages.Remote -> when (val result = downloader.download(id, page)) {
                 is GalleryPageDownloader.Result.Success -> result.file
+                is GalleryPageDownloader.Result.Failure -> {
+                    return Failure.DownloaderFailed(result)
+                }
             }
 
-            is GalleryPageImage.Local -> page.image.originalFile
+            is GalleryPageImages.Local -> page.image.localOriginal.file
         }
 
         Log.i(
@@ -137,7 +139,7 @@ class DefaultGalleryPageSaver(
         page: GalleryPage,
         file: File,
     ) {
-        if (page.image is GalleryPageImage.Remote) {
+        if (page.image is GalleryPageImages.Remote) {
             file.delete()
         }
     }

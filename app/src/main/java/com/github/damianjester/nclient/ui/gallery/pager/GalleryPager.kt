@@ -21,7 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.request.ImageRequest
 import com.github.damianjester.nclient.core.GalleryPage
-import com.github.damianjester.nclient.core.GalleryPageImage
+import com.github.damianjester.nclient.core.GalleryPageImages
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
@@ -53,8 +53,8 @@ fun GalleryPager(
         ) { i ->
 
             val model: Any = when (val model = pages[i].image) {
-                is GalleryPageImage.Local -> model.originalFile
-                is GalleryPageImage.Remote -> model.originalUrl.toString()
+                is GalleryPageImages.Local -> model.localOriginal
+                is GalleryPageImages.Remote -> model.remoteOriginal.url.toString()
             }
 
             ZoomableAsyncImage(

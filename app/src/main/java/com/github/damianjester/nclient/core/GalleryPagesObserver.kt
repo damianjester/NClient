@@ -24,16 +24,20 @@ class DefaultGalleryPagesObserver(
 
                 GalleryPage(
                     index = page.pageIndex.toInt(),
-                    image = GalleryPageImage.Remote(
-                        thumbnailUrl = NHentaiUrl.galleryPageThumbnail(
-                            mediaId = mediaId,
-                            pageNumber = page.pageIndex.toInt() + 1,
-                            fileType = fileExtension
+                    image = GalleryPageImages.Remote(
+                        remoteThumbnail = GalleryImage.Remote(
+                            NHentaiUrl.galleryPageThumbnail(
+                                mediaId = mediaId,
+                                pageNumber = page.pageIndex.toInt() + 1,
+                                fileType = fileExtension
+                            )
                         ),
-                        originalUrl = NHentaiUrl.galleryPage(
-                            mediaId = mediaId,
-                            pageNumber = page.pageIndex.toInt() + 1,
-                            fileType = fileExtension
+                        remoteOriginal = GalleryImage.Remote(
+                            NHentaiUrl.galleryPage(
+                                mediaId = mediaId,
+                                pageNumber = page.pageIndex.toInt() + 1,
+                                fileType = fileExtension
+                            )
                         ),
                     ),
                     resolution = Resolution(page.width.toInt(), page.height.toInt())
