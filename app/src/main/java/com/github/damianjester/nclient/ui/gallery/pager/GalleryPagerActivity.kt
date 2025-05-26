@@ -16,7 +16,6 @@ import com.github.damianjester.nclient.legacy.settings.Global
 import com.github.damianjester.nclient.ui.theme.NClientTheme
 
 class GalleryPagerActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
@@ -58,7 +57,7 @@ class GalleryPagerActivity : ComponentActivity() {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             intent.getParcelableExtra("$packageName.GALLERY", GenericGallery::class.java)
         } else {
-            intent.getParcelableExtra("$packageName.GALLERY");
+            intent.getParcelableExtra("$packageName.GALLERY")
         }
     }
 

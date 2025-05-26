@@ -6,7 +6,6 @@ import io.ktor.http.Cookie
 import io.ktor.http.Url
 
 class NClientCookiesStorage : CookiesStorage {
-
     private val cookies = mutableMapOf<String, List<Cookie>>()
 
     override suspend fun get(requestUrl: Url): List<Cookie> {
@@ -29,11 +28,9 @@ class NClientCookiesStorage : CookiesStorage {
             Log.i("cookie", "NClientCookiesStorage.addCookie: appending new cookie ${cookie.name}")
             cookies[requestUrl.host] = cookiesForHost.plus(cookie)
         }
-
     }
 
     override fun close() {
         cookies.clear()
     }
 }
-

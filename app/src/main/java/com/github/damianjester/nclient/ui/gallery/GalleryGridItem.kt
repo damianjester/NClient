@@ -15,14 +15,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.damianjester.nclient.core.GalleryGridItemImage
 import com.github.damianjester.nclient.core.GalleryLanguage
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
-import com.github.damianjester.nclient.ui.theme.NClientTheme
 import io.ktor.http.Url
 
 @Composable
@@ -93,7 +91,6 @@ private fun LanguageIndicator(
             .copy(alpha = SurfaceAlpha),
         shape = RoundedCornerShape(bottomEnd = 4.dp)
     ) {
-
         val flag = when (language) {
             GalleryLanguage.Chinese -> "\uD83C\uDDE8\uD83C\uDDF3"
             GalleryLanguage.English -> "\uD83C\uDDEC\uD83C\uDDE7"
@@ -115,7 +112,6 @@ private fun Image(
     image: GalleryGridItemImage,
     showHighRes: Boolean,
 ) {
-
     val model: Any = when (image) {
         is GalleryGridItemImage.Local -> {
             if (showHighRes) {

@@ -20,13 +20,11 @@ fun CsrfTokenRootContent(
     component: CsrfTokenComponent,
     modifier: Modifier = Modifier,
 ) {
-
     CsrfTokenWebview(
         modifier = modifier,
         onCsrfTokenFound = component::onCsrfTokenFound
     )
 }
-
 
 @Composable
 fun CsrfTokenWebview(

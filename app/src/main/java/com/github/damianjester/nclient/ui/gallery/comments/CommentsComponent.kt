@@ -6,9 +6,9 @@ import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.github.damianjester.nclient.core.Comment
-import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.DefaultCommentsObserver
 import com.github.damianjester.nclient.core.CommentsFetcher
+import com.github.damianjester.nclient.core.DefaultCommentsObserver
+import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.utils.coroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,6 +18,7 @@ interface CommentsComponent {
     val model: Value<Model>
 
     fun loadComments(pullToRefresh: Boolean)
+
     fun navigateBack()
 
     data class Model(
@@ -33,10 +34,11 @@ interface CommentsComponent {
 
     sealed interface CommentsState {
         data class Loading(val userRefresh: Boolean) : CommentsState
+
         data object Error : CommentsState
+
         data object Loaded : CommentsState
     }
-
 }
 
 class DefaultCommentsComponent(
@@ -46,7 +48,6 @@ class DefaultCommentsComponent(
     private val fetcher: CommentsFetcher,
     private val observer: DefaultCommentsObserver,
 ) : CommentsComponent, ComponentContext by componentContext, KoinComponent {
-
     override val model = MutableValue(CommentsComponent.Model())
     private val coroutineScope = coroutineScope(Dispatchers.IO)
 
@@ -66,7 +67,6 @@ class DefaultCommentsComponent(
     override fun loadComments(pullToRefresh: Boolean) {
         model.update { it.copy(CommentsComponent.CommentsState.Loading(pullToRefresh)) }
         coroutineScope.launch {
-
             val state = when (fetcher.fetch(galleryId)) {
                 CommentsFetcher.Result.Success -> CommentsComponent.CommentsState.Loaded
                 is CommentsFetcher.Result.Failure -> CommentsComponent.CommentsState.Error
@@ -79,5 +79,4 @@ class DefaultCommentsComponent(
     override fun navigateBack() {
         onNavigateBack()
     }
-
 }

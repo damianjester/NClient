@@ -8,10 +8,10 @@ import android.os.Build
 import android.provider.MediaStore
 import android.util.Log
 import android.webkit.MimeTypeMap
-import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.core.GalleryPageSaver.Result.Failure
 import com.github.damianjester.nclient.core.GalleryPageSaver.Result.Success
 import com.github.damianjester.nclient.db.GalleryRepository
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.fileExtension
 import com.github.damianjester.nclient.utils.filenameForExternalStorage
 import kotlinx.coroutines.withContext
@@ -20,18 +20,24 @@ import java.io.FileOutputStream
 import java.io.IOException
 
 interface GalleryPageSaver {
-
     suspend fun save(id: GalleryId, page: GalleryPage): Result
 
     sealed interface Result {
         data object Success : Result
+
         sealed interface Failure : Result {
             data class UnknownFileExtension(val filename: String) : Failure
+
             data class MineTypeUnknown(val filename: String) : Failure
+
             data class DownloaderFailed(val reason: GalleryPageDownloader.Result.Failure) : Failure
+
             data object NoPagesFound : Failure
+
             data object NullContentUri : Failure
+
             data object NullFileDescriptor : Failure
+
             data class CacheFileDeletionFailed(val exception: IOException) : Failure
         }
     }
@@ -43,7 +49,6 @@ class DefaultGalleryPageSaver(
     private val downloader: GalleryPageDownloader,
     private val galleryRepository: GalleryRepository,
 ) : GalleryPageSaver {
-
     private val contentResolver: ContentResolver
         get() = context.contentResolver
 
@@ -51,7 +56,6 @@ class DefaultGalleryPageSaver(
         id: GalleryId,
         page: GalleryPage,
     ): GalleryPageSaver.Result {
-
         val file = when (page.image) {
             is GalleryPageImage.Remote -> when (val result = downloader.download(id, page)) {
                 is GalleryPageDownloader.Result.Failure -> return Failure.DownloaderFailed(result)
@@ -137,5 +141,4 @@ class DefaultGalleryPageSaver(
             file.delete()
         }
     }
-
 }

@@ -8,12 +8,11 @@ import io.ktor.client.plugins.logging.Logger
  * (prints warning about "no-operation (NOP) logger implementation").
  */
 class CustomAndroidHttpLogger() : Logger {
-
     override fun log(message: String) {
-        Log.i(logTag, message)
+        Log.i(TAG, message)
     }
 
     companion object {
-        private const val logTag = "CustomAndroidHttpLogger"
+        private const val TAG = "CustomAndroidHttpLogger"
     }
 }

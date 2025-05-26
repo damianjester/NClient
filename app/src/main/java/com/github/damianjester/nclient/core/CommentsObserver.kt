@@ -1,8 +1,8 @@
 package com.github.damianjester.nclient.core
 
-import com.github.damianjester.nclient.utils.NClientDispatchers
-import com.github.damianjester.nclient.net.NHentaiUrl
 import com.github.damianjester.nclient.db.CommentRepository
+import com.github.damianjester.nclient.net.NHentaiUrl
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -19,7 +19,6 @@ class DefaultCommentsObserver(
     private val repository: CommentRepository,
     private val dispatchers: NClientDispatchers,
 ) : CommentsObserver {
-
     override fun comments(id: GalleryId): Flow<List<Comment>> {
         return repository.selectComments(id)
             .flowOn(dispatchers.Default)
@@ -44,5 +43,4 @@ class DefaultCommentsObserver(
                 }
             }
     }
-
 }

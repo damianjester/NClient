@@ -4,10 +4,10 @@ import android.content.Context
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
-import com.github.damianjester.nclient.ui.DefaultRootComponent
 import com.github.damianjester.nclient.core.Gallery
 import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.legacy.api.components.GenericGallery
+import com.github.damianjester.nclient.ui.DefaultRootComponent
 import com.github.damianjester.nclient.utils.coroutineScope
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +17,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 interface GalleryPagerComponent {
-
     val model: Value<Model>
     val config: DefaultRootComponent.Config.GalleryPager
     val snackbarMessage: Flow<SnackbarMessage>
@@ -35,13 +34,17 @@ interface GalleryPagerComponent {
 
     sealed interface GalleryState {
         data object Loading : GalleryState
+
         data class Loaded(val gallery: Gallery, val pages: List<GalleryPage>) : GalleryState
+
         data object NotFound : GalleryState
     }
 
     sealed interface SnackbarMessage {
         data object PageDownloaded : SnackbarMessage
+
         data object PageDownloadFailed : SnackbarMessage
+
         data object PageShareFailed : SnackbarMessage
     }
 
@@ -62,7 +65,6 @@ interface GalleryPagerComponent {
 //        data class Remote(override val webpageUrl: String, val url: String) : GalleryPageImage
 //        data class Local(override val webpageUrl: String, val file: File) : GalleryPageImage
 //    }
-
 }
 
 class DefaultGalleryPagerComponent(
@@ -70,7 +72,6 @@ class DefaultGalleryPagerComponent(
     componentContext: ComponentContext,
     val context: Context,
 ) : GalleryPagerComponent, ComponentContext by componentContext, KoinComponent {
-
     override val config: DefaultRootComponent.Config.GalleryPager
         get() = TODO("Not yet implemented")
 

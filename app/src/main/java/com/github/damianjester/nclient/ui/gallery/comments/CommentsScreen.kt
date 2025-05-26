@@ -74,7 +74,6 @@ fun CommentsScreen(
     component: CommentsComponent,
     onBack: () -> Unit,
 ) {
-
     val state by component.model.subscribeAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val context = LocalContext.current

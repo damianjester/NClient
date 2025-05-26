@@ -3,12 +3,12 @@ package com.github.damianjester.nclient.core
 import android.util.Log
 import com.github.damianjester.nclient.GalleryDetailsEntity
 import com.github.damianjester.nclient.GalleryPageEntity
-import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.TagEntity
 import com.github.damianjester.nclient.core.GalleryDetailsFetcher.Result
 import com.github.damianjester.nclient.db.GalleryRepository
 import com.github.damianjester.nclient.net.GalleryResponse
 import com.github.damianjester.nclient.net.NHentaiHttpClient
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.withContext
 
 interface GalleryDetailsFetcher {
@@ -16,6 +16,7 @@ interface GalleryDetailsFetcher {
 
     sealed interface Result {
         data object Success : Result
+
         data class Failure(val exception: Exception) : Result
     }
 }
@@ -25,9 +26,7 @@ class DefaultGalleryDetailsFetcher(
     private val repository: GalleryRepository,
     private val dispatchers: NClientDispatchers,
 ) : GalleryDetailsFetcher {
-
     override suspend fun fetch(id: GalleryId) = withContext(dispatchers.IO) {
-
         val response: GalleryResponse
 
         try {
@@ -50,7 +49,6 @@ class DefaultGalleryDetailsFetcher(
 
         Result.Success
     }
-
 }
 
 private fun mapDetails(id: GalleryId, response: GalleryResponse) =
@@ -86,4 +84,3 @@ private fun mapTags(response: GalleryResponse) =
                 urlPath = t.url
             )
         }
-

@@ -5,10 +5,10 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
-import com.github.damianjester.nclient.core.GallerySearchItem
 import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.GallerySearchPager
+import com.github.damianjester.nclient.core.GallerySearchItem
 import com.github.damianjester.nclient.core.GallerySearchObserver
+import com.github.damianjester.nclient.core.GallerySearchPager
 import com.github.damianjester.nclient.utils.coroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -26,10 +26,11 @@ interface GallerySearchComponent {
 
     sealed interface GalleriesState {
         data class Loading(val userRefresh: Boolean) : GalleriesState
+
         data class Error(val exception: Exception) : GalleriesState
+
         data object Loaded : GalleriesState
     }
-
 }
 
 class DefaultGallerySearchComponent(
@@ -38,7 +39,6 @@ class DefaultGallerySearchComponent(
     private val fetcher: GallerySearchObserver,
     val onNavigateGallery: (GalleryId) -> Unit,
 ) : GallerySearchComponent, ComponentContext by componentContext, KoinComponent {
-
     private val lifecyleScope = coroutineScope(Dispatchers.Default)
     private val _model = MutableValue(GallerySearchComponent.Model())
     override val model: Value<GallerySearchComponent.Model> = _model
@@ -66,5 +66,4 @@ class DefaultGallerySearchComponent(
     override fun navigateToGallery(gallery: GallerySearchItem) {
         onNavigateGallery(gallery.id)
     }
-
 }

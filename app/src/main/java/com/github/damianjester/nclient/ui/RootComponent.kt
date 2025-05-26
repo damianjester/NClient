@@ -28,9 +28,13 @@ interface RootComponent {
 
     sealed class Child {
         class GallerySearch(val component: GallerySearchComponent) : Child()
+
         class GalleryDetails(val component: GalleryDetailsComponent) : Child()
+
         class GalleryPager(val component: GalleryPagerComponent) : Child()
+
         class GalleryComments(val component: CommentsComponent) : Child()
+
         class CsrfToken(val component: CsrfTokenComponent) : Child()
     }
 }
@@ -39,7 +43,6 @@ class DefaultRootComponent(
     componentContext: ComponentContext,
     initialConfig: Config = Config.GallerySearch,
 ) : RootComponent, ComponentContext by componentContext, KoinComponent {
-
     private val navigation = StackNavigation<Config>()
 
     override val stack: Value<ChildStack<*, Child>> =
@@ -111,7 +114,7 @@ class DefaultRootComponent(
             onNavigateBack = { navigation.pop() },
             detailsObserver = get(),
             pagesFetcher = get(),
-            pageSaver =  get(),
+            pageSaver = get(),
             pageSharer = get(),
         )
 
@@ -136,7 +139,6 @@ class DefaultRootComponent(
 
     @Serializable
     sealed interface Config {
-
         @Serializable
         data object GallerySearch : Config
 

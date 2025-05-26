@@ -69,7 +69,6 @@ fun GalleryPagesLazyGrid(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-
         item(key = "id", span = { GridItemSpan(gridMode.count) }) {
             GalleryId(
                 gallery.id,
@@ -96,12 +95,11 @@ fun GalleryPagesLazyGrid(
             Column(
                 modifier = Modifier.padding(bottom = 8.dp)
             ) {
-
                 val formatter = remember {
                     LocalDateTime.Format {
-                        dayOfMonth(Padding.NONE);
+                        dayOfMonth(Padding.NONE)
                         char(' ')
-                        monthName(MonthNames.ENGLISH_ABBREVIATED);
+                        monthName(MonthNames.ENGLISH_ABBREVIATED)
                         char(' ')
                         year()
                         chars(" at ")
@@ -189,9 +187,7 @@ fun GalleryTags(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(24.dp),
     ) {
-
         for (type in tagTypes) {
-
             val heading = when (type) {
                 GalleryTagType.Parody -> "Parody"
                 GalleryTagType.Character -> "Character"
@@ -256,7 +252,6 @@ fun GalleryPage(
             .background(MaterialTheme.colorScheme.surface)
             .clickable { onClick() },
     ) {
-
         val imageModel: Any = when (val image = page.image) {
             is GalleryPageImage.Local -> if (showHighRes) image.originalFile else image.thumbnailFile
             is GalleryPageImage.Remote -> if (showHighRes) image.originalUrl.toString() else image.thumbnailUrl.toString()

@@ -17,7 +17,9 @@ import org.jsoup.nodes.Element
 
 interface NHentaiHttpClient {
     suspend fun getGalleries(page: Int): GalleriesResponse
+
     suspend fun getGallery(id: GalleryId): GalleryResponse
+
     suspend fun getComments(id: GalleryId): List<CommentResponse>
 }
 
@@ -25,9 +27,7 @@ class ScrapperNHentaiHttpClient(
     private val client: HttpClient,
     private val dispatchers: NClientDispatchers,
 ) : NHentaiHttpClient {
-
     override suspend fun getGalleries(page: Int): GalleriesResponse = withContext(dispatchers.IO) {
-
         // https://nhentai.net/?page={page}
         val response = client.get("https://nhentai.net/?page=$page")
         val bodyInputStream = response.bodyAsChannel().toInputStream()
@@ -41,7 +41,6 @@ class ScrapperNHentaiHttpClient(
     }
 
     override suspend fun getGallery(id: GalleryId): GalleryResponse = withContext(dispatchers.IO) {
-
         // https://nhentai.net/g/{gallery_id}
         val response = client.get("https://nhentai.net/g/${id.value}/")
         val bodyInputStream = response.bodyAsChannel().toInputStream()
@@ -81,7 +80,6 @@ class ScrapperNHentaiHttpClient(
     }
 
     private fun scrapeListGallery(element: Element): ListGallery {
-
         val anchor = requireNotNull(element.getElementsByTag("a").first())
         val image = requireNotNull(element.getElementsByTag("img").first())
 
@@ -106,7 +104,6 @@ class ScrapperNHentaiHttpClient(
     }
 
     private fun substringGalleryJson(scriptHtml: String): String {
-
         val jsParseStart = """JSON.parse(""""
         val jsonParseStartIndex = scriptHtml.indexOf(jsParseStart) + jsParseStart.length
         val jsonParseEndIndex = scriptHtml.lastIndexOf(");") - 1
@@ -114,5 +111,4 @@ class ScrapperNHentaiHttpClient(
 
         return json
     }
-
 }

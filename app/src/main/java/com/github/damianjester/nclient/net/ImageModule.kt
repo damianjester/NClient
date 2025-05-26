@@ -11,4 +11,3 @@ val imageModule = module {
         KtorNetworkFetcherFactory(get<HttpClient>())
     } bind NetworkFetcher.Factory::class
 }
-

@@ -11,10 +11,13 @@ import com.github.damianjester.nclient.net.NHentaiHttpClient
 
 interface CommentsFetcher {
     suspend fun fetch(id: GalleryId): Result
+
     sealed interface Result {
         data object Success : Result
+
         sealed interface Failure : Result {
             data class Network(val exception: Exception) : Failure
+
             data class Database(val exception: Exception) : Failure
         }
     }

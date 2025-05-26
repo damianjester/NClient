@@ -24,13 +24,15 @@ value class GalleryTagId(val value: Long)
 
 sealed interface GalleryLanguage {
     data object English : GalleryLanguage
+
     data object Chinese : GalleryLanguage
+
     data object Japanese : GalleryLanguage
+
     data object Unknown : GalleryLanguage
 }
 
 sealed interface GalleryGridItemImage {
-
     data class Remote(
         val thumbnailUrl: Url,
         val coverUrl: Url
@@ -78,15 +80,18 @@ data class GalleryPage(
 )
 
 sealed class GalleryPageImageFileType() {
-
     sealed interface WebpVariant {
         val webp: Boolean
     }
 
     data class GIF(override val webp: Boolean = false) : GalleryPageImageFileType(), WebpVariant
+
     data class PNG(override val webp: Boolean = false) : GalleryPageImageFileType(), WebpVariant
+
     data class JPG(override val webp: Boolean = false) : GalleryPageImageFileType(), WebpVariant
+
     data class WEBP(override val webp: Boolean = false) : GalleryPageImageFileType(), WebpVariant
+
     data class Unknown(val type: String) : GalleryPageImageFileType()
 
     companion object {
@@ -106,7 +111,6 @@ sealed class GalleryPageImageFileType() {
     }
 
     fun toOriginalFileExtension(): String {
-
         var extension = when (this) {
             is GIF -> "gif"
             is JPG -> "jpg"
@@ -133,7 +137,6 @@ sealed class GalleryPageImageFileType() {
 
         return extension
     }
-
 }
 
 sealed interface GalleryPageImage {
@@ -158,12 +161,19 @@ fun GalleryPage.webpageUrl(id: GalleryId): Url =
 
 sealed interface GalleryTagType {
     data object General : GalleryTagType
+
     data object Language : GalleryTagType
+
     data object Category : GalleryTagType
+
     data object Parody : GalleryTagType
+
     data object Character : GalleryTagType
+
     data object Artist : GalleryTagType
+
     data object Group : GalleryTagType
+
     data class Unknown(val value: String) : GalleryTagType
 }
 

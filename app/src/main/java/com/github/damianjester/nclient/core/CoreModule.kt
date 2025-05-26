@@ -18,5 +18,4 @@ val coreModule = module {
 
     single { DefaultCommentsFetcher(get(), get()) } bind CommentsFetcher::class
     single { DefaultCommentsObserver(get(), get()) } bind CommentsObserver::class
-
 }

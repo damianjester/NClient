@@ -22,7 +22,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
 class MainActivity : ComponentActivity(), KoinComponent {
-
     private val dispatchers by inject<NClientDispatchers>()
     private val sharer by inject<GalleryPageSharer>()
 
@@ -52,7 +51,6 @@ class MainActivity : ComponentActivity(), KoinComponent {
 
     private suspend fun startShareActivity(share: GalleryPageSharer.GalleryPageShare) =
         withContext(dispatchers.Main) {
-
             val shareIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_STREAM, share.fileUri)

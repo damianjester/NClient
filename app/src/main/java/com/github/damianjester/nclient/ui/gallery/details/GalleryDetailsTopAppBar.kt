@@ -81,7 +81,6 @@ fun GalleryDetailsTopAppBar(
                 )
             }
             IconButton(onClick = onGridModeClick) {
-
                 val icon = when (gridMode) {
                     GalleryDetailsComponent.GridMode.ONE_COLUMN -> R.drawable.ic_view_1
                     GalleryDetailsComponent.GridMode.TWO_COLUMNS -> R.drawable.ic_view_2

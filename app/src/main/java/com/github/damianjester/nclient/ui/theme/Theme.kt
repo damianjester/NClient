@@ -17,7 +17,6 @@ fun NClientTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-
     val colorScheme = when {
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
@@ -36,7 +35,6 @@ fun NClientPreviewTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit,
 ) {
-
     val previewImage =
         (if (darkTheme) R.drawable.ic_logo else R.drawable.ic_logo_dark)
             .let { res -> AppCompatResources.getDrawable(LocalContext.current, res)!! }.asImage()

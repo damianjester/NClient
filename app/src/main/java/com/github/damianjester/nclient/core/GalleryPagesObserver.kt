@@ -1,7 +1,7 @@
 package com.github.damianjester.nclient.core
 
 import com.github.damianjester.nclient.db.GalleryRepository
-import io.ktor.http.Url
+import com.github.damianjester.nclient.net.NHentaiUrl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flow
@@ -25,8 +25,16 @@ class DefaultGalleryPagesObserver(
                 GalleryPage(
                     index = page.pageIndex.toInt(),
                     image = GalleryPageImage.Remote(
-                        thumbnailUrl = Url("https://t1.nhentai.net/galleries/${mediaId.value}/${page.pageIndex + 1}t.${fileExtension.toThumbnailFileExtension()}"),
-                        originalUrl = Url("https://i1.nhentai.net/galleries/${mediaId.value}/${page.pageIndex + 1}.${fileExtension.toOriginalFileExtension()}"),
+                        thumbnailUrl = NHentaiUrl.galleryPageThumbnail(
+                            mediaId = mediaId,
+                            pageNumber = page.pageIndex.toInt() + 1,
+                            fileType = fileExtension
+                        ),
+                        originalUrl = NHentaiUrl.galleryPage(
+                            mediaId = mediaId,
+                            pageNumber = page.pageIndex.toInt() + 1,
+                            fileType = fileExtension
+                        ),
                     ),
                     resolution = Resolution(page.width.toInt(), page.height.toInt())
                 )

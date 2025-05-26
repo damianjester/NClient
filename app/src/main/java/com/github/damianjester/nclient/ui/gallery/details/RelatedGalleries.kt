@@ -38,7 +38,6 @@ fun RelatedGalleriesSection(
     onGalleryClick: (RelatedGallery) -> Unit
 ) {
     Column(modifier) {
-
         Text(
             "Related",
             style = MaterialTheme.typography.titleLarge
@@ -92,7 +91,6 @@ fun RelatedGalleryCover(
             .background(MaterialTheme.colorScheme.surface)
             .clickable { onGalleryClick() }
     ) {
-
         AsyncImage(
             model = coverImageUrl.toString(),
             contentDescription = null,
@@ -109,7 +107,6 @@ fun RelatedGalleryCover(
                 bottomEnd = 4.dp,
             )
         ) {
-
             val flag = when (language) {
                 GalleryLanguage.Chinese -> "\uD83C\uDDE8\uD83C\uDDF3"
                 GalleryLanguage.English -> "\uD83C\uDDEC\uD83C\uDDE7"
@@ -140,4 +137,3 @@ fun RelatedGalleryCover(
         }
     }
 }
-

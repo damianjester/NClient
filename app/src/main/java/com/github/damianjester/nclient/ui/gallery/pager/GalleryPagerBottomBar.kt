@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.PagerState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -19,9 +22,6 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -45,7 +45,6 @@ fun GalleryPagerBottomBar(
     pagerState: PagerState,
     onJumpToPage: () -> Unit,
 ) {
-
     val scope = rememberCoroutineScope()
 
     AnimatedVisibility(
@@ -67,7 +66,6 @@ fun GalleryPagerBottomBar(
                     .navigationBarsPadding(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 var sliding by remember { mutableStateOf(false) }
                 var targetPageIndex by remember { mutableIntStateOf(0) }
                 var sliderValue by remember {
@@ -117,7 +115,6 @@ private fun TopRow(
     targetPageIndex: Int,
     onJumpToPage: () -> Unit,
 ) {
-
     val scope = rememberCoroutineScope()
 
     Row(

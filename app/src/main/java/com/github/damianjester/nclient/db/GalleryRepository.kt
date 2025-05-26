@@ -10,14 +10,14 @@ import com.github.damianjester.nclient.GalleryEntity
 import com.github.damianjester.nclient.GalleryEntityQueries
 import com.github.damianjester.nclient.GalleryHasTag
 import com.github.damianjester.nclient.GalleryHasTagQueries
-import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.GalleryPageEntity
 import com.github.damianjester.nclient.GalleryPageEntityQueries
+import com.github.damianjester.nclient.TagEntity
+import com.github.damianjester.nclient.TagEntityQueries
+import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.core.GalleryTagId
 import com.github.damianjester.nclient.core.MediaId
 import com.github.damianjester.nclient.utils.NClientDispatchers
-import com.github.damianjester.nclient.TagEntity
-import com.github.damianjester.nclient.TagEntityQueries
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -43,7 +43,6 @@ interface GalleryRepository {
         pages: List<GalleryPageEntity>,
         tags: List<TagEntity>,
     )
-
 }
 
 data class GalleryEntityWithTagIds(
@@ -68,7 +67,6 @@ class SqlDelightGalleryRepository(
     private val database: Database,
     private val dispatchers: NClientDispatchers,
 ) : GalleryRepository {
-
     private val galleryQueries: GalleryEntityQueries
         get() = database.galleryEntityQueries
     private val galleryDetailsEntityQueries: GalleryDetailsEntityQueries
@@ -100,7 +98,14 @@ class SqlDelightGalleryRepository(
     }
 
     override fun selectGalleryDetails(id: GalleryId): Flow<CompleteGallery> {
-        return galleryDetailsEntityQueries.selectDetails(id.value) { mediaId, numFavorites, prettyTitle, englishTitle, japaneseTitle, uploadDate ->
+        return galleryDetailsEntityQueries.selectDetails(id.value) {
+            mediaId,
+            numFavorites,
+            prettyTitle,
+            englishTitle,
+            japaneseTitle,
+            uploadDate
+            ->
             CompleteGallery(
                 id = id.value,
                 mediaId = mediaId,
@@ -156,5 +161,4 @@ class SqlDelightGalleryRepository(
             tags.forEach { tagEntityQueries.insertTag(it) }
         }
     }
-
 }

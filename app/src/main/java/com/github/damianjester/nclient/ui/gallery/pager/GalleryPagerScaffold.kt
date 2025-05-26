@@ -119,7 +119,6 @@ fun GalleryPagerScaffold(
     contentColor: Color = contentColorFor(backgroundColor),
     content: @Composable @UiComposable (PaddingValues) -> Unit,
 ) {
-
     val safeInsets = remember(contentWindowInsets) {
         MutableWindowInsets(contentWindowInsets)
     }

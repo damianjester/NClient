@@ -6,12 +6,12 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
-import com.github.damianjester.nclient.ui.DefaultRootComponent
-import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.core.GalleryDetailsObserver
+import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.core.GalleryPageSaver
 import com.github.damianjester.nclient.core.GalleryPageSharer
 import com.github.damianjester.nclient.core.GalleryPagesObserver
+import com.github.damianjester.nclient.ui.DefaultRootComponent
 import com.github.damianjester.nclient.utils.coroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +29,6 @@ class NewGalleryPagerComponent(
     private val pageSaver: GalleryPageSaver,
     private val pageSharer: GalleryPageSharer,
 ) : GalleryPagerComponent, ComponentContext by componentContext, KoinComponent {
-
     private val scope = coroutineScope(Dispatchers.Default)
     private val _snackbarMessage = MutableSharedFlow<GalleryPagerComponent.SnackbarMessage>()
     override val snackbarMessage: Flow<GalleryPagerComponent.SnackbarMessage> = _snackbarMessage
@@ -62,7 +61,6 @@ class NewGalleryPagerComponent(
     }
 
     override fun savePageToGallery(page: GalleryPage) {
-
         val gallery = when (val galleryState = model.value.gallery) {
             is GalleryPagerComponent.GalleryState.Loaded -> galleryState.gallery
             else -> {
@@ -81,7 +79,6 @@ class NewGalleryPagerComponent(
     }
 
     override fun sharePage(page: GalleryPage, withUrl: Boolean) {
-
         val gallery = when (val states = model.value.gallery) {
             is GalleryPagerComponent.GalleryState.Loaded -> states.gallery
             else -> {
@@ -103,5 +100,4 @@ class NewGalleryPagerComponent(
     override fun navigateBack() {
         onNavigateBack()
     }
-
 }

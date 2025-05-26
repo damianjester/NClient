@@ -9,27 +9,26 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnResume
-import com.github.damianjester.nclient.ui.DefaultRootComponent
-import com.github.damianjester.nclient.core.Gallery
-import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.GalleryPage
-import com.github.damianjester.nclient.core.GalleryTag
-import com.github.damianjester.nclient.core.GalleryTagType
-import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.R
-import com.github.damianjester.nclient.core.RelatedGallery
-import com.github.damianjester.nclient.utils.clipboardManager
+import com.github.damianjester.nclient.core.Gallery
 import com.github.damianjester.nclient.core.GalleryDetailsFetcher
 import com.github.damianjester.nclient.core.GalleryDetailsObserver
+import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.core.GalleryPagesObserver
+import com.github.damianjester.nclient.core.GalleryTag
+import com.github.damianjester.nclient.core.GalleryTagType
 import com.github.damianjester.nclient.core.GalleryTagsFetcher
+import com.github.damianjester.nclient.core.RelatedGallery
+import com.github.damianjester.nclient.ui.DefaultRootComponent
+import com.github.damianjester.nclient.utils.NClientDispatchers
+import com.github.damianjester.nclient.utils.clipboardManager
 import com.github.damianjester.nclient.utils.coroutineScope
 import com.github.damianjester.nclient.utils.legacyClipboardManager
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 interface GalleryDetailsComponent {
-
     val config: DefaultRootComponent.Config.GalleryDetails
     val model: Value<Model>
 
@@ -52,6 +51,7 @@ interface GalleryDetailsComponent {
 
     sealed interface GalleryState {
         data object Loading : GalleryState
+
         data class Loaded(
             val gallery: Gallery,
             val pages: List<GalleryPage>,
@@ -75,14 +75,15 @@ interface GalleryDetailsComponent {
 
     sealed interface MetadataCopy {
         data class Id(val id: GalleryId) : MetadataCopy
+
         data class Tag(val tag: GalleryTag) : MetadataCopy
+
         data class Title(val value: String) : MetadataCopy
     }
 
     enum class GridMode(val count: Int) {
         ONE_COLUMN(1), TWO_COLUMNS(2), THREE_COLUMNS(3), FOUR_COLUMNS(4)
     }
-
 }
 
 // DefaultGalleryDetailsComponent
@@ -99,7 +100,6 @@ class NewGalleryDetailsComponent(
     private val onNavigateComments: (GalleryId) -> Unit,
     private val onNavigateBack: () -> Unit,
 ) : GalleryDetailsComponent, ComponentContext by componentContext {
-
     private val lifecycleScope = coroutineScope(dispatchers.Default)
     private val _model = MutableValue(GalleryDetailsComponent.Model())
     override val model: Value<GalleryDetailsComponent.Model>
@@ -111,7 +111,6 @@ class NewGalleryDetailsComponent(
 
         doOnResume {
             lifecycleScope.launch {
-
 
                 val result = galleryLoader.fetch(config.id)
                 if (result is GalleryDetailsFetcher.Result.Failure) {
@@ -143,7 +142,6 @@ class NewGalleryDetailsComponent(
     }
 
     override fun copyToClipboard(metadata: GalleryDetailsComponent.MetadataCopy) {
-
         val content = when (metadata) {
             is GalleryDetailsComponent.MetadataCopy.Id -> metadata.id.toString()
             is GalleryDetailsComponent.MetadataCopy.Tag -> metadata.tag.name
@@ -191,5 +189,4 @@ class NewGalleryDetailsComponent(
     override fun navigateToComments() = onNavigateComments(config.id)
 
     override fun navigateBack() = onNavigateBack()
-
 }

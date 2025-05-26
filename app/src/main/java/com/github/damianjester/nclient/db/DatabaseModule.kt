@@ -21,5 +21,4 @@ val dbModule = module {
     single { SqlDelightTagRepository(get(), get()) } bind TagRepository::class
 
     single { SqlDelightCommentRepository(get(), get()) } bind CommentRepository::class
-
 }

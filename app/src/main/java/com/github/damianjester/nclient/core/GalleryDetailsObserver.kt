@@ -15,7 +15,6 @@ interface GalleryDetailsObserver {
 class DefaultGalleryDetailsObserver(
     private val repository: GalleryRepository
 ) : GalleryDetailsObserver {
-
     override fun details(id: GalleryId): Flow<Gallery> {
         return repository.selectGalleryDetails(id)
             .map { entity ->
@@ -37,5 +36,4 @@ class DefaultGalleryDetailsObserver(
                 )
             }
     }
-
 }

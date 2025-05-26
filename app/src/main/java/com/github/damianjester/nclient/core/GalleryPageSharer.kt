@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import java.io.File
 
 interface GalleryPageSharer {
-
     val shares: Flow<GalleryPageShare>
 
     suspend fun share(id: GalleryId, page: GalleryPage, withUrl: Boolean): Result
@@ -29,11 +28,16 @@ interface GalleryPageSharer {
 
     sealed interface Result {
         data object Success : Result
+
         sealed interface Failure : Result {
             data class UnknownFileExtension(val filename: String) : Failure
+
             data class MineTypeUnknown(val filename: String) : Failure
+
             data class DownloaderFailed(val reason: GalleryPageDownloader.Result.Failure) : Failure
+
             data object NoPagesFound : Failure
+
             data class FileProviderError(val exception: Exception) : Failure
         }
     }
@@ -44,7 +48,6 @@ class DefaultGalleryPageSharer(
     private val galleryRepository: GalleryRepository,
     private val downloader: GalleryPageDownloader,
 ) : GalleryPageSharer {
-
     private val _shares = MutableSharedFlow<GalleryPageShare>()
     override val shares: Flow<GalleryPageShare>
         get() = _shares
@@ -54,7 +57,6 @@ class DefaultGalleryPageSharer(
         page: GalleryPage,
         withUrl: Boolean,
     ): GalleryPageSharer.Result {
-
         val file = when (val result = pageFile(id, page)) {
             is FileOrFailure.Failure -> return result.reason
             is FileOrFailure.Success -> result.file
@@ -82,11 +84,13 @@ class DefaultGalleryPageSharer(
 
     private sealed interface FileOrFailure {
         data class Success(val file: File) : FileOrFailure
+
         data class Failure(val reason: GalleryPageSharer.Result.Failure) : FileOrFailure
     }
 
     private sealed interface UriOrFailure {
         data class Success(val uri: Uri) : UriOrFailure
+
         data class Failure(val reason: GalleryPageSharer.Result.Failure) : UriOrFailure
     }
 
@@ -99,12 +103,10 @@ class DefaultGalleryPageSharer(
                         FileOrFailure.Failure(Failure.DownloaderFailed(result))
                     is GalleryPageDownloader.Result.Success -> FileOrFailure.Success(result.file)
                 }
-
             }
         }
 
     private suspend fun getFileUri(file: File, id: GalleryId, page: GalleryPage): UriOrFailure {
-
         val pageCount = galleryRepository.countPagesForGallery(id)
         if (pageCount < 1) {
             return UriOrFailure.Failure(Failure.NoPagesFound)
@@ -123,5 +125,4 @@ class DefaultGalleryPageSharer(
             UriOrFailure.Failure(Failure.FileProviderError(ex))
         }
     }
-
 }

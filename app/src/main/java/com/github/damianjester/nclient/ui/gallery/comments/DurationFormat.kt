@@ -17,7 +17,6 @@ fun formatCommentPostDate(
     context: Context,
     duration: Duration,
 ): String {
-
     if (duration.inWholeSeconds < SECONDS_FOR_JUST_NOW) {
         return context.getString(R.string.just_now)
     }

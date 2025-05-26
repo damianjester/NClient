@@ -2,11 +2,10 @@ package com.github.damianjester.nclient.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-
 import com.arkivanov.decompose.extensions.compose.stack.Children
 import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
-import com.github.damianjester.nclient.ui.RootComponent.*
+import com.github.damianjester.nclient.ui.RootComponent.Child
 import com.github.damianjester.nclient.ui.csrf.CsrfTokenRootContent
 import com.github.damianjester.nclient.ui.gallery.comments.GalleryCommentsRootContent
 import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsRootContent

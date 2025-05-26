@@ -2,10 +2,10 @@ package com.github.damianjester.nclient.core
 
 import android.content.Context
 import android.util.Log
-import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result.Failure
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result.Success
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.prepareGet
@@ -26,20 +26,18 @@ interface GalleryPageDownloader {
 
         sealed interface Failure : Result {
             data object AlreadyDownloaded : Failure
+
             data class UnknownFileExtension(val filename: String) : Failure
         }
     }
 }
-
 
 class DefaultGalleryPageDownloader(
     private val context: Context,
     private val dispatchers: NClientDispatchers,
     private val httpClient: HttpClient,
 ) : GalleryPageDownloader {
-
     override suspend fun download(id: GalleryId, page: GalleryPage): Result {
-
         val url = when (val image = page.image) {
             is GalleryPageImage.Remote -> image.originalUrl
             is GalleryPageImage.Local -> return Failure.AlreadyDownloaded
@@ -54,7 +52,7 @@ class DefaultGalleryPageDownloader(
                 it.createNewFile()
             }
 
-        Log.i("downloader", "Downloading page ${page.index + 1} from gallery #${id}")
+        Log.i("downloader", "Downloading page ${page.index + 1} from gallery #$id")
 
         withContext(dispatchers.IO) {
             httpClient.prepareGet(url).execute { response ->
@@ -78,5 +76,4 @@ class DefaultGalleryPageDownloader(
 
     private val Url.fileExtension
         get() = segments.last().split(".").lastOrNull()
-
 }
