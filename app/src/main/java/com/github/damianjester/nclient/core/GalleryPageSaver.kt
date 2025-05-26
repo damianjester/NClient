@@ -38,8 +38,6 @@ interface GalleryPageSaver {
             data object NullContentUri : Failure
 
             data object NullFileDescriptor : Failure
-
-            data class CacheFileDeletionFailed(val exception: IOException) : Failure
         }
     }
 }
@@ -140,7 +138,6 @@ class DefaultGalleryPageSaver(
         try {
             cleanupAfterGalleryPageSave(page, file)
         } catch (ex: IOException) {
-            return Failure.CacheFileDeletionFailed(ex)
             logger.e(
                 LogTags.saver,
                 "Failed to remove temporary gallery page file from cache.",
