@@ -90,13 +90,13 @@ class DefaultGalleryDetailsComponent(
     componentContext: ComponentContext,
     dispatchers: NClientDispatchers,
     override val config: DefaultRootComponent.Config.GalleryDetails,
-    private val applicationContext: Context,
-    private val galleryLoader: GalleryDetailsFetcher,
-    private val galleryObserver: GalleryDetailsObserver,
-    private val pagesFetcher: GalleryPagesObserver,
     private val onNavigatePage: (Int) -> Unit,
     private val onNavigateComments: (GalleryId) -> Unit,
     private val onNavigateBack: () -> Unit,
+    private val applicationContext: Context,
+    private val galleryFetcher: GalleryDetailsFetcher,
+    private val galleryObserver: GalleryDetailsObserver,
+    private val pagesObserver: GalleryPagesObserver,
     private val tagsObserver: GalleryTagsObserver,
 ) : GalleryDetailsComponent, ComponentContext by componentContext {
     private val lifecycleScope = coroutineScope(dispatchers.Default)
@@ -111,7 +111,7 @@ class DefaultGalleryDetailsComponent(
         doOnResume {
             lifecycleScope.launch {
 
-                val result = galleryLoader.fetch(config.id)
+                val result = galleryFetcher.fetch(config.id)
                 if (result is GalleryDetailsFetcher.Result.Failure) {
                     Log.e("component", "Failed to load gallery details", result.exception)
                     // TODO: Update state to reflect error state
@@ -119,7 +119,7 @@ class DefaultGalleryDetailsComponent(
 
                 combine(
                     galleryObserver.details(config.id),
-                    pagesFetcher.pages(config.id),
+                    pagesObserver.pages(config.id),
                     tagsObserver.tags(config.id),
                     // TODO: Related galleries
                 ) { gallery, pages, tags ->

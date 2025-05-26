@@ -88,19 +88,19 @@ class DefaultRootComponent(
     ): GalleryDetailsComponent =
         DefaultGalleryDetailsComponent(
             componentContext = componentContext,
-            applicationContext = get(),
-            config = config,
             dispatchers = get(),
-            galleryLoader = get(),
-            galleryObserver = get(),
-            pagesFetcher = get(),
-            onNavigateBack = { navigation.pop() },
+            config = config,
             onNavigatePage = { index ->
                 navigation.pushNew(Config.GalleryPager(config.id, index))
             },
             onNavigateComments = {
                 navigation.pushNew(Config.GalleryComments(config.id))
-            }
+            },
+            onNavigateBack = { navigation.pop() },
+            applicationContext = get(),
+            galleryFetcher = get(),
+            galleryObserver = get(),
+            pagesObserver = get(),
             tagsObserver = get()
         )
 
