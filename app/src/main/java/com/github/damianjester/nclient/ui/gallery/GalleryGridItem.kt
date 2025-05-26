@@ -10,9 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
@@ -36,7 +36,7 @@ fun GalleryGridItem(
             .fillMaxWidth()
             .aspectRatio(3.toFloat() / 4)
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colors.surface)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable { onClick() },
     ) {
 
@@ -67,7 +67,7 @@ fun GalleryGridItem(
         Surface(
             modifier = Modifier
                 .align(Alignment.TopStart),
-            color = MaterialTheme.colors.surface
+            color = MaterialTheme.colorScheme.surface
                 .copy(alpha = 0.5f),
             shape = RoundedCornerShape(
                 bottomEnd = 4.dp,
@@ -92,7 +92,7 @@ fun GalleryGridItem(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .fillMaxWidth(),
-            color = MaterialTheme.colors.surface
+            color = MaterialTheme.colorScheme.surface
                 .copy(alpha = 0.8f),
         ) {
             Text(

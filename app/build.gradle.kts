@@ -72,7 +72,6 @@ dependencies {
     implementation(libs.androidx.preference)
     implementation(libs.androidx.viewpager2)
     implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.material)
     implementation(libs.androidx.multidex)
     implementation(libs.androidx.swiperefreshlayout)
 
@@ -82,7 +81,9 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material2)
+
+    implementation(libs.androidx.material)
+    implementation(libs.androidx.material3)
     implementation(libs.androidx.material.icons)
 
     implementation(platform(libs.koin.bom))
@@ -118,6 +119,8 @@ dependencies {
     implementation("app.cash.sqldelight:android-driver:2.1.0")
     implementation("app.cash.sqldelight:coroutines-extensions:2.1.0")
     implementation("org.slf4j:slf4j-android:1.7.36")
+
+    debugImplementation(libs.androidx.ui.tooling)
 }
 
 sqldelight {

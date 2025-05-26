@@ -24,9 +24,9 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -150,7 +150,7 @@ private fun GalleryId(
     Row(modifier = modifier.padding(bottom = 8.dp)) {
         Text(
             "ID:",
-            style = MaterialTheme.typography.h6
+            style = MaterialTheme.typography.titleMedium
         )
         Spacer(Modifier.width(8.dp))
         Text(
@@ -162,7 +162,7 @@ private fun GalleryId(
                     onLongClick = onLongClick,
                     onClick = {}
                 ),
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Normal
         )
     }
@@ -227,7 +227,7 @@ fun GalleryTags(
                     heading,
                     modifier = Modifier
                         .align(Alignment.CenterVertically),
-                    style = MaterialTheme.typography.h6
+                    style = MaterialTheme.typography.titleMedium
                 )
                 sectionTags.forEach { tag ->
                     GalleryTag(
@@ -253,7 +253,7 @@ fun GalleryPage(
             .fillMaxWidth()
             .aspectRatio(3.toFloat() / 4)
             .clip(RoundedCornerShape(8.dp))
-            .background(MaterialTheme.colors.surface)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable { onClick() },
     ) {
 
@@ -272,7 +272,7 @@ fun GalleryPage(
         Surface(
             modifier = Modifier
                 .align(Alignment.TopStart),
-            color = MaterialTheme.colors.surface
+            color = MaterialTheme.colorScheme.surface
                 .copy(alpha = 0.5f),
             shape = RoundedCornerShape(
                 bottomEnd = 4.dp,

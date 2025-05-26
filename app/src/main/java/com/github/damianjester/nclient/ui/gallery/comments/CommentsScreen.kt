@@ -15,26 +15,23 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material.AppBarDefaults
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.SnackbarDuration
-import androidx.compose.material.SnackbarHost
-import androidx.compose.material.SnackbarHostState
-import androidx.compose.material.SnackbarResult
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -55,13 +52,13 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.github.damianjester.nclient.core.Comment
 import com.github.damianjester.nclient.R
+import com.github.damianjester.nclient.core.Comment
 
 @Composable
 fun GalleryCommentsRootContent(
     component: CommentsComponent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     CommentsScreen(
         modifier = modifier,
@@ -70,7 +67,7 @@ fun GalleryCommentsRootContent(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentsScreen(
     modifier: Modifier = Modifier,
@@ -100,7 +97,6 @@ fun CommentsScreen(
         modifier = modifier,
         topBar = {
             TopAppBar(
-                windowInsets = AppBarDefaults.topAppBarWindowInsets,
                 title = { Text(stringResource(R.string.comments)) },
                 navigationIcon = {
                     IconButton(onClick = { onBack() }) {
@@ -110,26 +106,17 @@ fun CommentsScreen(
                         )
                     }
                 },
-                backgroundColor = MaterialTheme.colors.surface,
-                elevation = 0.dp
             )
         },
         snackbarHost = {
             SnackbarHost(snackbarHostState)
         }
     ) { innerPadding ->
-
-        val pullToRefreshState = rememberPullRefreshState(
-            refreshing = state.isRefreshing,
-            onRefresh = { component.loadComments(pullToRefresh = true) }
-        )
-
-        Box(
-            modifier = Modifier
-                .pullRefresh(pullToRefreshState)
-                .padding(innerPadding)
+        PullToRefreshBox(
+            state.isRefreshing,
+            onRefresh = { component.loadComments(pullToRefresh = true) },
+            modifier = Modifier.padding(innerPadding)
         ) {
-
             if (state.isLoading && !state.isRefreshing) {
                 Box(Modifier.fillMaxSize()) {
                     CircularProgressIndicator(
@@ -153,13 +140,6 @@ fun CommentsScreen(
                     )
                 }
             }
-
-            PullRefreshIndicator(
-                modifier = Modifier
-                    .align(Alignment.TopCenter),
-                refreshing = state.isRefreshing,
-                state = pullToRefreshState
-            )
         }
     }
 }
@@ -211,7 +191,7 @@ fun CommentItem(
                 Box(
                     modifier = Modifier
                         .size(64.dp)
-                        .background(MaterialTheme.colors.background, CircleShape),
+                        .background(MaterialTheme.colorScheme.background, CircleShape),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(

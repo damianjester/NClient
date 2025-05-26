@@ -3,22 +3,23 @@ package com.github.damianjester.nclient.ui.gallery.search
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.AppBarDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.github.damianjester.nclient.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GallerySearchRootContent(
     component: GallerySearchComponent,
@@ -33,7 +34,6 @@ fun GallerySearchRootContent(
     Scaffold(
         topBar = {
             TopAppBar(
-                windowInsets = AppBarDefaults.topAppBarWindowInsets,
                 title = {
                     Text(
                         stringResource(R.string.app_name)
@@ -57,7 +57,7 @@ fun GallerySearchRootContent(
                             contentDescription = stringResource(R.string.languages)
                         )
                     }
-                }
+                },
             )
         }
     ) { padding ->

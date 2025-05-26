@@ -4,21 +4,19 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.statusBarsIgnoringVisibility
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Comment
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,11 +26,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.github.damianjester.nclient.R
 
 @Composable
-@OptIn(ExperimentalLayoutApi::class, ExperimentalFoundationApi::class)
+@OptIn(
+    ExperimentalLayoutApi::class,
+    ExperimentalFoundationApi::class,
+    ExperimentalMaterial3Api::class
+)
 fun GalleryDetailsTopAppBar(
     modifier: Modifier = Modifier,
     galleryTitle: String?,
@@ -42,7 +43,7 @@ fun GalleryDetailsTopAppBar(
     onTitleLongClick: (String) -> Unit,
     onFavoriteClick: (Boolean) -> Unit,
     onGridModeClick: () -> Unit,
-    onCommentsClick: () -> Unit
+    onCommentsClick: () -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -63,7 +64,6 @@ fun GalleryDetailsTopAppBar(
                 )
             }
         },
-        windowInsets = WindowInsets.statusBarsIgnoringVisibility,
         modifier = modifier,
         navigationIcon = {
             IconButton(onClick = onBackClick) {
@@ -104,13 +104,17 @@ fun GalleryDetailsTopAppBar(
                 expanded = showMenu,
                 onDismissRequest = { showMenu = false }
             ) {
-                DropdownMenuItem(onCommentsClick) {
-                    Icon(Icons.AutoMirrored.Default.Comment, contentDescription = null)
-                    Text("Show comments")
-                }
+                DropdownMenuItem(
+                    text = { Text("Show comments") },
+                    onClick = { onCommentsClick() },
+                    leadingIcon = {
+                        Icon(
+                            Icons.AutoMirrored.Default.Comment,
+                            contentDescription = null
+                        )
+                    }
+                )
             }
         },
-        backgroundColor = MaterialTheme.colors.surface,
-        elevation = 0.dp
     )
 }

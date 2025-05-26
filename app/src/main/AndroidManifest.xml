@@ -21,7 +21,7 @@
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/DarkTheme">
+        android:theme="@style/NClientTheme">
 
         <activity android:name=".legacy.StatusManagerActivity" />
         <activity
@@ -191,6 +191,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.MainActivity"
+            android:theme="@style/NClientTheme"
             android:exported="true">
 
             <intent-filter>
