@@ -5,14 +5,14 @@ import io.ktor.http.Url
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-interface GalleryTagsFetcher {
-    fun fetch(id: GalleryId): Flow<List<GalleryTag>>
+interface GalleryTagsObserver {
+    fun tags(id: GalleryId): Flow<List<GalleryTag>>
 }
 
-class DefaultGalleryTagsFetcher(
+class DefaultGalleryTagsObserver(
     private val repository: TagRepository,
-) : GalleryTagsFetcher {
-    override fun fetch(id: GalleryId): Flow<List<GalleryTag>> {
+) : GalleryTagsObserver {
+    override fun tags(id: GalleryId): Flow<List<GalleryTag>> {
         return repository.getTagsForGallery(id)
             .map { tags ->
                 tags.map { t ->

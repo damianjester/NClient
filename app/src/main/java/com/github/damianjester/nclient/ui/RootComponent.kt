@@ -94,7 +94,6 @@ class DefaultRootComponent(
             galleryLoader = get(),
             galleryObserver = get(),
             pagesFetcher = get(),
-            tagsFetcher = get(),
             onNavigateBack = { navigation.pop() },
             onNavigatePage = { index ->
                 navigation.pushNew(Config.GalleryPager(config.id, index))
@@ -102,6 +101,7 @@ class DefaultRootComponent(
             onNavigateComments = {
                 navigation.pushNew(Config.GalleryComments(config.id))
             }
+            tagsObserver = get()
         )
 
     private fun galleryPagerComponent(

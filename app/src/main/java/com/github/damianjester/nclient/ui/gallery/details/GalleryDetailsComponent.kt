@@ -18,7 +18,7 @@ import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.core.GalleryPagesObserver
 import com.github.damianjester.nclient.core.GalleryTag
 import com.github.damianjester.nclient.core.GalleryTagType
-import com.github.damianjester.nclient.core.GalleryTagsFetcher
+import com.github.damianjester.nclient.core.GalleryTagsObserver
 import com.github.damianjester.nclient.core.RelatedGallery
 import com.github.damianjester.nclient.ui.DefaultRootComponent
 import com.github.damianjester.nclient.utils.NClientDispatchers
@@ -95,10 +95,10 @@ class NewGalleryDetailsComponent(
     private val galleryLoader: GalleryDetailsFetcher,
     private val galleryObserver: GalleryDetailsObserver,
     private val pagesFetcher: GalleryPagesObserver,
-    private val tagsFetcher: GalleryTagsFetcher,
     private val onNavigatePage: (Int) -> Unit,
     private val onNavigateComments: (GalleryId) -> Unit,
     private val onNavigateBack: () -> Unit,
+    private val tagsObserver: GalleryTagsObserver,
 ) : GalleryDetailsComponent, ComponentContext by componentContext {
     private val lifecycleScope = coroutineScope(dispatchers.Default)
     private val _model = MutableValue(GalleryDetailsComponent.Model())
@@ -121,7 +121,7 @@ class NewGalleryDetailsComponent(
                 combine(
                     galleryObserver.details(config.id),
                     pagesFetcher.pages(config.id),
-                    tagsFetcher.fetch(config.id),
+                    tagsObserver.tags(config.id),
                     // TODO: Related galleries
                 ) { gallery, pages, tags ->
                     GalleryDetailsComponent.GalleryState.Loaded(
