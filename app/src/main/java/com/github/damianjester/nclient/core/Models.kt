@@ -156,9 +156,6 @@ sealed interface GalleryPageImage {
     ) : GalleryPageImage
 }
 
-fun GalleryPage.webpageUrl(id: GalleryId): Url =
-    Url("https://nhentai.net/g/${id.value}/${index + 1}/")
-
 sealed interface GalleryTagType {
     data object General : GalleryTagType
 

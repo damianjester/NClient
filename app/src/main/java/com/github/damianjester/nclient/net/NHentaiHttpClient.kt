@@ -29,10 +29,10 @@ class ScrapperNHentaiHttpClient(
 ) : NHentaiHttpClient {
     override suspend fun getGalleries(page: Int): GalleriesResponse = withContext(dispatchers.IO) {
         // https://nhentai.net/?page={page}
-        val response = client.get("https://nhentai.net/?page=$page")
+        val response = client.get(NHentaiUrl.galleriesWebpage(page))
         val bodyInputStream = response.bodyAsChannel().toInputStream()
 
-        val document = Jsoup.parse(bodyInputStream, "UTF-8", "https://nhentai.net/")
+        val document = Jsoup.parse(bodyInputStream, "UTF-8", NHentaiUrl.baseUrl().toString())
         val gallery = document.getElementsByClass("gallery")
 
         val galleries = gallery.map { element -> scrapeListGallery(element) }
@@ -42,10 +42,10 @@ class ScrapperNHentaiHttpClient(
 
     override suspend fun getGallery(id: GalleryId): GalleryResponse = withContext(dispatchers.IO) {
         // https://nhentai.net/g/{gallery_id}
-        val response = client.get("https://nhentai.net/g/${id.value}/")
+        val response = client.get(NHentaiUrl.galleryWebpage(id))
         val bodyInputStream = response.bodyAsChannel().toInputStream()
 
-        val document = Jsoup.parse(bodyInputStream, "UTF-8", "https://nhentai.net/")
+        val document = Jsoup.parse(bodyInputStream, "UTF-8", NHentaiUrl.baseUrl().toString())
         val script = requireNotNull(document.getElementsByTag("script").last())
 
         val secondScriptHtml = script.html()
@@ -75,7 +75,7 @@ class ScrapperNHentaiHttpClient(
     }
 
     override suspend fun getComments(id: GalleryId): List<CommentResponse> {
-        return client.get(NHentaiUrl.commentsUrl(id.value))
+        return client.get(NHentaiUrl.comments(id))
             .body<List<CommentResponse>>()
     }
 

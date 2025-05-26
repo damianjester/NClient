@@ -34,7 +34,7 @@ class DefaultCommentsObserver(
                         poster = CommentPoster(
                             id = UserId(poster.id),
                             username = poster.username,
-                            avatar = poster.avatarPath?.let { NHentaiUrl.avatarUrl(it) }
+                            avatar = poster.avatarPath?.let { NHentaiUrl.posterAvatar(it) }
                         ),
                         date = instant.toLocalDateTime(TimeZone.UTC),
                         elapsedTime = now.minus(instant),

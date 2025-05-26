@@ -8,6 +8,7 @@ import com.github.damianjester.nclient.core.GalleryPageSharer.GalleryPageShare
 import com.github.damianjester.nclient.core.GalleryPageSharer.Result.Failure
 import com.github.damianjester.nclient.core.GalleryPageSharer.Result.Success
 import com.github.damianjester.nclient.db.GalleryRepository
+import com.github.damianjester.nclient.net.NHentaiUrl
 import com.github.damianjester.nclient.utils.fileExtension
 import com.github.damianjester.nclient.utils.filenameForExternalStorage
 import io.ktor.http.Url
@@ -75,7 +76,7 @@ class DefaultGalleryPageSharer(
             GalleryPageShare(
                 fileUri = uri,
                 mineType = mimeType,
-                webpageUrl = if (withUrl) page.webpageUrl(id) else null
+                webpageUrl = if (withUrl) NHentaiUrl.galleryPageWebpage(id, page) else null
             )
         )
 
