@@ -86,8 +86,7 @@ interface GalleryDetailsComponent {
     }
 }
 
-// DefaultGalleryDetailsComponent
-class NewGalleryDetailsComponent(
+class DefaultGalleryDetailsComponent(
     componentContext: ComponentContext,
     dispatchers: NClientDispatchers,
     override val config: DefaultRootComponent.Config.GalleryDetails,

@@ -14,7 +14,7 @@ import com.github.damianjester.nclient.ui.csrf.DefaultCsrfTokenComponent
 import com.github.damianjester.nclient.ui.gallery.comments.CommentsComponent
 import com.github.damianjester.nclient.ui.gallery.comments.DefaultCommentsComponent
 import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsComponent
-import com.github.damianjester.nclient.ui.gallery.details.NewGalleryDetailsComponent
+import com.github.damianjester.nclient.ui.gallery.details.DefaultGalleryDetailsComponent
 import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerComponent
 import com.github.damianjester.nclient.ui.gallery.pager.NewGalleryPagerComponent
 import com.github.damianjester.nclient.ui.gallery.search.DefaultGallerySearchComponent
@@ -86,7 +86,7 @@ class DefaultRootComponent(
         componentContext: ComponentContext,
         config: Config.GalleryDetails,
     ): GalleryDetailsComponent =
-        NewGalleryDetailsComponent(
+        DefaultGalleryDetailsComponent(
             componentContext = componentContext,
             applicationContext = get(),
             config = config,
