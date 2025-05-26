@@ -1,10 +1,11 @@
 package com.github.damianjester.nclient.core
 
 import android.content.Context
-import android.util.Log
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result.Failure
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result.Success
+import com.github.damianjester.nclient.utils.LogTags
+import com.github.damianjester.nclient.utils.Logger
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -35,18 +36,30 @@ interface GalleryPageDownloader {
 class DefaultGalleryPageDownloader(
     private val context: Context,
     private val dispatchers: NClientDispatchers,
+    private val logger: Logger,
     private val httpClient: HttpClient,
 ) : GalleryPageDownloader {
     override suspend fun download(id: GalleryId, page: GalleryPage): Result {
         val url = when (val image = page.image) {
             is GalleryPageImages.Remote -> image.remoteOriginal.url
             is GalleryPageImages.Local -> {
+                logger.i(
+                    LogTags.downloader,
+                    "Page ${page.index + 1} from gallery $id is already downloaded."
+                )
                 return Failure.AlreadyDownloaded
             }
         }
 
         val filename = filename(url)
-            ?: return Failure.UnknownFileExtension(url.segments.lastOrNull() ?: url.toString())
+        if (filename == null) {
+            val segmentOrUrl = url.segments.lastOrNull() ?: url.toString()
+            logger.e(
+                LogTags.downloader,
+                "Unable to determine file extension for file from URL segment: $segmentOrUrl."
+            )
+            return Failure.UnknownFileExtension(segmentOrUrl)
+        }
 
         val file = File(context.cacheDir, filename)
             .also {
@@ -54,7 +67,7 @@ class DefaultGalleryPageDownloader(
                 it.createNewFile()
             }
 
-        Log.i("downloader", "Downloading page ${page.index + 1} from gallery #$id")
+        logger.i(LogTags.downloader, "Downloading page ${page.index + 1} from gallery $id.")
 
         withContext(dispatchers.IO) {
             httpClient.prepareGet(url).execute { response ->
@@ -65,6 +78,11 @@ class DefaultGalleryPageDownloader(
                 }
             }
         }
+
+        logger.i(
+            LogTags.downloader,
+            "Downloaded page ${page.index + 1}, from gallery $id, to ${file.path}."
+        )
 
         return Success(file)
     }

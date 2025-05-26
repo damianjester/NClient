@@ -17,6 +17,8 @@ import com.github.damianjester.nclient.TagEntityQueries
 import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.core.GalleryTagId
 import com.github.damianjester.nclient.core.MediaId
+import com.github.damianjester.nclient.utils.LogTags
+import com.github.damianjester.nclient.utils.Logger
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -66,6 +68,7 @@ data class CompleteGallery(
 class SqlDelightGalleryRepository(
     private val database: Database,
     private val dispatchers: NClientDispatchers,
+    private val logger: Logger,
 ) : GalleryRepository {
     private val galleryQueries: GalleryEntityQueries
         get() = database.galleryEntityQueries
@@ -139,6 +142,11 @@ class SqlDelightGalleryRepository(
         galleries: List<GalleryEntity>,
         galleryHasTag: Map<GalleryEntity, List<GalleryTagId>>,
     ) = withContext(dispatchers.IO) {
+        logger.i(
+            LogTags.gallery,
+            "Inserting ${galleries.size} gallery entities and " +
+                "${galleryHasTag.values.size} has-tag associations."
+        )
         database.transaction {
             galleries.forEach { galleryQueries.insertGallery(it) }
             galleryHasTag
@@ -154,6 +162,11 @@ class SqlDelightGalleryRepository(
         tags: List<TagEntity>,
     ) = withContext(dispatchers.IO) {
         // TODO: Make tag associations if needed
+        logger.i(
+            LogTags.gallery,
+            "Inserting details for gallery #${details.galleryId} with " +
+                "${pages.size} pages and ${tags.size} tags."
+        )
 
         database.transaction {
             galleryDetailsEntityQueries.insertDetails(details)

@@ -6,6 +6,8 @@ import com.github.damianjester.nclient.CommentEntity
 import com.github.damianjester.nclient.CommentPosterEntity
 import com.github.damianjester.nclient.Database
 import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.utils.LogTags
+import com.github.damianjester.nclient.utils.Logger
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -27,6 +29,7 @@ data class CommentEntityWithPosterEntity(
 class SqlDelightCommentRepository(
     private val database: Database,
     private val dispatchers: NClientDispatchers,
+    private val logger: Logger,
 ) : CommentRepository {
     private val queries
         get() = database.commentEntityQueries
@@ -57,6 +60,12 @@ class SqlDelightCommentRepository(
         comments: List<CommentEntity>,
         posters: List<CommentPosterEntity>,
     ) = withContext(dispatchers.IO) {
+        logger.i(
+            LogTags.comments,
+            "Inserting ${comments.size} comments for gallery #${comments.first().galleryId} and " +
+                "${posters.size} posters."
+        )
+
         database.transaction {
             posters.forEach { queries.insertCommentPoster(it) }
             comments.forEach { queries.insertComment(it) }

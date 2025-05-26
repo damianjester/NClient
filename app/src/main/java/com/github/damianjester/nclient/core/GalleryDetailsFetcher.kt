@@ -1,6 +1,5 @@
 package com.github.damianjester.nclient.core
 
-import android.util.Log
 import com.github.damianjester.nclient.GalleryDetailsEntity
 import com.github.damianjester.nclient.GalleryPageEntity
 import com.github.damianjester.nclient.TagEntity
@@ -8,6 +7,8 @@ import com.github.damianjester.nclient.core.GalleryDetailsFetcher.Result
 import com.github.damianjester.nclient.db.GalleryRepository
 import com.github.damianjester.nclient.net.GalleryResponse
 import com.github.damianjester.nclient.net.NHentaiHttpClient
+import com.github.damianjester.nclient.utils.Logger
+import com.github.damianjester.nclient.utils.LogTags
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.withContext
 
@@ -25,15 +26,15 @@ class DefaultGalleryDetailsFetcher(
     private val client: NHentaiHttpClient,
     private val repository: GalleryRepository,
     private val dispatchers: NClientDispatchers,
+    private val logger: Logger,
 ) : GalleryDetailsFetcher {
     override suspend fun fetch(id: GalleryId) = withContext(dispatchers.IO) {
         val response: GalleryResponse
 
         try {
             response = client.getGallery(id)
-            Log.wtf("loader", "response: $response")
         } catch (ex: Exception) {
-            Log.wtf("loader", "response: $ex")
+            logger.e(LogTags.gallery, "Failed to fetch details for gallery $id.", ex)
             return@withContext Result.Failure(ex)
         }
 
@@ -44,6 +45,7 @@ class DefaultGalleryDetailsFetcher(
         try {
             repository.insertDetails(details, pages, tags)
         } catch (ex: Exception) {
+            logger.e(LogTags.gallery, "Failed to insert details for gallery $id.", ex)
             return@withContext Result.Failure(ex)
         }
 

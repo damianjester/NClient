@@ -1,6 +1,5 @@
 package com.github.damianjester.nclient.core
 
-import android.util.Log
 import com.github.damianjester.nclient.CommentEntity
 import com.github.damianjester.nclient.CommentPosterEntity
 import com.github.damianjester.nclient.core.CommentsFetcher.Result.Failure
@@ -8,6 +7,8 @@ import com.github.damianjester.nclient.core.CommentsFetcher.Result.Success
 import com.github.damianjester.nclient.db.CommentRepository
 import com.github.damianjester.nclient.net.CommentResponse
 import com.github.damianjester.nclient.net.NHentaiHttpClient
+import com.github.damianjester.nclient.utils.Logger
+import com.github.damianjester.nclient.utils.LogTags
 
 interface CommentsFetcher {
     suspend fun fetch(id: GalleryId): Result
@@ -26,6 +27,7 @@ interface CommentsFetcher {
 class DefaultCommentsFetcher(
     private val client: NHentaiHttpClient,
     private val repository: CommentRepository,
+    private val logger: Logger,
 ) : CommentsFetcher {
     override suspend fun fetch(id: GalleryId): CommentsFetcher.Result {
         val response: List<CommentResponse>
@@ -33,7 +35,7 @@ class DefaultCommentsFetcher(
         try {
             response = client.getComments(id)
         } catch (ex: Exception) {
-            Log.e("comments", "Failed to fetch comments for $id.", ex)
+            logger.e(LogTags.comments, "Failed to fetch comments for $id.", ex)
             return Failure.Network(ex)
         }
 
@@ -61,7 +63,7 @@ class DefaultCommentsFetcher(
         try {
             repository.insert(comments, posters)
         } catch (ex: Exception) {
-            Log.e("comments", "Failed to insert comments for $id.", ex)
+            logger.e(LogTags.comments, "Failed to insert comments for $id.", ex)
             return Failure.Database(ex)
         }
 

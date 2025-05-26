@@ -21,9 +21,9 @@ val httpModule = module {
 
     single { AndroidClientEngine(AndroidEngineConfig()) } bind HttpClientEngine::class
 
-    single { CustomAndroidHttpLogger() } bind Logger::class
+    single { CustomAndroidHttpLogger(get()) } bind Logger::class
 
-    single { NClientCookiesStorage() } bind CookiesStorage::class
+    single { NClientCookiesStorage(get()) } bind CookiesStorage::class
 
     single { Json { ignoreUnknownKeys = true } }
 

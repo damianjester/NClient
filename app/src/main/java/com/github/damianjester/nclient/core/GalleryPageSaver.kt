@@ -6,11 +6,12 @@ import android.content.Context
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import android.util.Log
 import android.webkit.MimeTypeMap
 import com.github.damianjester.nclient.core.GalleryPageSaver.Result.Failure
 import com.github.damianjester.nclient.core.GalleryPageSaver.Result.Success
 import com.github.damianjester.nclient.db.GalleryRepository
+import com.github.damianjester.nclient.utils.LogTags
+import com.github.damianjester.nclient.utils.Logger
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.fileExtension
 import com.github.damianjester.nclient.utils.filenameForExternalStorage
@@ -46,6 +47,7 @@ interface GalleryPageSaver {
 class DefaultGalleryPageSaver(
     private val context: Context,
     private val dispatchers: NClientDispatchers,
+    private val logger: Logger,
     private val downloader: GalleryPageDownloader,
     private val galleryRepository: GalleryRepository,
 ) : GalleryPageSaver {
@@ -60,6 +62,7 @@ class DefaultGalleryPageSaver(
             is GalleryPageImages.Remote -> when (val result = downloader.download(id, page)) {
                 is GalleryPageDownloader.Result.Success -> result.file
                 is GalleryPageDownloader.Result.Failure -> {
+                    logger.e(LogTags.saver, "Downloader failed: $result.")
                     return Failure.DownloaderFailed(result)
                 }
             }
@@ -67,23 +70,38 @@ class DefaultGalleryPageSaver(
             is GalleryPageImages.Local -> page.image.localOriginal.file
         }
 
-        Log.i(
-            "saver",
-            "Saving page ${page.index + 1} from gallery $id to media store"
+        logger.i(
+            LogTags.saver,
+            "Saving page ${page.index + 1} from gallery $id to media store."
         )
 
         val pageCount = galleryRepository.countPagesForGallery(id)
         if (pageCount < 1) {
+            logger.e(LogTags.saver, "Gallery $id has no pages.")
             return Failure.NoPagesFound
         }
 
         val fileExtension = file.fileExtension
-            ?: return Failure.UnknownFileExtension(file.name)
+        if (fileExtension == null) {
+            logger.e(
+                LogTags.saver,
+                "Unable to determine file extension for file name: ${file.name}."
+            )
+            return Failure.UnknownFileExtension(file.name)
+        }
+
         val filename = page.filenameForExternalStorage(id, pageCount, fileExtension)
 
         val mimeType = fileExtension
             .let { extension -> MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) }
-            ?: return Failure.MineTypeUnknown(file.name)
+
+        if (mimeType == null) {
+            logger.e(
+                LogTags.saver,
+                "Unable to determine MIME type from file extension: $fileExtension."
+            )
+            return Failure.MineTypeUnknown(file.name)
+        }
 
         val contentValues = ContentValues().apply {
             put(MediaStore.Images.Media.DISPLAY_NAME, filename)
@@ -91,12 +109,16 @@ class DefaultGalleryPageSaver(
         }
 
         val uri = contentResolver.insertCompat(contentValues)
-            ?: return Failure.NullContentUri
-//        "Content resolver returned a null Uri. Unable to save gallery page to external storage."
+        if (uri == null) {
+            logger.e(LogTags.saver, "Content resolver returned a null Uri.")
+            return Failure.NullContentUri
+        }
 
         val fileDescriptor = contentResolver.openFileDescriptor(uri, "w")
-            ?: return Failure.NullFileDescriptor
-//            "Content resolver returned a null FileDescriptor. Unable to save gallery page to external storage."
+        if (fileDescriptor == null) {
+            logger.e(LogTags.saver, "Content resolver returned a null FileDescriptor.")
+            return Failure.NullFileDescriptor
+        }
 
         withContext(dispatchers.IO) {
             fileDescriptor.use { pfd ->
@@ -108,18 +130,21 @@ class DefaultGalleryPageSaver(
             }
         }
 
-        Log.i(
-            "saver",
-            "Saved page ${page.index + 1} from gallery $id to media store"
+        logger.i(
+            LogTags.saver,
+            "Saved page ${page.index + 1} from gallery $id to media store."
         )
 
         try {
             cleanupAfterGalleryPageSave(page, file)
         } catch (ex: IOException) {
             return Failure.CacheFileDeletionFailed(ex)
+            logger.e(
+                LogTags.saver,
+                "Failed to remove temporary gallery page file from cache.",
+                ex
+            )
         }
-
-//            Log.e(LogUtility.LOGTAG, "Failed to save page to external storage.", ex)
 
         return Success
     }
