@@ -42,7 +42,7 @@ class DefaultCommentsFetcher(
                 CommentPosterEntity(
                     id = comment.poster.id,
                     username = comment.poster.username,
-                    avatarPath = comment.poster.avatarUrl
+                    avatarPath = removeQueryFromAvatarPath(comment.poster.avatarUrl)
                 )
             }
             .distinctBy { poster -> poster.id }
@@ -66,5 +66,18 @@ class DefaultCommentsFetcher(
         }
 
         return Success
+    }
+
+    private fun removeQueryFromAvatarPath(path: String): String {
+        // avatars/7433161.png?_=01e6e2e517774b70
+        //        Remove from ^ here         to ^ here (if it is present)
+
+        val indexOfParameters = path.indexOf('?')
+
+        return if (indexOfParameters != -1) {
+            path.substring(0, indexOfParameters)
+        } else {
+            path
+        }
     }
 }
