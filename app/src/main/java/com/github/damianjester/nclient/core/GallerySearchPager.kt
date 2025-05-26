@@ -27,7 +27,7 @@ class DefaultGallerySearchPager(
         val response: GalleriesResponse
 
         try {
-            response = client.getGalleries(1)
+            response = client.getGalleries(page)
         } catch (ex: Exception) {
             return@withContext Result.Failure(ex)
         }
