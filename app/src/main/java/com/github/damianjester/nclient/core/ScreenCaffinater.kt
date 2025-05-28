@@ -15,7 +15,6 @@ interface ScreenCaffeinater {
 class DefaultScreenCaffeinater(
     private val logger: Logger,
 ) : ScreenCaffeinater {
-
     private val _keepScreenOn = MutableStateFlow(false)
     override val keepScreenOn: StateFlow<Boolean> = _keepScreenOn
 
@@ -23,7 +22,4 @@ class DefaultScreenCaffeinater(
         logger.i(LogTags.caffeine, "caffeinated screen state changed: $value.")
         _keepScreenOn.value = value
     }
-
 }
-
-

@@ -6,9 +6,9 @@ import com.github.damianjester.nclient.CommentEntity
 import com.github.damianjester.nclient.CommentPosterEntity
 import com.github.damianjester.nclient.Database
 import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
-import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
@@ -60,7 +60,6 @@ class SqlDelightCommentRepository(
         comments: List<CommentEntity>,
         posters: List<CommentPosterEntity>,
     ) = withContext(dispatchers.IO) {
-
         if (comments.isEmpty()) {
             return@withContext
         }

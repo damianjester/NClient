@@ -15,8 +15,8 @@ import com.github.damianjester.nclient.ui.gallery.comments.CommentsComponent
 import com.github.damianjester.nclient.ui.gallery.comments.DefaultCommentsComponent
 import com.github.damianjester.nclient.ui.gallery.details.DefaultGalleryDetailsComponent
 import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsComponent
-import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerComponent
 import com.github.damianjester.nclient.ui.gallery.pager.DefaultGalleryPagerComponent
+import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerComponent
 import com.github.damianjester.nclient.ui.gallery.search.DefaultGallerySearchComponent
 import com.github.damianjester.nclient.ui.gallery.search.GallerySearchComponent
 import kotlinx.serialization.Serializable

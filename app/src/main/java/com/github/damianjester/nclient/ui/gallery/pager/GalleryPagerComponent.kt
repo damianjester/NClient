@@ -52,7 +52,6 @@ interface GalleryPagerComponent {
 
         data object PageShareFailed : SnackbarMessage
     }
-
 }
 
 class DefaultGalleryPagerComponent(

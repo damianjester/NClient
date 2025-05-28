@@ -10,11 +10,11 @@ import android.webkit.MimeTypeMap
 import com.github.damianjester.nclient.core.GalleryPageSaver.Result.Failure
 import com.github.damianjester.nclient.core.GalleryPageSaver.Result.Success
 import com.github.damianjester.nclient.db.GalleryRepository
-import com.github.damianjester.nclient.utils.logger.LogTags
-import com.github.damianjester.nclient.utils.logger.Logger
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.fileExtension
 import com.github.damianjester.nclient.utils.filenameForExternalStorage
+import com.github.damianjester.nclient.utils.logger.LogTags
+import com.github.damianjester.nclient.utils.logger.Logger
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
