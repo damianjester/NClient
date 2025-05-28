@@ -2,6 +2,7 @@ package com.github.damianjester.nclient.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,8 +15,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.arkivanov.decompose.defaultComponentContext
 import com.github.damianjester.nclient.core.GalleryPageSharer
+import com.github.damianjester.nclient.core.ScreenCaffeinater
 import com.github.damianjester.nclient.ui.theme.NClientTheme
 import com.github.damianjester.nclient.utils.NClientDispatchers
+import com.github.damianjester.nclient.utils.logger.LogTags
+import com.github.damianjester.nclient.utils.logger.Logger
+import com.github.damianjester.nclient.utils.logger.i
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -24,6 +29,8 @@ import org.koin.core.component.inject
 class MainActivity : ComponentActivity(), KoinComponent {
     private val dispatchers by inject<NClientDispatchers>()
     private val sharer by inject<GalleryPageSharer>()
+    private val screenCaffeinater by inject<ScreenCaffeinater>()
+    private val logger by inject<Logger>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -40,6 +47,12 @@ class MainActivity : ComponentActivity(), KoinComponent {
             }
         }
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                screenCaffeinater.keepScreenOn.collect(::setKeepScreenOnFlag)
+            }
+        }
+
         setContent {
             NClientTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
@@ -47,6 +60,12 @@ class MainActivity : ComponentActivity(), KoinComponent {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        logger.i(LogTags.caffeine, "Clearing window FLAG_KEEP_SCREEN_ON flag (onPause).")
+        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private suspend fun startShareActivity(share: GalleryPageSharer.GalleryPageShare) =
@@ -61,4 +80,14 @@ class MainActivity : ComponentActivity(), KoinComponent {
 
             startActivity(Intent.createChooser(shareIntent, null))
         }
+
+    private fun setKeepScreenOnFlag(keepOn: Boolean) {
+        if (keepOn) {
+            logger.i(LogTags.caffeine, "Adding window FLAG_KEEP_SCREEN_ON flag.")
+            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        } else {
+            logger.i(LogTags.caffeine, "Clearing window FLAG_KEEP_SCREEN_ON flag.")
+            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
 }

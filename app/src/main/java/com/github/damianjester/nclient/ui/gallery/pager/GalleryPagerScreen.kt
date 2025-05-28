@@ -20,7 +20,9 @@ import androidx.compose.ui.platform.LocalContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.core.GalleryPage
+import com.github.damianjester.nclient.core.ScreenCaffeinater
 import kotlinx.coroutines.flow.collectLatest
+import org.koin.compose.koinInject
 
 @Composable
 fun GalleryPagerRootContent(
@@ -59,6 +61,8 @@ fun GalleryPagerScreen(
     var jumpToPageDialogVisible by remember { mutableStateOf(false) }
     var shareDialogVisible by remember { mutableStateOf(false) }
 
+    val screenCaffeinater = koinInject<ScreenCaffeinater>()
+
     LaunchedEffect(areSystemBarsVisible) {
         if (areSystemBarsVisible) {
             uiVisible = true
@@ -70,6 +74,11 @@ fun GalleryPagerScreen(
         onDispose {
             windowInsetsController.setSystemBarsVisibility(true)
         }
+    }
+
+    DisposableEffect(Unit) {
+        screenCaffeinater.caffinateScreen(true)
+        onDispose { screenCaffeinater.caffinateScreen(false) }
     }
 
     LaunchedEffect(component.snackbarMessage) {

@@ -6,11 +6,14 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
+import com.arkivanov.essenty.lifecycle.doOnDestroy
+import com.arkivanov.essenty.lifecycle.doOnResume
 import com.github.damianjester.nclient.core.GalleryDetailsObserver
 import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.core.GalleryPageSaver
 import com.github.damianjester.nclient.core.GalleryPageSharer
 import com.github.damianjester.nclient.core.GalleryPagesObserver
+import com.github.damianjester.nclient.core.ScreenCaffeinater
 import com.github.damianjester.nclient.ui.DefaultRootComponent
 import com.github.damianjester.nclient.utils.coroutineScope
 import kotlinx.coroutines.Dispatchers
