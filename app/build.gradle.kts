@@ -83,13 +83,12 @@ dependencies {
     implementation(libs.bundles.ktor)
     implementation(libs.bundles.decompose)
     implementation(libs.bundles.coil)
+    implementation(libs.bundles.sqldelight)
 
     implementation(libs.telescope)
     implementation(libs.apache.commons.text)
     implementation(libs.kotlinx.datetime)
-    implementation("app.cash.sqldelight:android-driver:2.1.0")
-    implementation("app.cash.sqldelight:coroutines-extensions:2.1.0")
-    implementation("org.slf4j:slf4j-android:1.7.36")
+    implementation(libs.slf4j.android)
 
     // Legacy
     implementation(libs.okhttp.urlconnection) // Because of min SDK
