@@ -11,6 +11,7 @@ val coreModule = module {
     single { DefaultGalleryDetailsObserver(get()) } bind GalleryDetailsObserver::class
     single { DefaultGalleryPagesObserver(get()) } bind GalleryPagesObserver::class
     single { DefaultGalleryTagsObserver(get()) } bind GalleryTagsObserver::class
+    single { DefaultRelatedGalleriesObserver(get()) } bind RelatedGalleriesObserver::class
 
     single { DefaultGalleryPageDownloader(get(), get(), get(), get()) } bind GalleryPageDownloader::class
     single { DefaultGalleryPageSaver(get(), get(), get(), get(), get()) } bind GalleryPageSaver::class

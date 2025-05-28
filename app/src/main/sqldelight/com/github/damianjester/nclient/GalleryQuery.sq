@@ -1,0 +1,20 @@
+
+CREATE TABLE galleryQueryEntity (
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+    searchQuery TEXT
+);
+
+CREATE TABLE queryHasGallery (
+    queryId INTEGER NOT NULL,
+    galleryId INTEGER NOT NULL,
+    orderIndex INTEGER NOT NULL,
+    PRIMARY KEY(queryId, galleryId),
+    FOREIGN KEY(queryId) REFERENCES galleryQueryEntity(id) ON DELETE CASCADE,
+    FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE
+);
+
+insertQuery:
+INSERT OR REPLACE INTO galleryQueryEntity(searchQuery) VALUES ?;
+
+insertHasGallery:
+INSERT OR REPLACE INTO queryHasGallery(queryId, galleryId, orderIndex) VALUES ?;

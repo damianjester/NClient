@@ -19,6 +19,7 @@ import com.github.damianjester.nclient.core.GalleryPagesObserver
 import com.github.damianjester.nclient.core.GalleryTag
 import com.github.damianjester.nclient.core.GalleryTagType
 import com.github.damianjester.nclient.core.GalleryTagsObserver
+import com.github.damianjester.nclient.core.RelatedGalleriesObserver
 import com.github.damianjester.nclient.core.RelatedGallery
 import com.github.damianjester.nclient.ui.DefaultRootComponent
 import com.github.damianjester.nclient.utils.NClientDispatchers
@@ -41,6 +42,8 @@ interface GalleryDetailsComponent {
     fun navigateToPage(index: Int)
 
     fun navigateToComments()
+
+    fun navigateRelated(id: GalleryId)
 
     fun navigateBack()
 
@@ -92,12 +95,14 @@ class DefaultGalleryDetailsComponent(
     override val config: DefaultRootComponent.Config.GalleryDetails,
     private val onNavigatePage: (Int) -> Unit,
     private val onNavigateComments: (GalleryId) -> Unit,
+    private val onNavigateRelated: (GalleryId) -> Unit,
     private val onNavigateBack: () -> Unit,
     private val applicationContext: Context,
     private val galleryFetcher: GalleryDetailsFetcher,
     private val galleryObserver: GalleryDetailsObserver,
     private val pagesObserver: GalleryPagesObserver,
     private val tagsObserver: GalleryTagsObserver,
+    private val relatedObserver: RelatedGalleriesObserver,
 ) : GalleryDetailsComponent, ComponentContext by componentContext {
     private val lifecycleScope = coroutineScope(dispatchers.Default)
     private val _model = MutableValue(GalleryDetailsComponent.Model())
@@ -121,13 +126,13 @@ class DefaultGalleryDetailsComponent(
                     galleryObserver.details(config.id),
                     pagesObserver.pages(config.id),
                     tagsObserver.tags(config.id),
-                    // TODO: Related galleries
-                ) { gallery, pages, tags ->
+                    relatedObserver.galleries(config.id)
+                ) { gallery, pages, tags, related ->
                     GalleryDetailsComponent.GalleryState.Loaded(
                         gallery,
                         pages,
                         GalleryDetailsComponent.GalleryTags(tags),
-                        emptyList()
+                        related
                     )
                 }.collect { state ->
                     _model.update {
@@ -186,6 +191,8 @@ class DefaultGalleryDetailsComponent(
     override fun navigateToPage(index: Int) = onNavigatePage(index)
 
     override fun navigateToComments() = onNavigateComments(config.id)
+
+    override fun navigateRelated(id: GalleryId) = onNavigateRelated(id)
 
     override fun navigateBack() = onNavigateBack()
 }

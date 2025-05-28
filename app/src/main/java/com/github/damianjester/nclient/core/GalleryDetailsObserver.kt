@@ -1,7 +1,7 @@
 package com.github.damianjester.nclient.core
 
 import com.github.damianjester.nclient.db.GalleryRepository
-import io.ktor.http.Url
+import com.github.damianjester.nclient.net.NHentaiUrl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Instant
@@ -26,10 +26,20 @@ class DefaultGalleryDetailsObserver(
                         pretty = entity.prettyTitle
                     ),
                     cover = GalleryCover(
-                        // TODO: Move to object
-                        // TODO: Can hardcode .webp file extension?
-                        thumbnailUrl = Url("https://t1.nhentai.net/galleries/${entity.mediaId}/thumb.webp"),
-                        originalUrl = Url("https://t1.nhentai.net/galleries/${entity.mediaId}/cover.webp"),
+                        thumbnailUrl = NHentaiUrl.galleryCoverThumbnail(
+                            mediaId = MediaId(entity.mediaId),
+                            fileType = entity.coverThumbnailFileExtension
+                                ?.let { GalleryImageFileType.fromFileExtension(it) }
+                                // Cover thumbnail image file type unknown, make a best guess
+                                ?: GalleryImageFileType.WEBP(hasWebpExtension = false)
+                        ),
+                        originalUrl = NHentaiUrl.galleryCover(
+                            mediaId = MediaId(entity.mediaId),
+                            fileType = entity.coverFileExtension
+                                ?.let { GalleryImageFileType.fromFileExtension(it) }
+                                // Cover image file type unknown, make a best guess
+                                ?: GalleryImageFileType.WEBP(hasWebpExtension = false)
+                        )
                     ),
                     updated = Instant.fromEpochSeconds(entity.uploadDate).toLocalDateTime(TimeZone.UTC),
                     favoriteCount = entity.numFavorites.toInt()

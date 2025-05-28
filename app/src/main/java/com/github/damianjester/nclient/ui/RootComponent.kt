@@ -13,8 +13,8 @@ import com.github.damianjester.nclient.ui.csrf.CsrfTokenComponent
 import com.github.damianjester.nclient.ui.csrf.DefaultCsrfTokenComponent
 import com.github.damianjester.nclient.ui.gallery.comments.CommentsComponent
 import com.github.damianjester.nclient.ui.gallery.comments.DefaultCommentsComponent
-import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsComponent
 import com.github.damianjester.nclient.ui.gallery.details.DefaultGalleryDetailsComponent
+import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsComponent
 import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerComponent
 import com.github.damianjester.nclient.ui.gallery.pager.NewGalleryPagerComponent
 import com.github.damianjester.nclient.ui.gallery.search.DefaultGallerySearchComponent
@@ -96,12 +96,16 @@ class DefaultRootComponent(
             onNavigateComments = {
                 navigation.pushNew(Config.GalleryComments(config.id))
             },
+            onNavigateRelated = { id ->
+                navigation.pushNew(Config.GalleryDetails(id))
+            },
             onNavigateBack = { navigation.pop() },
             applicationContext = get(),
             galleryFetcher = get(),
             galleryObserver = get(),
             pagesObserver = get(),
-            tagsObserver = get()
+            tagsObserver = get(),
+            relatedObserver = get()
         )
 
     private fun galleryPagerComponent(

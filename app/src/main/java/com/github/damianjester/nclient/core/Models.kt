@@ -23,22 +23,49 @@ value class MediaId(val value: Long)
 value class GalleryTagId(val value: Long)
 
 sealed interface GalleryLanguage {
-    data object English : GalleryLanguage
+    interface KnownLanguage {
+        val id: GalleryTagId
+    }
 
-    data object Chinese : GalleryLanguage
+    data object English : GalleryLanguage, KnownLanguage {
+        override val id = GalleryTagId(12227L)
+    }
 
-    data object Japanese : GalleryLanguage
+    data object Chinese : GalleryLanguage, KnownLanguage {
+        override val id = GalleryTagId(29963L)
+    }
+
+    data object Japanese : GalleryLanguage, KnownLanguage {
+        override val id = GalleryTagId(6346L)
+    }
 
     data object Unknown : GalleryLanguage
+
+    companion object {
+        fun fromLongTagId(ids: List<Long>): GalleryLanguage {
+            return fromTagId(ids.map { GalleryTagId(it) })
+        }
+
+        fun fromTagId(ids: List<GalleryTagId>): GalleryLanguage {
+            return when {
+                ids.contains(Japanese.id) -> Japanese
+                ids.contains(English.id) -> English
+                ids.contains(Chinese.id) -> Chinese
+                else -> Unknown
+            }
+        }
+    }
 }
 
 sealed interface GalleryImage {
     data class Remote(val url: Url) : GalleryImage
+
     data class Local(val file: File) : GalleryImage
 }
 
 sealed interface GallerySearchItemImages {
     data class Remote(val thumbnail: GalleryImage.Remote) : GallerySearchItemImages
+
     data class Local(
         val cover: GalleryImage.Local,
         val thumbnail: GalleryImage.Local,
@@ -67,7 +94,7 @@ data class GalleryTitle(
 
 data class GalleryCover(
     val thumbnailUrl: Url,
-    val originalUrl: Url
+    val originalUrl: Url,
 )
 
 data class Resolution(val width: Int, val height: Int)
@@ -75,41 +102,51 @@ data class Resolution(val width: Int, val height: Int)
 data class GalleryPage(
     val index: Int,
     val image: GalleryPageImages,
-    val resolution: Resolution
+    val resolution: Resolution,
 )
 
-sealed class GalleryPageImageFileType() {
+sealed class GalleryImageFileType() {
     sealed interface WebpVariant {
-        val webp: Boolean
+        val hasWebpExtension: Boolean
     }
 
-    data class GIF(override val webp: Boolean = false) : GalleryPageImageFileType(), WebpVariant
+    data class GIF(override val hasWebpExtension: Boolean = false) : GalleryImageFileType(), WebpVariant
 
-    data class PNG(override val webp: Boolean = false) : GalleryPageImageFileType(), WebpVariant
+    data class PNG(override val hasWebpExtension: Boolean = false) : GalleryImageFileType(), WebpVariant
 
-    data class JPG(override val webp: Boolean = false) : GalleryPageImageFileType(), WebpVariant
+    data class JPG(override val hasWebpExtension: Boolean = false) : GalleryImageFileType(), WebpVariant
 
-    data class WEBP(override val webp: Boolean = false) : GalleryPageImageFileType(), WebpVariant
+    data class WEBP(override val hasWebpExtension: Boolean = false) : GalleryImageFileType(), WebpVariant
 
-    data class Unknown(val type: String) : GalleryPageImageFileType()
+    data class Unknown(val type: String) : GalleryImageFileType()
 
     companion object {
-        fun fromType(type: String): GalleryPageImageFileType {
+        fun fromType(type: String): GalleryImageFileType {
             return when (type.lowercase()) {
-                "gif", "g" -> GIF()
-                "png", "p" -> PNG()
-                "jpg", "j" -> JPG()
-                "webp", "w" -> WEBP()
-                "jpg.webp" -> JPG(webp = true)
-                "gif.webp" -> GIF(webp = true)
-                "png.webp" -> PNG(webp = true)
-                "webp.webp" -> WEBP(webp = true)
+                "g" -> GIF()
+                "p" -> PNG()
+                "j" -> JPG()
+                "w" -> WEBP()
                 else -> Unknown(type)
+            }
+        }
+
+        fun fromFileExtension(extension: String): GalleryImageFileType {
+            return when (extension.lowercase()) {
+                "gif" -> GIF()
+                "png" -> PNG()
+                "jpg" -> JPG()
+                "webp" -> WEBP()
+                "jpg.webp" -> JPG(hasWebpExtension = true)
+                "gif.webp" -> GIF(hasWebpExtension = true)
+                "png.webp" -> PNG(hasWebpExtension = true)
+                "webp.webp" -> WEBP(hasWebpExtension = true)
+                else -> Unknown(extension)
             }
         }
     }
 
-    fun toOriginalFileExtension(): String {
+    fun toFileExtension(): String {
         var extension = when (this) {
             is GIF -> "gif"
             is JPG -> "jpg"
@@ -118,19 +155,9 @@ sealed class GalleryPageImageFileType() {
             is Unknown -> type
         }
 
-        return extension
-    }
-
-    fun toThumbnailFileExtension(): String {
-        var extension = when (this) {
-            is GIF -> "gif"
-            is JPG -> "jpg"
-            is PNG -> "png"
-            is WEBP -> "webp"
-            is Unknown -> type
-        }
-
-        if (this is WebpVariant) {
+        // Append additional ".webp" extension
+        // For example: https://t1.nhentai.net/galleries/[mediaId]/thumb.jpg.webp
+        if (this is WebpVariant && hasWebpExtension) {
             extension += ".webp"
         }
 
@@ -144,7 +171,7 @@ sealed interface GalleryPageImages {
 
     data class Remote(
         override val remoteThumbnail: GalleryImage.Remote,
-        override val remoteOriginal: GalleryImage.Remote
+        override val remoteOriginal: GalleryImage.Remote,
     ) : GalleryPageImages
 
     data class Local(
@@ -178,7 +205,7 @@ data class GalleryTag(
     val type: GalleryTagType,
     val name: String,
     val url: Url,
-    val count: Int
+    val count: Int,
 )
 
 data class Gallery(
@@ -200,11 +227,11 @@ data class Comment(
     val poster: CommentPoster,
     val date: LocalDateTime,
     val elapsedTime: Duration,
-    val body: String
+    val body: String,
 )
 
 data class CommentPoster(
     val id: UserId,
     val username: String,
-    val avatar: Url?
+    val avatar: Url?,
 )

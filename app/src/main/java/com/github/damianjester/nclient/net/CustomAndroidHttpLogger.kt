@@ -1,6 +1,5 @@
 package com.github.damianjester.nclient.net
 
-import android.util.Log
 import com.github.damianjester.nclient.utils.LogTags
 import io.ktor.client.plugins.logging.Logger
 
@@ -11,9 +10,7 @@ import io.ktor.client.plugins.logging.Logger
 class CustomAndroidHttpLogger(
     private val logger: com.github.damianjester.nclient.utils.Logger
 ) : Logger {
-
     override fun log(message: String) {
         logger.i(LogTags.http, message)
     }
-
 }

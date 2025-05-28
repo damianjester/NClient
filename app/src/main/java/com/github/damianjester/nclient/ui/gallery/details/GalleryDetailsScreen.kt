@@ -10,9 +10,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
+import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.core.GalleryTag
-import com.github.damianjester.nclient.core.RelatedGallery
 
 @Composable
 fun GalleryDetailsRootContent(
@@ -25,7 +25,7 @@ fun GalleryDetailsRootContent(
         onBack = { component.navigateBack() },
         onTagClick = { TODO() },
         onPageClick = { page -> component.navigateToPage(page.index) },
-        onRelatedGalleryClick = { TODO() },
+        onRelatedGalleryClick = component::navigateRelated,
         onCopyMetadata = { component.copyToClipboard(it) }
     )
 }
@@ -37,7 +37,7 @@ fun GalleryDetailsScreen(
     onBack: () -> Unit,
     onTagClick: (GalleryTag) -> Unit,
     onPageClick: (GalleryPage) -> Unit,
-    onRelatedGalleryClick: (RelatedGallery) -> Unit,
+    onRelatedGalleryClick: (GalleryId) -> Unit,
     onCopyMetadata: (GalleryDetailsComponent.MetadataCopy) -> Unit
 ) {
     val model by component.model.subscribeAsState()

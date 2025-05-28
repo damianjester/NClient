@@ -58,7 +58,7 @@ fun GalleryPagesLazyGrid(
     related: List<RelatedGallery>,
     gridMode: GalleryDetailsComponent.GridMode,
     onPageClick: (GalleryPage) -> Unit,
-    onRelatedGalleryClick: (RelatedGallery) -> Unit,
+    onRelatedGalleryClick: (GalleryId) -> Unit,
     onTagClick: (GalleryTag) -> Unit,
     onCopyMetadata: (GalleryDetailsComponent.MetadataCopy) -> Unit,
 ) {

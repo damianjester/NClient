@@ -60,7 +60,6 @@ class SqlDelightCommentRepository(
         comments: List<CommentEntity>,
         posters: List<CommentPosterEntity>,
     ) = withContext(dispatchers.IO) {
-
         // TODO: Check size
 
         logger.i(

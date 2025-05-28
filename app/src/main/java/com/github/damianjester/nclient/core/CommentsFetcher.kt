@@ -7,8 +7,8 @@ import com.github.damianjester.nclient.core.CommentsFetcher.Result.Success
 import com.github.damianjester.nclient.db.CommentRepository
 import com.github.damianjester.nclient.net.CommentResponse
 import com.github.damianjester.nclient.net.NHentaiHttpClient
-import com.github.damianjester.nclient.utils.Logger
 import com.github.damianjester.nclient.utils.LogTags
+import com.github.damianjester.nclient.utils.Logger
 
 interface CommentsFetcher {
     suspend fun fetch(id: GalleryId): Result

@@ -5,18 +5,21 @@ import app.cash.sqldelight.coroutines.mapToList
 import app.cash.sqldelight.coroutines.mapToOneNotNull
 import com.github.damianjester.nclient.Database
 import com.github.damianjester.nclient.GalleryDetailsEntity
-import com.github.damianjester.nclient.GalleryDetailsEntityQueries
-import com.github.damianjester.nclient.GalleryEntity
-import com.github.damianjester.nclient.GalleryEntityQueries
+import com.github.damianjester.nclient.GalleryHasRelated
+import com.github.damianjester.nclient.GalleryHasRelatedQueries
 import com.github.damianjester.nclient.GalleryHasTag
-import com.github.damianjester.nclient.GalleryHasTagQueries
 import com.github.damianjester.nclient.GalleryPageEntity
 import com.github.damianjester.nclient.GalleryPageEntityQueries
+import com.github.damianjester.nclient.GalleryQueries
+import com.github.damianjester.nclient.GalleryQueryEntity
+import com.github.damianjester.nclient.GalleryQueryQueries
+import com.github.damianjester.nclient.GallerySummaryEntity
+import com.github.damianjester.nclient.QueryHasGallery
+import com.github.damianjester.nclient.SelectSummaryWithDetails
 import com.github.damianjester.nclient.TagEntity
 import com.github.damianjester.nclient.TagEntityQueries
 import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.core.GalleryTagId
-import com.github.damianjester.nclient.core.MediaId
 import com.github.damianjester.nclient.utils.LogTags
 import com.github.damianjester.nclient.utils.Logger
 import com.github.damianjester.nclient.utils.NClientDispatchers
@@ -25,44 +28,46 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 interface GalleryRepository {
-    fun selectAll(): Flow<List<GalleryEntityWithTagIds>>
+    fun selectSummariesForQuery(query: GalleryQueryEntity): Flow<List<GalleryWithTagIds>>
 
-    fun selectGalleryDetails(id: GalleryId): Flow<CompleteGallery>
+    fun selectGalleryDetails(id: GalleryId): Flow<SelectSummaryWithDetails>
 
-    fun selectPagesForGallery(id: GalleryId): Flow<List<GalleryPageEntity>>
+    fun selectPagesForGallery(id: GalleryId): Flow<List<GalleryPageWithMediaId>>
 
     suspend fun countPagesForGallery(id: GalleryId): Int
 
-    suspend fun selectMediaIdForGallery(id: GalleryId): MediaId
+    fun selectRelatedGalleries(id: GalleryId): Flow<List<GalleryWithTagIds>>
 
-    suspend fun insertAll(
-        galleries: List<GalleryEntity>,
-        galleryHasTag: Map<GalleryEntity, List<GalleryTagId>>,
+    suspend fun insertGallerySummaries(
+        query: GalleryQueryEntity,
+        galleries: List<GallerySummaryEntity>,
+        galleryHasTag: Map<GallerySummaryEntity, List<GalleryTagId>>,
     )
 
-    suspend fun insertDetails(
+    suspend fun insertGalleryWithDetails(
+        summary: GallerySummaryEntity,
         details: GalleryDetailsEntity,
         pages: List<GalleryPageEntity>,
         tags: List<TagEntity>,
+        related: List<Pair<GallerySummaryEntity, List<GalleryTagId>>>,
     )
 }
 
-data class GalleryEntityWithTagIds(
+data class GalleryWithTagIds(
     val id: Long,
     val title: String,
     val mediaId: Long,
-    val coverThumbnailUrl: String,
+    val coverThumbnailFileExtension: String?,
     val tagIds: List<Long>,
 )
 
-data class CompleteGallery(
-    val id: Long,
+data class GalleryPageWithMediaId(
+    val galleryId: Long,
+    val pageIndex: Long,
+    val fileExtension: String,
+    val width: Long,
+    val height: Long,
     val mediaId: Long,
-    val numFavorites: Long,
-    val prettyTitle: String,
-    val englishTitle: String?,
-    val japaneseTitle: String?,
-    val uploadDate: Long,
 )
 
 class SqlDelightGalleryRepository(
@@ -70,67 +75,83 @@ class SqlDelightGalleryRepository(
     private val dispatchers: NClientDispatchers,
     private val logger: Logger,
 ) : GalleryRepository {
-
-    private val galleryQueries: GalleryEntityQueries
-        get() = database.galleryEntityQueries
-    private val galleryDetailsEntityQueries: GalleryDetailsEntityQueries
-        get() = database.galleryDetailsEntityQueries
+    private val galleryQueryQueries: GalleryQueryQueries
+        get() = database.galleryQueryQueries
+    private val galleryQueries: GalleryQueries
+        get() = database.galleryQueries
     private val galleryPageQueries: GalleryPageEntityQueries
         get() = database.galleryPageEntityQueries
-    private val tagEntityQueries: TagEntityQueries
+    private val tagQueries: TagEntityQueries
         get() = database.tagEntityQueries
-    private val tagAssociationQueries: GalleryHasTagQueries
-        get() = database.galleryHasTagQueries
+    private val galleryHasRelatedQueries: GalleryHasRelatedQueries
+        get() = database.galleryHasRelatedQueries
 
-    override fun selectAll(): Flow<List<GalleryEntityWithTagIds>> {
-        return galleryQueries.selectAllTest().asFlow()
+    override fun selectSummariesForQuery(query: GalleryQueryEntity): Flow<List<GalleryWithTagIds>> {
+        return galleryQueries.selectSummariesFoQuery(query.id).asFlow()
             .mapToList(dispatchers.IO)
             .map { rows ->
                 rows.groupBy { it.galleryId }
                     .map { (id, rows) ->
                         val first = rows.first()
                         val tagIds = rows.map { it.tagId }
-                        GalleryEntityWithTagIds(
+                        GalleryWithTagIds(
                             id,
-                            first.title,
+                            first.prettyTitle,
                             first.mediaId,
-                            first.coverThumbnailUrl,
+                            first.coverThumbnailFileExtension,
                             tagIds
                         )
                     }
             }
     }
 
-    override fun selectGalleryDetails(id: GalleryId): Flow<CompleteGallery> {
-        return galleryDetailsEntityQueries.selectDetails(id.value) {
-            mediaId,
-            numFavorites,
-            prettyTitle,
-            englishTitle,
-            japaneseTitle,
-            uploadDate
-            ->
-            CompleteGallery(
-                id = id.value,
-                mediaId = mediaId,
-                numFavorites = numFavorites,
-                prettyTitle = prettyTitle,
-                englishTitle = englishTitle,
-                japaneseTitle = japaneseTitle,
-                uploadDate = uploadDate
-            )
-        }
+    override fun selectGalleryDetails(id: GalleryId): Flow<SelectSummaryWithDetails> {
+        return galleryQueries.selectSummaryWithDetails(id.value)
             .asFlow()
             .mapToOneNotNull(dispatchers.IO)
     }
 
-    override fun selectPagesForGallery(id: GalleryId): Flow<List<GalleryPageEntity>> {
-        return galleryPageQueries.selectPagesForGallery(id.value).asFlow()
+    override fun selectPagesForGallery(id: GalleryId): Flow<List<GalleryPageWithMediaId>> {
+        return galleryPageQueries.selectPagesForGallery(id.value) {
+            galleryId: Long,
+            pageIndex: Long,
+            fileExtension: String,
+            width: Long,
+            height: Long,
+            mediaId: Long
+            ->
+
+            GalleryPageWithMediaId(
+                galleryId = galleryId,
+                pageIndex = pageIndex,
+                fileExtension = fileExtension,
+                width = width,
+                height = height,
+                mediaId = mediaId
+            )
+        }
+            .asFlow()
             .mapToList(dispatchers.IO)
     }
 
-    override suspend fun selectMediaIdForGallery(id: GalleryId): MediaId {
-        return MediaId(database.galleryEntityQueries.selectMediaId(id.value).executeAsOne())
+    override fun selectRelatedGalleries(id: GalleryId): Flow<List<GalleryWithTagIds>> {
+        return galleryHasRelatedQueries.selectRelatedForGallery(id.value)
+            .asFlow()
+            .mapToList(dispatchers.IO)
+            .map { rows ->
+                rows.groupBy { it.id }
+                    .map { (id, rows) ->
+                        val first = rows.first()
+                        val tagIds = rows.map { it.tagId }
+                        GalleryWithTagIds(
+                            id,
+                            first.prettyTitle,
+                            first.mediaId,
+                            first.coverThumbnailFileExtension,
+                            tagIds
+                        )
+                    }
+            }
     }
 
     override suspend fun countPagesForGallery(id: GalleryId): Int = withContext(dispatchers.IO) {
@@ -139,41 +160,63 @@ class SqlDelightGalleryRepository(
             .toInt()
     }
 
-    override suspend fun insertAll(
-        galleries: List<GalleryEntity>,
-        galleryHasTag: Map<GalleryEntity, List<GalleryTagId>>,
+    override suspend fun insertGallerySummaries(
+        query: GalleryQueryEntity,
+        galleries: List<GallerySummaryEntity>,
+        galleryHasTag: Map<GallerySummaryEntity, List<GalleryTagId>>,
     ) = withContext(dispatchers.IO) {
         logger.i(
             LogTags.gallery,
             "Inserting ${galleries.size} gallery entities and " +
-                "${galleryHasTag.values.size} has-tag associations."
+                "${galleryHasTag.values.size} has-tag associations for query $query."
         )
         database.transaction {
-            // TODO: Fix UNIQUE constraint failure
-            galleries.forEach { galleryQueries.insertGallery(it) }
+            galleryQueryQueries.insertQuery(query)
+            galleries.forEachIndexed { i, gal ->
+                galleryQueries.insertSummary(gal)
+                galleryQueryQueries.insertHasGallery(QueryHasGallery(query.id, gal.id, i.toLong()))
+            }
             galleryHasTag
                 .map { (gal, v) -> v.map { tagId -> GalleryHasTag(gal.id, tagId.value) } }
                 .flatten()
-                .forEach { tagAssociationQueries.insertAssociation(it) }
+                .forEach { galleryQueries.insertHasTag(it) }
         }
     }
 
-    override suspend fun insertDetails(
+    override suspend fun insertGalleryWithDetails(
+        summary: GallerySummaryEntity,
         details: GalleryDetailsEntity,
         pages: List<GalleryPageEntity>,
         tags: List<TagEntity>,
+        related: List<Pair<GallerySummaryEntity, List<GalleryTagId>>>,
     ) = withContext(dispatchers.IO) {
         logger.i(
             LogTags.gallery,
-            "Inserting details for gallery #${details.galleryId} with " +
-                "${pages.size} pages and ${tags.size} tags."
+            "Inserting details for gallery #${summary.id} with " +
+                "${pages.size} pages, ${tags.size} tags and ${related.size} related galleries."
         )
 
         database.transaction {
-            // TODO: Make tag associations if needed
-            galleryDetailsEntityQueries.insertDetails(details)
+            galleryQueries.insertSummary(summary)
+            galleryQueries.insertDetails(details)
             pages.forEach { galleryPageQueries.insertPage(it) }
-            tags.forEach { tagEntityQueries.insertTag(it) }
+            tags.forEach { tag ->
+                tagQueries.insertTag(tag)
+                galleryQueries.insertHasTag(GalleryHasTag(summary.id, tag.id))
+            }
+            related.forEachIndexed { i, (related, tagIds) ->
+                galleryQueries.insertSummary(related)
+                galleryQueries.insertHasRelated(
+                    GalleryHasRelated(
+                        galleryId = summary.id,
+                        relatedId = related.id,
+                        orderIndex = i.toLong()
+                    )
+                )
+                tagIds.forEach { tagId ->
+                    galleryQueries.insertHasTag(GalleryHasTag(related.id, tagId.value))
+                }
+            }
         }
     }
 }

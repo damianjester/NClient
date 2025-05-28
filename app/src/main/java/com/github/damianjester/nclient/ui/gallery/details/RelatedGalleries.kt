@@ -27,6 +27,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.core.GalleryLanguage
 import com.github.damianjester.nclient.core.RelatedGallery
 import io.ktor.http.Url
@@ -35,7 +36,7 @@ import io.ktor.http.Url
 fun RelatedGalleriesSection(
     modifier: Modifier = Modifier,
     galleries: List<RelatedGallery>,
-    onGalleryClick: (RelatedGallery) -> Unit
+    onGalleryClick: (GalleryId) -> Unit
 ) {
     Column(modifier) {
         Text(
@@ -57,7 +58,7 @@ fun RelatedGalleriesSection(
 fun RelatedGalleryScroller(
     modifier: Modifier = Modifier,
     galleries: List<RelatedGallery>,
-    onGalleryClick: (RelatedGallery) -> Unit
+    onGalleryClick: (GalleryId) -> Unit
 ) {
     Row(
         modifier = modifier
@@ -69,7 +70,7 @@ fun RelatedGalleryScroller(
                 title = gal.title,
                 coverImageUrl = gal.image.url,
                 language = gal.language,
-                onGalleryClick = { onGalleryClick(gal) }
+                onGalleryClick = { onGalleryClick(gal.id) }
             )
         }
     }

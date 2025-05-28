@@ -17,9 +17,13 @@ value class LogTag(val value: String)
 
 interface Logger {
     fun v(tag: LogTag, message: String, throwable: Throwable? = null)
+
     fun d(tag: LogTag, message: String, throwable: Throwable? = null)
+
     fun i(tag: LogTag, message: String, throwable: Throwable? = null)
+
     fun w(tag: LogTag, message: String, throwable: Throwable? = null)
+
     fun e(tag: LogTag, message: String, throwable: Throwable? = null)
 }
 
@@ -39,7 +43,6 @@ fun Logger.e(message: String, throwable: Throwable? = null) =
     e(LogTags.default, message, throwable)
 
 class AndroidLogger : Logger {
-
     override fun v(tag: LogTag, message: String, throwable: Throwable?) {
         if (throwable != null) {
             Log.v(tag.value, message, throwable)
@@ -79,5 +82,4 @@ class AndroidLogger : Logger {
             Log.e(tag.value, message)
         }
     }
-
 }

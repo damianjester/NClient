@@ -1,10 +1,12 @@
 package com.github.damianjester.nclient.core
 
-import com.github.damianjester.nclient.GalleryEntity
+import com.github.damianjester.nclient.GalleryQueryEntity
+import com.github.damianjester.nclient.GallerySummaryEntity
 import com.github.damianjester.nclient.core.GallerySearchPager.Result
 import com.github.damianjester.nclient.db.GalleryRepository
 import com.github.damianjester.nclient.net.GalleriesResponse
 import com.github.damianjester.nclient.net.NHentaiHttpClient
+import com.github.damianjester.nclient.net.NHentaiUrl.lastSegmentFileExtension
 import com.github.damianjester.nclient.utils.LogTags
 import com.github.damianjester.nclient.utils.Logger
 import com.github.damianjester.nclient.utils.NClientDispatchers
@@ -38,26 +40,36 @@ class DefaultGallerySearchPager(
 
         val galleryEntities = response.galleries
             .mapIndexed { i, gal ->
-                GalleryEntity(
+                GallerySummaryEntity(
                     id = gal.id.value,
-                    title = gal.title,
+                    prettyTitle = gal.title,
                     mediaId = gal.mediaId,
-                    coverThumbnailUrl = gal.coverThumbnailUrl.toString(),
-                    page = page.toLong(),
-                    orderIndex = i.toLong()
+                    coverThumbnailFileExtension = gal.coverThumbnailUrl.lastSegmentFileExtension,
                 )
             }
 
-        val galleryHasTag = galleryEntities
-            .associate { gal -> gal to response.galleries.first { it.id.value == gal.id }.tagIds }
+        val galleryHasTag = galleryEntities.associateWith { gal ->
+            response.galleries.first { it.id.value == gal.id }.tagIds
+        }
 
         try {
-            galleryRepository.insertAll(galleryEntities, galleryHasTag)
+            galleryRepository.insertGallerySummaries(
+                defaultHomeQuery,
+                galleryEntities,
+                galleryHasTag
+            )
         } catch (ex: Exception) {
             logger.e(LogTags.gallery, "Failed to insert galleries.", ex)
             return@withContext Result.Failure(ex)
         }
 
         Result.Success
+    }
+
+    companion object {
+        val defaultHomeQuery = GalleryQueryEntity(
+            id = 1,
+            searchQuery = null,
+        )
     }
 }

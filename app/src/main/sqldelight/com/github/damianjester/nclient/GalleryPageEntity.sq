@@ -1,3 +1,4 @@
+
 CREATE TABLE galleryPageEntity (
     galleryId INTEGER NOT NULL,
     pageIndex INTEGER NOT NULL,
@@ -5,14 +6,16 @@ CREATE TABLE galleryPageEntity (
     width INTEGER NOT NULL,
     height INTEGER NOT NULL,
     PRIMARY KEY(galleryId, pageIndex),
-    FOREIGN KEY(galleryId) REFERENCES galleryEntity(id) ON DELETE CASCADE
+    FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE
 );
 
 insertPage:
 INSERT OR REPLACE INTO galleryPageEntity(galleryId, pageIndex, fileExtension, width, height) VALUES ?;
 
 selectPagesForGallery:
-SELECT * FROM galleryPageEntity WHERE galleryId = (?) ORDER BY pageIndex;
+SELECT galleryPageEntity.*, gallerySummaryEntity.mediaId FROM galleryPageEntity
+    INNER JOIN gallerySummaryEntity ON galleryPageEntity.galleryId = gallerySummaryEntity.id
+WHERE galleryId = (?) ORDER BY pageIndex;
 
 countPagesForGallery:
 SELECT COUNT(galleryId) AS amount FROM galleryPageEntity WHERE galleryId = (?);

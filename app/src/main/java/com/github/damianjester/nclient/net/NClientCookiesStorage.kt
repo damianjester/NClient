@@ -9,7 +9,6 @@ import io.ktor.http.Url
 class NClientCookiesStorage(
     private val logger: Logger,
 ) : CookiesStorage {
-
     private val cookies = mutableMapOf<String, List<Cookie>>() // TODO: Persist to db
 
     override suspend fun get(requestUrl: Url): List<Cookie> =

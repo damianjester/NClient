@@ -6,6 +6,13 @@ CREATE TABLE tagEntity (
   urlPath TEXT NOT NULL
 );
 
+CREATE TABLE galleryHasTag (
+    galleryId INTEGER NOT NULL,
+    tagId INTEGER NOT NULL,
+    PRIMARY KEY(galleryId, tagId),
+    FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE
+);
+
 insertTag:
 INSERT OR REPLACE INTO tagEntity(id, type, name, count, urlPath)
 VALUES ?;

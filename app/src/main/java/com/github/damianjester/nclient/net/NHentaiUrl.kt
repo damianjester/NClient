@@ -1,8 +1,8 @@
 package com.github.damianjester.nclient.net
 
 import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.core.GalleryImageFileType
 import com.github.damianjester.nclient.core.GalleryPage
-import com.github.damianjester.nclient.core.GalleryPageImageFileType
 import com.github.damianjester.nclient.core.MediaId
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
@@ -42,17 +42,47 @@ object NHentaiUrl {
     }
 
     /**
+     * Returns:
+     * https://t1.nhentai.net/galleries/[mediaId]/thumb.[fileType]
+     */
+    fun galleryCoverThumbnail(
+        mediaId: MediaId,
+        fileType: GalleryImageFileType,
+    ): Url =
+        URLBuilder(baseUrl(T1_SUBDOMAIN))
+            .apply {
+                val extension = fileType.toFileExtension()
+                path(GALLERIES_PATH_SEGMENT, "${mediaId.value}", "thumb.$extension")
+            }
+            .build()
+
+    /**
+     * Returns:
+     * https://t1.nhentai.net/galleries/[mediaId]/cover.[fileType]
+     */
+    fun galleryCover(
+        mediaId: MediaId,
+        fileType: GalleryImageFileType,
+    ) =
+        URLBuilder(baseUrl(T1_SUBDOMAIN))
+            .apply {
+                val extension = fileType.toFileExtension()
+                path(GALLERIES_PATH_SEGMENT, "${mediaId.value}", "cover.$extension")
+            }
+            .build()
+
+    /**
      * Return the following URL:
      * https://t1.nhentai.net/galleries/{mediaId}/{pageNumber}t.{fileExtension}
      */
     fun galleryPageThumbnail(
         mediaId: MediaId,
         pageNumber: Int,
-        fileType: GalleryPageImageFileType,
+        fileType: GalleryImageFileType,
     ): Url =
         URLBuilder(baseUrl(T1_SUBDOMAIN))
             .apply {
-                val filename = "${pageNumber}t.${fileType.toThumbnailFileExtension()}"
+                val filename = "${pageNumber}t.${fileType.toFileExtension()}"
                 path(GALLERIES_PATH_SEGMENT, "${mediaId.value}", filename)
             }
             .build()
@@ -64,11 +94,11 @@ object NHentaiUrl {
     fun galleryPage(
         mediaId: MediaId,
         pageNumber: Int,
-        fileType: GalleryPageImageFileType,
+        fileType: GalleryImageFileType,
     ): Url =
         URLBuilder(baseUrl(I1_SUBDOMAIN))
             .apply {
-                val filename = "$pageNumber.${fileType.toOriginalFileExtension()}"
+                val filename = "$pageNumber.${fileType.toFileExtension()}"
                 path(GALLERIES_PATH_SEGMENT, "${mediaId.value}", filename)
             }
             .build()
@@ -115,4 +145,10 @@ object NHentaiUrl {
                 path(G_PATH_SEGMENT, "${id.value}", "${page.index + 1}/")
             }
             .build()
+
+    val Url.lastSegmentFileExtension: String?
+        get() = segments
+            .lastOrNull()
+            ?.substringAfter('.')
+            ?.ifEmpty { null }
 }

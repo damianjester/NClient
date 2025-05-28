@@ -63,6 +63,7 @@ data class GalleriesResponse(
 
 data class GalleryResponse(
     val gallery: DetailsGallery,
+    val coverUrl: Url?,
     val related: List<ListGallery>,
     val isUserFavorite: Boolean,
 )

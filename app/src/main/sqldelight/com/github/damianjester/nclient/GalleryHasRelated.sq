@@ -1,0 +1,17 @@
+
+CREATE TABLE galleryHasRelated (
+    galleryId INTEGER NOT NULL,
+    relatedId INTEGER NOT NULL,
+    orderIndex INTEGER NOT NULL,
+    PRIMARY KEY(galleryId, relatedId),
+    FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE,
+    FOREIGN KEY(relatedId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE
+);
+
+selectRelatedForGallery:
+SELECT gallerySummaryEntity.*, galleryHasTag.tagId
+FROM gallerySummaryEntity
+    INNER JOIN galleryHasRelated ON gallerySummaryEntity.id = galleryHasRelated.relatedId
+    INNER JOIN galleryHasTag ON gallerySummaryEntity.id = galleryHasTag.galleryId
+WHERE galleryHasRelated.galleryId = ?
+ORDER BY galleryHasRelated.orderIndex ASC;

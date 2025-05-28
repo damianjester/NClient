@@ -52,6 +52,12 @@ class ScrapperNHentaiHttpClient(
         val json: String = StringEscapeUtils.unescapeJava(substringGalleryJson(secondScriptHtml))
         val detailsGallery = Json.Default.decodeFromString<DetailsGallery>(json)
 
+        val coverUrl = document.getElementById("cover")
+            ?.getElementsByTag("img")
+            ?.firstOrNull()
+            ?.attr("data-src")
+            ?.let { Url(it) }
+
         val relatedContainer = document.getElementById("related-container")
         val related = if (relatedContainer != null) {
             val gallery = relatedContainer.getElementsByClass("gallery")
@@ -69,6 +75,7 @@ class ScrapperNHentaiHttpClient(
 
         GalleryResponse(
             gallery = detailsGallery,
+            coverUrl = coverUrl,
             related = related,
             isUserFavorite = isFavorite
         )

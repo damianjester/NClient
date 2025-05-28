@@ -1,0 +1,44 @@
+
+CREATE TABLE gallerySummaryEntity (
+    id INTEGER PRIMARY KEY NOT NULL,
+    mediaId INTEGER NOT NULL,
+    prettyTitle TEXT NOT NULL,
+    coverThumbnailFileExtension TEXT
+);
+
+CREATE TABLE galleryDetailsEntity (
+    galleryId INTEGER PRIMARY KEY NOT NULL,
+    coverFileExtension TEXT,
+    numFavorites INTEGER NOT NULL,
+    englishTitle TEXT,
+    japaneseTitle TEXT,
+    uploadDate INTEGER NOT NULL,
+    FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE
+);
+
+selectSummariesFoQuery:
+SELECT gallerySummaryEntity.*, hasTag.* FROM gallerySummaryEntity
+    INNER JOIN queryHasGallery ON gallerySummaryEntity.id = queryHasGallery.galleryId
+    INNER JOIN galleryHasTag AS hasTag ON gallerySummaryEntity.id = hasTag.galleryId
+WHERE queryHasGallery.queryId = ?
+ORDER BY queryHasGallery.orderIndex ASC;
+
+selectSummaryWithDetails:
+SELECT gs.*, gd.coverFileExtension, gd.numFavorites, gd.englishTitle, gd.japaneseTitle, gd.uploadDate
+FROM galleryDetailsEntity AS gd
+    INNER JOIN gallerySummaryEntity AS gs ON gd.galleryId = gs.id
+WHERE galleryId = ? LIMIT 1;
+
+insertSummary:
+INSERT OR REPLACE INTO gallerySummaryEntity (id, prettyTitle, mediaId, coverThumbnailFileExtension) VALUES ?;
+
+insertDetails:
+INSERT OR REPLACE INTO
+    galleryDetailsEntity (galleryId, coverFileExtension, numFavorites, englishTitle,japaneseTitle, uploadDate)
+VALUES ?;
+
+insertHasTag:
+INSERT OR REPLACE INTO galleryHasTag (galleryId, tagId) VALUES ?;
+
+insertHasRelated:
+INSERT OR REPLACE INTO galleryHasRelated(galleryId, relatedId, orderIndex) VALUES ?;
