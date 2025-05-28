@@ -88,6 +88,7 @@ dependencies {
     implementation(libs.telescope)
     implementation(libs.apache.commons.text)
     implementation(libs.kotlinx.datetime)
+    implementation(libs.kotlinx.coroutines)
     implementation(libs.slf4j.android)
 
     // Legacy

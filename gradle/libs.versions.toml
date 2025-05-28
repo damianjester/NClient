@@ -38,6 +38,9 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 # https://github.com/Kotlin/kotlinx.serialization?tab=readme-ov-file#setup
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.8.1" }
 
+# https://github.com/Kotlin/kotlinx.coroutines?tab=readme-ov-file#using-in-your-projects
+kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version = "1.10.2" }
+
 # Koin
 # https://insert-koin.io/docs/4.1/setup/koin
 koin-bom = { module = "io.insert-koin:koin-bom", version = "4.0.0" }
