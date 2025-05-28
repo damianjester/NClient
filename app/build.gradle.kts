@@ -106,7 +106,6 @@ dependencies {
     implementation(libs.coil.gif)
     implementation(libs.coil.ktor3)
     implementation(libs.telescope)
-    implementation(libs.coil.okhttp)
 
     // Other
     implementation(libs.okhttp.urlconnection) // Because of min SDK
