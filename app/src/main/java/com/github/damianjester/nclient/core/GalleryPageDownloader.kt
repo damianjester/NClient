@@ -4,8 +4,8 @@ import android.content.Context
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result.Failure
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result.Success
-import com.github.damianjester.nclient.utils.LogTags
-import com.github.damianjester.nclient.utils.Logger
+import com.github.damianjester.nclient.utils.logger.LogTags
+import com.github.damianjester.nclient.utils.logger.Logger
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body

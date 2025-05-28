@@ -6,7 +6,7 @@ import com.github.damianjester.nclient.db.dbModule
 import com.github.damianjester.nclient.net.httpModule
 import com.github.damianjester.nclient.net.imageModule
 import com.github.damianjester.nclient.utils.coroutineModule
-import com.github.damianjester.nclient.utils.loggerModule
+import com.github.damianjester.nclient.utils.logger.loggerModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 

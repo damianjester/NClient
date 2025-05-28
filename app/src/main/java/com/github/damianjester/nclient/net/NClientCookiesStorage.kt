@@ -1,7 +1,7 @@
 package com.github.damianjester.nclient.net
 
-import com.github.damianjester.nclient.utils.LogTags
-import com.github.damianjester.nclient.utils.Logger
+import com.github.damianjester.nclient.utils.logger.LogTags
+import com.github.damianjester.nclient.utils.logger.Logger
 import io.ktor.client.plugins.cookies.CookiesStorage
 import io.ktor.http.Cookie
 import io.ktor.http.Url

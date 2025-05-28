@@ -20,8 +20,8 @@ import com.github.damianjester.nclient.TagEntity
 import com.github.damianjester.nclient.TagEntityQueries
 import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.core.GalleryTagId
-import com.github.damianjester.nclient.utils.LogTags
-import com.github.damianjester.nclient.utils.Logger
+import com.github.damianjester.nclient.utils.logger.LogTags
+import com.github.damianjester.nclient.utils.logger.Logger
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

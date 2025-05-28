@@ -6,8 +6,8 @@ import com.github.damianjester.nclient.CommentEntity
 import com.github.damianjester.nclient.CommentPosterEntity
 import com.github.damianjester.nclient.Database
 import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.utils.LogTags
-import com.github.damianjester.nclient.utils.Logger
+import com.github.damianjester.nclient.utils.logger.LogTags
+import com.github.damianjester.nclient.utils.logger.Logger
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext

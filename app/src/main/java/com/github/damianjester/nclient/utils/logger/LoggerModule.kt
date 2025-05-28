@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.utils
+package com.github.damianjester.nclient.utils.logger
 
 import org.koin.dsl.bind
 import org.koin.dsl.module

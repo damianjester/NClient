@@ -7,8 +7,8 @@ import com.github.damianjester.nclient.db.GalleryRepository
 import com.github.damianjester.nclient.net.GalleriesResponse
 import com.github.damianjester.nclient.net.NHentaiHttpClient
 import com.github.damianjester.nclient.net.NHentaiUrl.lastSegmentFileExtension
-import com.github.damianjester.nclient.utils.LogTags
-import com.github.damianjester.nclient.utils.Logger
+import com.github.damianjester.nclient.utils.logger.LogTags
+import com.github.damianjester.nclient.utils.logger.Logger
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.withContext
 
