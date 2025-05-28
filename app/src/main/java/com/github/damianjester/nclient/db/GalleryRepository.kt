@@ -165,6 +165,11 @@ class SqlDelightGalleryRepository(
         galleries: List<GallerySummaryEntity>,
         galleryHasTag: Map<GallerySummaryEntity, List<GalleryTagId>>,
     ) = withContext(dispatchers.IO) {
+
+        if (galleries.isEmpty()) {
+            return@withContext
+        }
+
         logger.i(
             LogTags.gallery,
             "Inserting ${galleries.size} gallery entities and " +
