@@ -16,7 +16,7 @@ import com.github.damianjester.nclient.ui.gallery.comments.DefaultCommentsCompon
 import com.github.damianjester.nclient.ui.gallery.details.DefaultGalleryDetailsComponent
 import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsComponent
 import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerComponent
-import com.github.damianjester.nclient.ui.gallery.pager.NewGalleryPagerComponent
+import com.github.damianjester.nclient.ui.gallery.pager.DefaultGalleryPagerComponent
 import com.github.damianjester.nclient.ui.gallery.search.DefaultGallerySearchComponent
 import com.github.damianjester.nclient.ui.gallery.search.GallerySearchComponent
 import kotlinx.serialization.Serializable
@@ -112,7 +112,7 @@ class DefaultRootComponent(
         componentContext: ComponentContext,
         config: Config.GalleryPager,
     ): GalleryPagerComponent =
-        NewGalleryPagerComponent(
+        DefaultGalleryPagerComponent(
             componentContext = componentContext,
             config = config,
             onNavigateBack = { navigation.pop() },
