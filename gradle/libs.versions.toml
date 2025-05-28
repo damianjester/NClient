@@ -37,31 +37,51 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-material-icons = { group = "androidx.compose.material", name = "material-icons-extended" }
 
+# KotlinX
+
+# https://github.com/Kotlin/kotlinx-datetime?tab=readme-ov-file#using-in-your-projects
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
+
+# https://github.com/Kotlin/kotlinx.serialization?tab=readme-ov-file#setup
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+
+# Koin
+# https://insert-koin.io/docs/4.1/setup/koin
 koin-bom = { module = "io.insert-koin:koin-bom", version.ref = "koin-bom" }
 koin-core = { module = "io.insert-koin:koin-core" }
 koin-android = { module = "io.insert-koin:koin-android" }
 koin-compose = { module = "io.insert-koin:koin-compose" }
 
+# Decompose
+# https://coil-kt.github.io/coil/getting_started/
 decompose = { group = "com.arkivanov.decompose", name = "decompose", version.ref = "decompose" }
 decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-compose", version.ref = "decompose" }
 essenty = { group = "com.arkivanov.essenty", name = "lifecycle", version.ref = "essenty" }
 
+# Ktor
+# https://ktor.io/docs/client-create-new-application.html#add-dependencies
 ktor-client = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktop-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 
+# Coil
+# https://coil-kt.github.io/coil/getting_started/
 coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil" }
 coil-gif = { group = "io.coil-kt.coil3", name = "coil-gif", version.ref = "coil" }
 coil-ktor3 = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil" }
 coil-okhttp = { group = "io.coil-kt.coil3", name = "coil-network-okhttp", version.ref = "coil" }
 
+# Misc
+
+# https://saket.github.io/telephoto/zoomableimage/#installation
 telescope = { group = "me.saket.telephoto", name = "zoomable-image-coil3", version.ref = "telescope" }
+
+# https://mvnrepository.com/artifact/org.apache.commons/commons-text
 apache-commons-text = { group = "org.apache.commons", name = "commons-text", version.ref = "apache-commontext" }
 
+# Legacy
 okhttp-urlconnection = { group = "com.squareup.okhttp3", name = "okhttp-urlconnection", version = "3.12.12" }
 persistentcookiejar = { group = "com.github.franmontiel", name = "PersistentCookieJar", version = "v1.0.1" }
 jsoup = { group = "org.jsoup", name = "jsoup", version = "1.16.1" }
