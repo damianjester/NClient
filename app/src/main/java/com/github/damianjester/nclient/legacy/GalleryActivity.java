@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.ui.gallery.details;
+package com.github.damianjester.nclient.legacy;
 
 import android.Manifest;
 import android.annotation.TargetApi;
@@ -26,7 +26,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.FileProvider;
 
-import com.github.damianjester.nclient.legacy.CopyToClipboardActivity;
 import com.github.damianjester.nclient.R;
 import com.github.damianjester.nclient.legacy.api.InspectorV3;
 import com.github.damianjester.nclient.legacy.api.components.Gallery;
@@ -37,7 +36,7 @@ import com.github.damianjester.nclient.legacy.components.status.Status;
 import com.github.damianjester.nclient.legacy.components.status.StatusManager;
 import com.github.damianjester.nclient.legacy.components.views.RangeSelector;
 import com.github.damianjester.nclient.legacy.components.widgets.CustomGridLayoutManager;
-import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerActivity;
+import com.github.damianjester.nclient.legacy.adapters.GalleryAdapter;
 import com.github.damianjester.nclient.legacy.settings.AuthRequest;
 import com.github.damianjester.nclient.legacy.settings.Favorites;
 import com.github.damianjester.nclient.legacy.settings.Global;
@@ -160,11 +159,11 @@ public class GalleryActivity extends BaseActivity {
         recycler.setAdapter(adapter);
         lookup();
         if (zoom > 0 && Global.getDownloadPolicy() != Global.DataUsageType.NONE) {
-            Intent intent = new Intent(this, GalleryPagerActivity.class);
-            intent.putExtra(getPackageName() + ".GALLERY", this.gallery);
-            intent.putExtra(getPackageName() + ".DIRECTORY", adapter.getDirectory());
-            intent.putExtra(getPackageName() + ".PAGE", zoom);
-            startActivity(intent);
+//            Intent intent = new Intent(this, ZoomActivity.class);
+//            intent.putExtra(getPackageName() + ".GALLERY", this.gallery);
+//            intent.putExtra(getPackageName() + ".DIRECTORY", adapter.getDirectory());
+//            intent.putExtra(getPackageName() + ".PAGE", zoom);
+//            startActivity(intent);
         }
         checkBookmark();
     }

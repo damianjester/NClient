@@ -96,7 +96,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.gallery.details.GalleryActivity"
+            android:name=".legacy.GalleryActivity"
             android:exported="true"
             android:label="@string/title_activity_gallery"
             android:parentActivityName=".legacy.MainActivity"
@@ -118,9 +118,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.github.damianjester.nclient.legacy.MainActivity" />
         </activity>
-        <activity
-            android:name=".ui.gallery.pager.GalleryPagerActivity"
-            android:theme="@style/Theme.NClient" />
         <activity
             android:name=".legacy.LocalActivity"
             android:configChanges="orientation|screenSize"

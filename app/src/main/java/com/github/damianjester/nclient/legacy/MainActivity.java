@@ -52,7 +52,6 @@ import com.github.damianjester.nclient.legacy.components.GlideX;
 import com.github.damianjester.nclient.legacy.components.activities.BaseActivity;
 import com.github.damianjester.nclient.legacy.components.views.PageSwitcher;
 import com.github.damianjester.nclient.legacy.components.widgets.CustomGridLayoutManager;
-import com.github.damianjester.nclient.ui.gallery.details.GalleryActivity;
 import com.github.damianjester.nclient.legacy.settings.Global;
 import com.github.damianjester.nclient.legacy.settings.Login;
 import com.github.damianjester.nclient.legacy.settings.TagV2;

@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.damianjester.nclient.ui.gallery.details.GalleryActivity;
+import com.github.damianjester.nclient.legacy.GalleryActivity;
 import com.github.damianjester.nclient.legacy.MainActivity;
 import com.github.damianjester.nclient.R;
 import com.github.damianjester.nclient.legacy.api.InspectorV3;

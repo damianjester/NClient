@@ -16,7 +16,6 @@ import com.github.damianjester.nclient.R;
 import com.github.damianjester.nclient.legacy.api.RandomLoader;
 import com.github.damianjester.nclient.legacy.api.components.Gallery;
 import com.github.damianjester.nclient.legacy.components.activities.GeneralActivity;
-import com.github.damianjester.nclient.ui.gallery.details.GalleryActivity;
 import com.github.damianjester.nclient.legacy.settings.Favorites;
 import com.github.damianjester.nclient.legacy.settings.Global;
 import com.github.damianjester.nclient.legacy.utility.ImageDownloadUtility;

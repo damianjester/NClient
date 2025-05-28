@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.ui.gallery.details;
+package com.github.damianjester.nclient.legacy.adapters;
 
 import android.content.Intent;
 import android.util.SparseIntArray;
@@ -14,10 +14,9 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.damianjester.nclient.legacy.CopyToClipboardActivity;
-import com.github.damianjester.nclient.legacy.adapters.ListAdapter;
+import com.github.damianjester.nclient.legacy.GalleryActivity;
 import com.github.damianjester.nclient.legacy.MainActivity;
 import com.github.damianjester.nclient.R;
-import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerActivity;
 import com.github.damianjester.nclient.legacy.api.components.Gallery;
 import com.github.damianjester.nclient.legacy.api.components.GalleryData;
 import com.github.damianjester.nclient.legacy.api.components.GenericGallery;
@@ -359,11 +358,11 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
             );
             return;
         }
-        Intent intent = new Intent(context, GalleryPagerActivity.class);
-        intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
-        intent.putExtra(context.getPackageName() + ".DIRECTORY", directory);
-        intent.putExtra(context.getPackageName() + ".PAGE", page);
-        context.startActivity(intent);
+//        Intent intent = new Intent(context, ZoomActivity.class);
+//        intent.putExtra(context.getPackageName() + ".GALLERY", gallery);
+//        intent.putExtra(context.getPackageName() + ".DIRECTORY", directory);
+//        intent.putExtra(context.getPackageName() + ".PAGE", page);
+//        context.startActivity(intent);
     }
 
     private void loadImageOnPolicy(ImageView imgView, int pos) {

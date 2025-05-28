@@ -18,7 +18,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.github.damianjester.nclient.ui.gallery.details.GalleryActivity;
+import com.github.damianjester.nclient.legacy.GalleryActivity;
 import com.github.damianjester.nclient.legacy.LocalActivity;
 import com.github.damianjester.nclient.R;
 import com.github.damianjester.nclient.legacy.api.local.LocalGallery;
