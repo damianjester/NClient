@@ -10,7 +10,7 @@ coil = "3.2.0"
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version = "1.7.0" }
 androidx-cardview = { group = "androidx.cardview", name = "cardview", version = "1.0.0" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version = "2.2.1" }
-androidx-fragment = { group = "androidx.fragment", name = "fragment", version = "1.8.6" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment", version = "1.8.7" }
 androidx-preference = { group = "androidx.preference", name = "preference", version = "1.2.1" }
 androidx-viewpager2 = { group = "androidx.viewpager2", name = "viewpager2", version = "1.1.0" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version = "1.4.0" }
