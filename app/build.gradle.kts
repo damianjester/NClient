@@ -55,6 +55,12 @@ android {
 
     kotlinOptions {
         jvmTarget = "11"
+        compileOptions {
+            if (System.getProperty("idea.active") == "true") {
+                println("Enable coroutine debugging")
+                freeCompilerArgs = listOf("-Xdebug")
+            }
+        }
     }
 
     buildFeatures {
