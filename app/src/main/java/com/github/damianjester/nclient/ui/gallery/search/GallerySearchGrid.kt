@@ -11,7 +11,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.damianjester.nclient.core.GallerySearchItem
-import com.github.damianjester.nclient.ui.gallery.GalleryGridItem
+import com.github.damianjester.nclient.ui.gallery.grid.GalleryGridItem
 
 @Composable
 fun GallerySearchGrid(

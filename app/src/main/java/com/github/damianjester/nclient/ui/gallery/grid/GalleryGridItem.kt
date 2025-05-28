@@ -1,19 +1,16 @@
-package com.github.damianjester.nclient.ui.gallery
+package com.github.damianjester.nclient.ui.gallery.grid
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -46,63 +43,23 @@ fun GalleryGridItem(
                 showHighRes = showHighRes
             )
 
+            val metadataBackground = MaterialTheme.colorScheme.surface
+                .copy(alpha = SurfaceAlpha)
+
             LanguageIndicator(
                 modifier = Modifier.align(Alignment.TopStart),
-                language = language
+                language = language,
+                backgroundColor = metadataBackground
             )
 
-            Title(
+            TitleStrip(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(),
-                title = title
+                title = title,
+                backgroundColor = metadataBackground
             )
         }
-    }
-}
-
-@Composable
-private fun Title(
-    modifier: Modifier = Modifier,
-    title: String,
-) {
-    Surface(
-        modifier = modifier,
-        color = MaterialTheme.colorScheme.surface
-            .copy(alpha = SurfaceAlpha),
-    ) {
-        Text(
-            title,
-            modifier = Modifier.padding(4.dp),
-            textAlign = TextAlign.Center,
-            maxLines = 1
-        )
-    }
-}
-
-@Composable
-private fun LanguageIndicator(
-    modifier: Modifier = Modifier,
-    language: GalleryLanguage,
-) {
-    Surface(
-        modifier = modifier,
-        color = MaterialTheme.colorScheme.surface
-            .copy(alpha = SurfaceAlpha),
-        shape = RoundedCornerShape(bottomEnd = 4.dp)
-    ) {
-        val flag = when (language) {
-            GalleryLanguage.Chinese -> "\uD83C\uDDE8\uD83C\uDDF3"
-            GalleryLanguage.English -> "\uD83C\uDDEC\uD83C\uDDE7"
-            GalleryLanguage.Japanese -> "\uD83C\uDDEF\uD83C\uDDF5"
-            else -> "\uD83C\uDFF3"
-        }
-
-        Text(
-            flag,
-            modifier = Modifier.padding(4.dp),
-            textAlign = TextAlign.Center
-        )
     }
 }
 
@@ -132,7 +89,7 @@ private fun Image(
 }
 
 private val Shape = RoundedCornerShape(8.dp)
-private const val SurfaceAlpha = 0.75f
+private const val SurfaceAlpha = 0.8f
 
 @PreviewLightDark
 @Composable
