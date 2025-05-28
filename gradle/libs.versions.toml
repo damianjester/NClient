@@ -42,8 +42,6 @@ decompose-compose = { group = "com.arkivanov.decompose", name = "extensions-comp
 essenty = { group = "com.arkivanov.essenty", name = "lifecycle", version = "2.5.0" }
 
 ktor-client = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
-ktop-client-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
-ktop-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.ref = "ktor" }
 ktop-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 ktor-client-contentnegotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
@@ -83,7 +81,6 @@ spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 [bundles]
 ktor = [
     "ktor-client",
-    "ktop-client-okhttp",
     "ktop-client-android",
     "ktor-client-contentnegotiation",
     "ktor-client-json",
