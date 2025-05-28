@@ -70,44 +70,28 @@ android {
 }
 
 dependencies {
-    // AndroidX
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.cardview)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.fragment)
-    implementation(libs.androidx.preference)
-    implementation(libs.androidx.viewpager2)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.androidx.multidex)
-    implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.bundles.androidx)
+    implementation(libs.bundles.material)
 
-    // Compose
-    implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-
-    implementation(libs.androidx.material)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.material.icons)
+    implementation(libs.bundles.compose)
+    debugImplementation(libs.androidx.ui.tooling)
 
     implementation(platform(libs.koin.bom))
     implementation(libs.bundles.koin)
 
-    implementation(libs.decompose)
-    implementation(libs.decompose.compose)
-    implementation(libs.essenty)
-    implementation(libs.kotlinx.serialization.json)
-
     implementation(libs.bundles.ktor)
-    implementation(libs.kotlinx.datetime)
-    implementation(libs.coil.compose)
-    implementation(libs.coil.gif)
-    implementation(libs.coil.ktor3)
-    implementation(libs.telescope)
+    implementation(libs.bundles.decompose)
+    implementation(libs.bundles.coil)
 
-    // Other
+    implementation(libs.telescope)
+    implementation(libs.apache.commons.text)
+    implementation(libs.kotlinx.datetime)
+    implementation("app.cash.sqldelight:android-driver:2.1.0")
+    implementation("app.cash.sqldelight:coroutines-extensions:2.1.0")
+    implementation("org.slf4j:slf4j-android:1.7.36")
+
+    // Legacy
     implementation(libs.okhttp.urlconnection) // Because of min SDK
     implementation(libs.persistentcookiejar)
     implementation(libs.jsoup)
@@ -119,13 +103,6 @@ dependencies {
     implementation(libs.ambilwarna)
     implementation(libs.fastscroll)
     implementation(libs.localehelper)
-
-    implementation(libs.apache.commons.text)
-    implementation("app.cash.sqldelight:android-driver:2.1.0")
-    implementation("app.cash.sqldelight:coroutines-extensions:2.1.0")
-    implementation("org.slf4j:slf4j-android:1.7.36")
-
-    debugImplementation(libs.androidx.ui.tooling)
 }
 
 sqldelight {

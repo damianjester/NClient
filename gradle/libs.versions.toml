@@ -93,7 +93,20 @@ sqldelight = { id = "app.cash.sqldelight", version = "2.1.0" }
 spotless = { id = "com.diffplug.spotless", version = "7.0.3" }
 
 [bundles]
+androidx = [
+    "androidx-appcompat",
+    "androidx-cardview",
+    "androidx-constraintlayout",
+    "androidx-fragment",
+    "androidx-preference",
+    "androidx-viewpager2",
+    "androidx-recyclerview",
+    "androidx-multidex",
+    "androidx-swiperefreshlayout"
+]
+
 ktor = [
+    "kotlinx-serialization-json",
     "ktor-client",
     "ktop-client-android",
     "ktor-client-contentnegotiation",
@@ -105,4 +118,29 @@ koin = [
     "koin-core",
     "koin-android",
     "koin-compose",
+]
+
+compose = [
+    "androidx-activity-compose",
+    "androidx-ui",
+    "androidx-ui-graphics",
+    "androidx-ui-tooling-preview",
+]
+
+decompose = [
+    "decompose",
+    "decompose-compose",
+    "essenty"
+]
+
+material = [
+    "androidx-material",
+    "androidx-material3",
+    "androidx-material-icons"
+]
+
+coil = [
+    "coil-compose",
+    "coil-gif",
+    "coil-ktor3"
 ]
