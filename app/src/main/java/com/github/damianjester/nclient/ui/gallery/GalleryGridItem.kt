@@ -1,6 +1,5 @@
 package com.github.damianjester.nclient.ui.gallery
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,8 +18,8 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.damianjester.nclient.core.GalleryImage
-import com.github.damianjester.nclient.core.GallerySearchItemImages
 import com.github.damianjester.nclient.core.GalleryLanguage
+import com.github.damianjester.nclient.core.GallerySearchItemImages
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
 import io.ktor.http.Url
 
@@ -34,10 +33,10 @@ fun GalleryGridItem(
     onClick: () -> Unit,
 ) {
     Surface(
+        onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .aspectRatio(3.toFloat() / 4)
-            .clickable(onClick = onClick),
+            .aspectRatio(3.toFloat() / 4),
         shape = Shape
     ) {
         Box {
