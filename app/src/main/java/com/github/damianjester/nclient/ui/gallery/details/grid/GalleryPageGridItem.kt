@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import coil3.compose.AsyncImage
 import com.github.damianjester.nclient.core.GalleryImage
@@ -26,7 +25,6 @@ fun GalleryPageGridItem(
         onClick = onClick,
         modifier = modifier
     ) {
-
         AsyncImage(
             model = page.toImageModel(showHighRes),
             contentDescription = null,

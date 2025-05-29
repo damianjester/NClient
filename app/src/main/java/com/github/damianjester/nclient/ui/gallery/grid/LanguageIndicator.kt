@@ -25,7 +25,6 @@ fun BoxScope.LanguageIndicator(
         modifier = modifier,
         backgroundColor = backgroundColor
     ) {
-
         val flag = when (language) {
             GalleryLanguage.Chinese -> "\uD83C\uDDE8\uD83C\uDDF3"
             GalleryLanguage.English -> "\uD83C\uDDEC\uD83C\uDDE7"
