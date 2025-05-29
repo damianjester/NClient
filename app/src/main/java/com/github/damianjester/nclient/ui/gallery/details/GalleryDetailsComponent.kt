@@ -108,9 +108,6 @@ class DefaultGalleryDetailsComponent(
         get() = _model
 
     init {
-
-        // TODO: GallerySearchItem could not exist in DB yet when deep linking, check and load if needed
-
         doOnResume {
             lifecycleScope.launch {
 
