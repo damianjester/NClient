@@ -54,6 +54,7 @@ fun GalleryTag(
                 onClick = onClick
             ),
         shape = Shape,
+        tonalElevation = 4.dp
     ) {
         ProvideTextStyle(value = MaterialTheme.typography.bodyMedium) {
             Row(
