@@ -1,10 +1,10 @@
 package com.github.damianjester.nclient.ui.gallery.grid
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,16 +16,16 @@ import com.github.damianjester.nclient.core.GalleryLanguage
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
 
 @Composable
-fun LanguageIndicator(
+fun BoxScope.LanguageIndicator(
     modifier: Modifier = Modifier,
     language: GalleryLanguage,
     backgroundColor: Color = MaterialTheme.colorScheme.surface
 ) {
-    Surface(
+    GridItemIndicator(
         modifier = modifier,
-        color = backgroundColor,
-        shape = RoundedCornerShape(bottomEnd = 4.dp)
+        backgroundColor = backgroundColor
     ) {
+
         val flag = when (language) {
             GalleryLanguage.Chinese -> "\uD83C\uDDE8\uD83C\uDDF3"
             GalleryLanguage.English -> "\uD83C\uDDEC\uD83C\uDDE7"
@@ -46,15 +46,9 @@ fun LanguageIndicator(
 private fun LanguageIndicatorPreview() {
     NClientPreviewTheme {
         Column {
-            LanguageIndicator(
-                language = GalleryLanguage.English
-            )
-            LanguageIndicator(
-                language = GalleryLanguage.Japanese
-            )
-            LanguageIndicator(
-                language = GalleryLanguage.Chinese
-            )
+            Box { LanguageIndicator(language = GalleryLanguage.English) }
+            Box { LanguageIndicator(language = GalleryLanguage.Japanese) }
+            Box { LanguageIndicator(language = GalleryLanguage.Chinese) }
         }
     }
 }

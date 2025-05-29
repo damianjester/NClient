@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.ui.gallery.grid
+package com.github.damianjester.nclient.ui.gallery.search
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -20,7 +20,8 @@ fun TitleStrip(
 ) {
     Surface(
         modifier = modifier,
-        color = backgroundColor,
+        color = backgroundColor.copy(alpha = 0.8f),
+        tonalElevation = 3.dp,
     ) {
         Text(
             title,

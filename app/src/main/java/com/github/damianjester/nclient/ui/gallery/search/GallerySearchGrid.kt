@@ -30,7 +30,7 @@ fun GallerySearchGrid(
 
             val onClick = remember(gal.id.value) { { onGalleryClick(gal) } }
 
-            GalleryGridItem(
+            GallerySearchGridItem(
                 modifier = Modifier.fillMaxWidth(),
                 title = gal.title,
                 language = gal.language,
