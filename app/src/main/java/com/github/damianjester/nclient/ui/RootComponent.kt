@@ -140,6 +140,7 @@ class DefaultRootComponent(
             onNavigateBack = { navigation.pop() },
             fetcher = get(),
             observer = get(),
+            webPageOpener = get()
         )
 
     private fun csrfTokenComponent(

@@ -9,6 +9,8 @@ import com.github.damianjester.nclient.core.Comment
 import com.github.damianjester.nclient.core.CommentsFetcher
 import com.github.damianjester.nclient.core.DefaultCommentsObserver
 import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.core.WebPageOpener
+import com.github.damianjester.nclient.net.NHentaiUrl
 import com.github.damianjester.nclient.utils.coroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,6 +22,8 @@ interface CommentsComponent {
     fun loadComments(pullToRefresh: Boolean)
 
     fun navigateBack()
+
+    fun openCommentsWebpage()
 
     data class Model(
         val commentsState: CommentsState = CommentsState.Loading(false),
@@ -47,8 +51,8 @@ class DefaultCommentsComponent(
     private val onNavigateBack: () -> Unit,
     private val fetcher: CommentsFetcher,
     private val observer: DefaultCommentsObserver,
+    private val webPageOpener: WebPageOpener,
 ) : CommentsComponent, ComponentContext by componentContext, KoinComponent {
-
     private val _model = MutableValue(CommentsComponent.Model())
     private val coroutineScope = coroutineScope(Dispatchers.IO)
 
@@ -89,7 +93,11 @@ class DefaultCommentsComponent(
         }
     }
 
-    override fun navigateBack() {
-        onNavigateBack()
+    override fun navigateBack() = onNavigateBack()
+
+    override fun openCommentsWebpage() {
+        coroutineScope.launch {
+            webPageOpener.open(NHentaiUrl.galleryWebPage(galleryId, commentsSection = true))
+        }
     }
 }

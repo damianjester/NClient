@@ -17,6 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
@@ -67,7 +68,8 @@ fun GalleryCommentsRootContent(
     CommentsScreen(
         modifier = modifier,
         component = component,
-        onBack = component::navigateBack
+        onBack = component::navigateBack,
+        onOpenCommentsWebpage = component::openCommentsWebpage
     )
 }
 
@@ -77,6 +79,7 @@ fun CommentsScreen(
     modifier: Modifier = Modifier,
     component: CommentsComponent,
     onBack: () -> Unit,
+    onOpenCommentsWebpage: () -> Unit
 ) {
     val state by component.model.subscribeAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -109,6 +112,14 @@ fun CommentsScreen(
                         )
                     }
                 },
+                actions = {
+                    IconButton(onClick = { onOpenCommentsWebpage() }) {
+                        Icon(
+                            Icons.Default.OpenInBrowser,
+                            contentDescription = stringResource(R.string.open_in_browser)
+                        )
+                    }
+                }
             )
         },
         snackbarHost = {

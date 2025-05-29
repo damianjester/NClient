@@ -1,5 +1,6 @@
 package com.github.damianjester.nclient.ui
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -17,11 +18,14 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.arkivanov.decompose.defaultComponentContext
 import com.github.damianjester.nclient.core.GalleryPageSharer
 import com.github.damianjester.nclient.core.ScreenCaffeinater
+import com.github.damianjester.nclient.core.WebPageOpener
 import com.github.damianjester.nclient.net.NHentaiUrl.isGalleryDetailUrl
 import com.github.damianjester.nclient.ui.theme.NClientTheme
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
+import com.github.damianjester.nclient.utils.logger.e
+import com.github.damianjester.nclient.utils.logger.i
 import io.ktor.http.Url
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -31,6 +35,7 @@ import org.koin.core.component.inject
 class MainActivity : ComponentActivity(), KoinComponent {
     private val dispatchers by inject<NClientDispatchers>()
     private val sharer by inject<GalleryPageSharer>()
+    private val webPageOpener by inject<WebPageOpener>()
     private val screenCaffeinater by inject<ScreenCaffeinater>()
     private val logger by inject<Logger>()
 
@@ -44,17 +49,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
             onFinish = ::finish
         )
 
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                sharer.shares.collect(::startShareActivity)
-            }
-        }
-
-        lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
-                screenCaffeinater.keepScreenOn.collect(::setKeepScreenOnFlag)
-            }
-        }
+        collectFlows()
 
         setContent {
             NClientTheme {
@@ -108,6 +103,24 @@ class MainActivity : ComponentActivity(), KoinComponent {
         return DefaultRootComponent.Config.GallerySearch
     }
 
+    private fun collectFlows() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                sharer.shares.collect(::startShareActivity)
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                webPageOpener.intents.collect(::startWebpageIntent)
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                screenCaffeinater.keepScreenOn.collect(::setKeepScreenOnFlag)
+            }
+        }
+    }
+
     private suspend fun startShareActivity(share: GalleryPageSharer.GalleryPageShare) =
         withContext(dispatchers.Main) {
             val shareIntent: Intent = Intent().apply {
@@ -128,6 +141,15 @@ class MainActivity : ComponentActivity(), KoinComponent {
         } else {
             logger.i(LogTags.caffeine, "Clearing window FLAG_KEEP_SCREEN_ON flag.")
             window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
+    private fun startWebpageIntent(weblinkIntent: Intent) {
+        try {
+            logger.i("Starting web page intent (data = ${weblinkIntent.data}).")
+            startActivity(weblinkIntent)
+        } catch (ex: ActivityNotFoundException) {
+            logger.e("Unable to start web page intent (data = ${weblinkIntent.data}).", ex)
         }
     }
 }

@@ -7,6 +7,7 @@ import com.github.damianjester.nclient.core.MediaId
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url
+import io.ktor.http.appendEncodedPathSegments
 import io.ktor.http.path
 
 object NHentaiUrl {
@@ -165,4 +166,12 @@ object NHentaiUrl {
 
         return null
     }
+
+    fun galleryWebPage(id: GalleryId, commentsSection: Boolean = false): Url =
+        URLBuilder(baseUrl())
+            .apply {
+                path(G_PATH_SEGMENT, "${id.value}")
+                if (commentsSection) appendEncodedPathSegments("#comment-post-container")
+            }
+            .build()
 }

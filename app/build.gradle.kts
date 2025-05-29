@@ -13,7 +13,7 @@ android {
 
     defaultConfig {
         applicationId = "com.github.damianjester.nclient"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 35
 
         versionCode = 1

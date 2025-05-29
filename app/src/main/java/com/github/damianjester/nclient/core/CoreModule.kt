@@ -20,5 +20,6 @@ val coreModule = module {
     single { DefaultCommentsFetcher(get(), get(), get()) } bind CommentsFetcher::class
     single { DefaultCommentsObserver(get(), get()) } bind CommentsObserver::class
 
+    single { DefaultWebPageOpener(get()) } bind WebPageOpener::class
     single { DefaultScreenCaffeinater(get()) } bind ScreenCaffeinater::class
 }
