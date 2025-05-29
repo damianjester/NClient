@@ -12,4 +12,5 @@ object LogTags {
     val http = LogTag("http") // tag:http
     val cookies = LogTag("cookie") // tag:cookie
     val caffeine = LogTag("caffeine") // tag:caffeine
+    val deeplink = LogTag("deeplink") // tag:deeplink
 }

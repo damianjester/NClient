@@ -151,4 +151,18 @@ object NHentaiUrl {
             .lastOrNull()
             ?.substringAfter('.')
             ?.ifEmpty { null }
+
+    fun Url.isGalleryDetailUrl(): GalleryId? {
+        // https://nhentai.net/g/[galleryId]/
+        if ((protocol == URLProtocol.HTTP || protocol == URLProtocol.HTTPS) && host == HOST &&
+            segments.first() == G_PATH_SEGMENT
+        ) {
+            return segments
+                .getOrNull(1)
+                ?.toLongOrNull()
+                ?.let { GalleryId(it) }
+        }
+
+        return null
+    }
 }

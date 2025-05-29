@@ -3,6 +3,7 @@ package com.github.damianjester.nclient.ui
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.router.stack.ChildStack
 import com.arkivanov.decompose.router.stack.StackNavigation
+import com.arkivanov.decompose.router.stack.backStack
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
@@ -42,6 +43,7 @@ interface RootComponent {
 class DefaultRootComponent(
     componentContext: ComponentContext,
     initialConfig: Config = Config.GallerySearch,
+    private val onFinish: () -> Unit
 ) : RootComponent, ComponentContext by componentContext, KoinComponent {
     private val navigation = StackNavigation<Config>()
 
@@ -99,7 +101,13 @@ class DefaultRootComponent(
             onNavigateRelated = { id ->
                 navigation.pushNew(Config.GalleryDetails(id))
             },
-            onNavigateBack = { navigation.pop() },
+            onNavigateBack = {
+                if (stack.backStack.isEmpty()) {
+                    onFinish()
+                } else {
+                    navigation.pop()
+                }
+            },
             applicationContext = get(),
             galleryFetcher = get(),
             galleryObserver = get(),

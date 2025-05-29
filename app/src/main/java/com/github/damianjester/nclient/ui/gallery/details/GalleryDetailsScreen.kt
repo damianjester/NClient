@@ -22,7 +22,7 @@ fun GalleryDetailsRootContent(
     GalleryDetailsScreen(
         modifier = modifier,
         component = component,
-        onBack = { component.navigateBack() },
+        onBack = component::navigateBack,
         onTagClick = { TODO() },
         onPageClick = { page -> component.navigateToPage(page.index) },
         onRelatedGalleryClick = component::navigateRelated,

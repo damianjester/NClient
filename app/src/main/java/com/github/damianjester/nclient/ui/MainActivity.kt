@@ -1,6 +1,7 @@
 package com.github.damianjester.nclient.ui
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -16,11 +17,12 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.arkivanov.decompose.defaultComponentContext
 import com.github.damianjester.nclient.core.GalleryPageSharer
 import com.github.damianjester.nclient.core.ScreenCaffeinater
+import com.github.damianjester.nclient.net.NHentaiUrl.isGalleryDetailUrl
 import com.github.damianjester.nclient.ui.theme.NClientTheme
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
-import com.github.damianjester.nclient.utils.logger.i
+import io.ktor.http.Url
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -38,7 +40,8 @@ class MainActivity : ComponentActivity(), KoinComponent {
 
         val rootComponent = DefaultRootComponent(
             componentContext = defaultComponentContext(),
-//            initialConfig = DefaultRootComponent.Config.CsrfToken
+            initialConfig = initialConfig(intent),
+            onFinish = ::finish
         )
 
         lifecycleScope.launch {
@@ -66,6 +69,43 @@ class MainActivity : ComponentActivity(), KoinComponent {
         super.onPause()
         logger.i(LogTags.caffeine, "Clearing window FLAG_KEEP_SCREEN_ON flag (onPause).")
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun initialConfig(intent: Intent?): DefaultRootComponent.Config {
+        val action: String? = intent?.action
+        val data: Uri? = intent?.data
+
+        if (action != Intent.ACTION_VIEW || data == null) {
+            logger.i(
+                LogTags.deeplink,
+                "Intent isn't a deeplink intent (action=$action, data=$data)."
+            )
+            return DefaultRootComponent.Config.GallerySearch
+        }
+
+        val url = try {
+            Url(data.toString())
+        } catch (ex: IllegalArgumentException) {
+            logger.i(LogTags.deeplink, "Received an invalid URL in MainActivity intent.", ex)
+            return DefaultRootComponent.Config.GallerySearch
+        }
+
+        // Gallery details
+        // https://nhentai.net/g/[galleryId]/
+        val galleryId = url.isGalleryDetailUrl()
+        if (galleryId != null) {
+            logger.i(
+                LogTags.deeplink,
+                "Setting initial configuration to gallery details ($galleryId)."
+            )
+            return DefaultRootComponent.Config.GalleryDetails(galleryId)
+        }
+
+        logger.i(
+            LogTags.deeplink,
+            "Unsure how to map intent data to an initial configuration (action=$action, data=$data)."
+        )
+        return DefaultRootComponent.Config.GallerySearch
     }
 
     private suspend fun startShareActivity(share: GalleryPageSharer.GalleryPageShare) =
