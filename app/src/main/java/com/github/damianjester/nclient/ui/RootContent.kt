@@ -7,7 +7,7 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.github.damianjester.nclient.ui.RootComponent.Child
 import com.github.damianjester.nclient.ui.csrf.CsrfTokenRootContent
-import com.github.damianjester.nclient.ui.gallery.comments.GalleryCommentsRootContent
+import com.github.damianjester.nclient.ui.gallery.comments.CommentsRootContent
 import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsRootContent
 import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerRootContent
 import com.github.damianjester.nclient.ui.gallery.search.GallerySearchRootContent
@@ -23,7 +23,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
             is Child.GallerySearch -> GallerySearchRootContent(child.component)
             is Child.GalleryDetails -> GalleryDetailsRootContent(child.component)
             is Child.GalleryPager -> GalleryPagerRootContent(child.component)
-            is Child.GalleryComments -> GalleryCommentsRootContent(child.component)
+            is Child.GalleryComments -> CommentsRootContent(child.component)
             is Child.CsrfToken -> CsrfTokenRootContent(child.component)
         }
     }
