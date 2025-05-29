@@ -2,7 +2,6 @@ package com.github.damianjester.nclient.ui.gallery.details
 
 import android.content.ClipData
 import android.content.Context
-import android.os.Build
 import android.util.Log
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
@@ -25,7 +24,6 @@ import com.github.damianjester.nclient.ui.DefaultRootComponent
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.clipboardManager
 import com.github.damianjester.nclient.utils.coroutineScope
-import com.github.damianjester.nclient.utils.legacyClipboardManager
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
@@ -152,23 +150,19 @@ class DefaultGalleryDetailsComponent(
             is GalleryDetailsComponent.MetadataCopy.Title -> metadata.value
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val clipboardManager = applicationContext.clipboardManager
-            val label = when (metadata) {
-                is GalleryDetailsComponent.MetadataCopy.Id ->
-                    applicationContext.getString(R.string.clipboard_gallery_id)
+        val clipboardManager = applicationContext.clipboardManager
+        val label = when (metadata) {
+            is GalleryDetailsComponent.MetadataCopy.Id ->
+                applicationContext.getString(R.string.clipboard_gallery_id)
 
-                is GalleryDetailsComponent.MetadataCopy.Tag ->
-                    applicationContext.getString(R.string.clipboard_gallery_tag)
+            is GalleryDetailsComponent.MetadataCopy.Tag ->
+                applicationContext.getString(R.string.clipboard_gallery_tag)
 
-                is GalleryDetailsComponent.MetadataCopy.Title ->
-                    applicationContext.getString(R.string.clipboard_gallery_title)
-            }
-
-            clipboardManager.setPrimaryClip(ClipData.newPlainText(label, content))
-        } else {
-            applicationContext.legacyClipboardManager.text = content
+            is GalleryDetailsComponent.MetadataCopy.Title ->
+                applicationContext.getString(R.string.clipboard_gallery_title)
         }
+
+        clipboardManager.setPrimaryClip(ClipData.newPlainText(label, content))
     }
 
     override fun setGalleryFavoriteStatus(favorite: Boolean) {
