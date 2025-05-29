@@ -48,31 +48,44 @@ class DefaultCommentsComponent(
     private val fetcher: CommentsFetcher,
     private val observer: DefaultCommentsObserver,
 ) : CommentsComponent, ComponentContext by componentContext, KoinComponent {
-    override val model = MutableValue(CommentsComponent.Model())
+
+    private val _model = MutableValue(CommentsComponent.Model())
     private val coroutineScope = coroutineScope(Dispatchers.IO)
 
+    override val model: Value<CommentsComponent.Model> = _model
+
     init {
-        componentContext.doOnCreate {
-            loadComments(pullToRefresh = false)
+        doOnCreate {
+            coroutineScope.launch {
+                val state = when (fetcher.fetch(galleryId)) {
+                    CommentsFetcher.Result.Success -> CommentsComponent.CommentsState.Loaded
+                    is CommentsFetcher.Result.Failure -> CommentsComponent.CommentsState.Error
+                }
+                _model.update { it.copy(commentsState = state) }
+            }
 
             coroutineScope.launch {
                 observer.comments(galleryId)
                     .collect { comments ->
-                        model.update { it.copy(comments = comments) }
+                        _model.update {
+                            it.copy(
+                                comments = comments
+                            )
+                        }
                     }
             }
         }
     }
 
     override fun loadComments(pullToRefresh: Boolean) {
-        model.update { it.copy(CommentsComponent.CommentsState.Loading(pullToRefresh)) }
+        _model.update { it.copy(CommentsComponent.CommentsState.Loading(pullToRefresh)) }
         coroutineScope.launch {
             val state = when (fetcher.fetch(galleryId)) {
                 CommentsFetcher.Result.Success -> CommentsComponent.CommentsState.Loaded
                 is CommentsFetcher.Result.Failure -> CommentsComponent.CommentsState.Error
             }
 
-            model.update { it.copy(state) }
+            _model.update { it.copy(state) }
         }
     }
 

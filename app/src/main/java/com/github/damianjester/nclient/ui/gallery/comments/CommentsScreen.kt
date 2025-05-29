@@ -128,7 +128,7 @@ fun CommentsScreen(
                     )
                 }
             } else {
-                if (state.comments.isEmpty()) {
+                if (!state.isLoading && state.comments.isEmpty()) {
                     Box(Modifier.fillMaxSize()) {
                         Text(
                             stringResource(R.string.no_comments),
