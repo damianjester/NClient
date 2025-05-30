@@ -7,6 +7,7 @@ import com.arkivanov.decompose.router.stack.backStack
 import com.arkivanov.decompose.router.stack.childStack
 import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
+import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.value.Value
 import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.ui.RootComponent.Child
@@ -99,7 +100,7 @@ class DefaultRootComponent(
                 navigation.pushNew(Config.GalleryComments(config.id))
             },
             onNavigateRelated = { id ->
-                navigation.pushNew(Config.GalleryDetails(id))
+                navigation.pushToFront(Config.GalleryDetails(id))
             },
             onNavigateBack = {
                 if (stack.backStack.isEmpty()) {
