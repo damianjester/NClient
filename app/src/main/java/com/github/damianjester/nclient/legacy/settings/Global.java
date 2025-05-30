@@ -44,8 +44,6 @@ import com.github.damianjester.nclient.legacy.utility.network.NetworkUtil;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
-import org.acra.ACRA;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -148,10 +146,6 @@ public class Global {
 
     public static int getColPortStatus() {
         return colPortStat;
-    }
-
-    public static void updateACRAReportStatus(Context context) {
-        ACRA.getErrorReporter().setEnabled(context.getSharedPreferences("Settings", 0).getBoolean(context.getString(R.string.key_send_report), false));
     }
 
     public static boolean isDestroyed(Activity activity) {

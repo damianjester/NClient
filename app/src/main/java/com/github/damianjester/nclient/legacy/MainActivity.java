@@ -521,7 +521,6 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onResume() {
         super.onResume();
-        Global.updateACRAReportStatus(this);
         Login.initLogin(this);
         if (idOpenedGallery != -1) {
             adapter.updateColor(idOpenedGallery);

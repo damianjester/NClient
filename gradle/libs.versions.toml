@@ -87,7 +87,6 @@ slf4j-android = "org.slf4j:slf4j-android:1.7.36"
 okhttp-urlconnection = { group = "com.squareup.okhttp3", name = "okhttp-urlconnection", version = "3.12.12" }
 persistentcookiejar = { group = "com.github.franmontiel", name = "PersistentCookieJar", version = "v1.0.1" }
 jsoup = { group = "org.jsoup", name = "jsoup", version = "1.16.1" }
-acra-core = { group = "ch.acra", name = "acra-core", version = "5.7.0" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 glide-compiler = { group = "com.github.bumptech.glide", name = "compiler", version.ref = "glide" }
 ambilwarna = { group = "com.github.yukuku", name = "ambilwarna", version = "2.0.1" }

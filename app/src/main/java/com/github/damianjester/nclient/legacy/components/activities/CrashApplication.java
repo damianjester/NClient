@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.multidex.MultiDexApplication;
 
-import com.github.damianjester.nclient.BuildConfig;
 import com.github.damianjester.nclient.KoinKt;
 import com.github.damianjester.nclient.net.NHentaiSingletonImageLoader;
 import com.github.damianjester.nclient.R;
@@ -19,17 +18,11 @@ import com.github.damianjester.nclient.legacy.api.local.LocalGallery;
 import com.github.damianjester.nclient.legacy.async.ScrapeTags;
 import com.github.damianjester.nclient.legacy.async.database.DatabaseHelper;
 import com.github.damianjester.nclient.legacy.async.downloader.DownloadGalleryV2;
-import com.github.damianjester.nclient.legacy.components.classes.MySenderFactory;
 import com.github.damianjester.nclient.legacy.settings.Database;
 import com.github.damianjester.nclient.legacy.settings.Global;
 import com.github.damianjester.nclient.legacy.settings.TagV2;
 import com.github.damianjester.nclient.legacy.utility.LogUtility;
 import com.github.damianjester.nclient.legacy.utility.network.NetworkUtil;
-
-import org.acra.ACRA;
-import org.acra.ReportField;
-import org.acra.annotation.AcraCore;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -39,14 +32,6 @@ import java.security.NoSuchAlgorithmException;
 import coil3.ImageLoader;
 import coil3.SingletonImageLoader;
 
-@AcraCore(buildConfigClass = BuildConfig.class, reportSenderFactoryClasses = MySenderFactory.class, reportContent = {
-    ReportField.PACKAGE_NAME,
-    ReportField.BUILD_CONFIG,
-    ReportField.APP_VERSION_CODE,
-    ReportField.STACK_TRACE,
-    ReportField.ANDROID_VERSION,
-    ReportField.LOGCAT
-})
 public class CrashApplication extends MultiDexApplication implements SingletonImageLoader.Factory {
     private static final String SIGNATURE_GITHUB = "ce96fdbcc89991f083320140c148db5f";
 
@@ -128,13 +113,6 @@ public class CrashApplication extends MultiDexApplication implements SingletonIm
         if (!Global.hasStoragePermission(this)) return;
         Global.recursiveDelete(Global.UPDATEFOLDER);
         Global.UPDATEFOLDER.mkdir();
-    }
-
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(newBase);
-        ACRA.init(this);
-        ACRA.getErrorReporter().setEnabled(getSharedPreferences("Settings", 0).getBoolean(getString(R.string.key_send_report), false));
     }
 
     @NonNull

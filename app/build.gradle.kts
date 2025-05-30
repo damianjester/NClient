@@ -95,7 +95,6 @@ dependencies {
     implementation(libs.okhttp.urlconnection) // Because of min SDK
     implementation(libs.persistentcookiejar)
     implementation(libs.jsoup)
-    implementation(libs.acra.core)
     annotationProcessor(libs.glide.compiler)
     implementation(libs.glide) {
         exclude("com.android.support")
