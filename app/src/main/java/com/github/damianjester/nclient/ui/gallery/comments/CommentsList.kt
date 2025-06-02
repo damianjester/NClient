@@ -1,5 +1,8 @@
 package com.github.damianjester.nclient.ui.gallery.comments
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -14,6 +17,10 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Card
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
@@ -25,6 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.damianjester.nclient.core.Comment
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
+
+private const val MAX_COMMENT_LINES = 7
 
 @Composable
 fun CommentsList(
@@ -70,7 +79,21 @@ fun CommentItem(
                 )
                 Spacer(Modifier.size(8.dp))
                 SelectionContainer {
-                    Text(comment.body)
+
+                    var showAll by remember { mutableStateOf(false) }
+
+                    Text(
+                        comment.body,
+                        modifier = Modifier
+                            .animateContentSize()
+                            .clickable(
+                                onClick = { showAll = !showAll },
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ),
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = if (showAll) Int.MAX_VALUE else MAX_COMMENT_LINES,
+                    )
                 }
                 Spacer(Modifier.size(8.dp))
 
