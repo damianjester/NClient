@@ -94,7 +94,7 @@ fastscroll = { group = "me.zhanghai.android.fastscroll", name = "library", versi
 localehelper = { group = "com.zeugmasolutions.localehelper", name = "locale-helper-android", version = "1.5.1" }
 
 [plugins]
-android-application = { id = "com.android.application", version = "8.10.0" }
+android-application = { id = "com.android.application", version = "8.10.1" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-parcelize = { id = "kotlin-parcelize" }
