@@ -2,6 +2,11 @@ package com.github.damianjester.nclient.net
 
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GalleryTagId
+import com.github.damianjester.nclient.net.models.Comment
+import com.github.damianjester.nclient.net.models.GalleryDetails
+import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
+import com.github.damianjester.nclient.net.models.GallerySummariesResponse
+import com.github.damianjester.nclient.net.models.GallerySummary
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger

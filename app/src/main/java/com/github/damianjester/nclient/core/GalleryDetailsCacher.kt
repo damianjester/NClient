@@ -4,7 +4,7 @@ import com.github.damianjester.nclient.core.GalleryDetailsCacher.CacheResult
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.Result
 import com.github.damianjester.nclient.db.GalleryRepository
-import com.github.damianjester.nclient.net.GalleryDetailsResponse
+import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
 import com.github.damianjester.nclient.net.NHentaiHttpClient
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger

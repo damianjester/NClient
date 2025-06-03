@@ -11,8 +11,7 @@ import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.core.models.GallerySummaryImages
 import com.github.damianjester.nclient.core.models.MediaId
 import com.github.damianjester.nclient.db.GalleryWithTagIds
-import com.github.damianjester.nclient.net.GallerySummariesResponse
-import com.github.damianjester.nclient.net.GallerySummary
+import com.github.damianjester.nclient.net.models.GallerySummariesResponse
 import com.github.damianjester.nclient.net.NHentaiUrl
 import com.github.damianjester.nclient.net.NHentaiUrl.lastSegmentFileExtension
 
@@ -23,7 +22,7 @@ fun GallerySummariesResponse.toGallerySummaryEntityWithHasTags(): List<Pair<Gall
         gallery to hasTags
     }
 
-fun com.github.damianjester.nclient.net.GallerySummary.toGallerySummaryEntity() =
+fun com.github.damianjester.nclient.net.models.GallerySummary.toGallerySummaryEntity() =
     GallerySummaryEntity(
         id = id.value,
         prettyTitle = title,

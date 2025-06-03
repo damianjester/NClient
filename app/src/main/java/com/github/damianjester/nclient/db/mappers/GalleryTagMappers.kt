@@ -5,7 +5,7 @@ import com.github.damianjester.nclient.core.models.GalleryTag
 import com.github.damianjester.nclient.core.models.GalleryTagId
 import com.github.damianjester.nclient.core.models.GalleryTagType
 import com.github.damianjester.nclient.core.models.GalleryTags
-import com.github.damianjester.nclient.net.GalleryDetailsResponse
+import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
 import io.ktor.http.Url
 
 fun GalleryDetailsResponse.Success.toGalleryDetailsTags() =

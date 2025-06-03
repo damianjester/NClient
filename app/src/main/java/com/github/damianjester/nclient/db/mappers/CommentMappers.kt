@@ -8,7 +8,6 @@ import com.github.damianjester.nclient.core.models.CommentPoster
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.UserId
 import com.github.damianjester.nclient.db.CommentEntityWithPosterEntity
-import com.github.damianjester.nclient.net.Comment
 import com.github.damianjester.nclient.net.NHentaiUrl
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
@@ -32,7 +31,7 @@ fun CommentEntityWithPosterEntity.toComment(): Comment {
     )
 }
 
-fun com.github.damianjester.nclient.net.Comment.toCommentEntity(galleryId: GalleryId) =
+fun com.github.damianjester.nclient.net.models.Comment.toCommentEntity(galleryId: GalleryId) =
     CommentEntity(
         id = id,
         galleryId = galleryId.value,
@@ -42,7 +41,7 @@ fun com.github.damianjester.nclient.net.Comment.toCommentEntity(galleryId: Galle
         createdAt = Clock.System.now().epochSeconds
     )
 
-fun com.github.damianjester.nclient.net.Comment.toCommentPosterEntity() =
+fun com.github.damianjester.nclient.net.models.Comment.toCommentPosterEntity() =
     CommentPosterEntity(
         id = poster.id,
         username = poster.username,

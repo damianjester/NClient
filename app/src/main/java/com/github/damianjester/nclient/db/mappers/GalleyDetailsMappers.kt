@@ -19,7 +19,7 @@ import com.github.damianjester.nclient.core.models.RelatedGallery
 import com.github.damianjester.nclient.core.models.Resolution
 import com.github.damianjester.nclient.db.GalleryPageWithMediaId
 import com.github.damianjester.nclient.db.GalleryWithTagIds
-import com.github.damianjester.nclient.net.GalleryDetailsResponse
+import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
 import com.github.damianjester.nclient.net.NHentaiUrl
 import com.github.damianjester.nclient.net.NHentaiUrl.lastSegmentFileExtension
 import kotlinx.datetime.Clock

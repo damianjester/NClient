@@ -29,8 +29,8 @@ import com.github.damianjester.nclient.db.mappers.toRelatedGalleries
 import com.github.damianjester.nclient.db.mappers.toRelatedGallery
 import com.github.damianjester.nclient.db.mappers.toTag
 import com.github.damianjester.nclient.db.mappers.toTags
-import com.github.damianjester.nclient.net.GallerySummariesResponse
-import com.github.damianjester.nclient.net.GalleryDetailsResponse
+import com.github.damianjester.nclient.net.models.GallerySummariesResponse
+import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
