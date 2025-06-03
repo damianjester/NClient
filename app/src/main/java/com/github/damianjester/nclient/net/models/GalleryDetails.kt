@@ -9,7 +9,6 @@ data class GalleryDetailsResponse(
         val gallery: GalleryDetails,
         val coverUrl: Url?,
         val related: List<GallerySummary>,
-        val isUserFavorite: Boolean,
 )
 
 @Serializable

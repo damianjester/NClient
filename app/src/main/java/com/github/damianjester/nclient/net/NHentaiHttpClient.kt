@@ -106,19 +106,11 @@ class ScrapperNHentaiHttpClient(
             ?.let { gal -> gal.map { element -> scrapeListGallery(element) } }
             ?: emptyList()
 
-        val isFavorite = try {
-            document.getElementById("favorite")?.getElementsByTag("span")?.get(0)
-                ?.text() == "Unfavorite"
-        } catch (e: Exception) {
-            false
-        }
-
         Result.Ok(
             GalleryDetailsResponse(
                 gallery = galleryDetails,
                 coverUrl = coverUrl,
                 related = related,
-                isUserFavorite = isFavorite
             )
         )
     }
