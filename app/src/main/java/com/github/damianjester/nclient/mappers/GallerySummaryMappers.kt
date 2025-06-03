@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.db.mappers
+package com.github.damianjester.nclient.mappers
 
 import com.github.damianjester.nclient.SelectSummariesFoQuery
 import com.github.damianjester.nclient.core.models.GalleryId

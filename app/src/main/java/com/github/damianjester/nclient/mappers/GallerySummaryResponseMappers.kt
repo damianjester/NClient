@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.db.mappers
+package com.github.damianjester.nclient.mappers
 
 import com.github.damianjester.nclient.GalleryHasTag
 import com.github.damianjester.nclient.GallerySummaryEntity
