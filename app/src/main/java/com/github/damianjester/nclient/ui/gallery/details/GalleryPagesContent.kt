@@ -27,12 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.github.damianjester.nclient.core.Gallery
 import com.github.damianjester.nclient.core.GalleryId
 import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.core.GalleryTag
 import com.github.damianjester.nclient.core.GalleryTagType
-import com.github.damianjester.nclient.core.RelatedGallery
+import com.github.damianjester.nclient.core.GalleryTags
 import com.github.damianjester.nclient.ui.gallery.details.grid.GalleryPageGridItem
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format.MonthNames
@@ -40,18 +39,17 @@ import kotlinx.datetime.format.Padding
 import kotlinx.datetime.format.char
 
 @Composable
-fun GalleryPagesLazyGrid(
+fun GalleryPagesContent(
     modifier: Modifier = Modifier,
-    gallery: Gallery,
-    pages: List<GalleryPage>,
-    tags: GalleryDetailsComponent.GalleryTags,
-    related: List<RelatedGallery>,
+    galleryState: GalleryDetailsComponent.GalleryState.Loaded,
     gridMode: GalleryDetailsComponent.GridMode,
     onPageClick: (GalleryPage) -> Unit,
     onRelatedGalleryClick: (GalleryId) -> Unit,
     onTagClick: (GalleryTag) -> Unit,
     onCopyMetadata: (GalleryDetailsComponent.MetadataCopy) -> Unit,
 ) {
+    val (gallery, pages, tags, related) = galleryState.details
+
     LazyVerticalGrid(
         columns = GridCells.Fixed(gridMode.count),
         modifier = modifier,
@@ -169,7 +167,7 @@ val tagTypes = setOf(
 @OptIn(ExperimentalLayoutApi::class)
 fun GalleryTags(
     modifier: Modifier,
-    tags: GalleryDetailsComponent.GalleryTags,
+    tags: GalleryTags,
     onTagClick: (GalleryTag) -> Unit,
     onTagLongClick: (GalleryTag) -> Unit,
 ) {

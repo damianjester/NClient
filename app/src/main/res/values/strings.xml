@@ -367,6 +367,12 @@
     <string name="hide">Hide</string>
     <string name="title_user_agent">Change User-Agent</string>
 
+    <string name="internal_error_title">Internal Error</string>
+    <string name="internal_error_body">Failed to parse/scrape…</string>
+    <string name="network_connection_error_title">Network Failed</string>
+    <string name="network_connection_error_body">Failed to connect to NHentai. Check your internet connection or try again later.</string>
+    <string name="gallery_not_found_title">404 Not found</string>
+    <string name="gallery_not_found_body">Gallery #%d was not found.</string>
     <string name="comments_load_failed">Failed to load comments</string>
     <string name="back">Back</string>
     <string name="download_page">Download page</string>

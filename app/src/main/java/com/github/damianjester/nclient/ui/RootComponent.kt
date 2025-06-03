@@ -80,8 +80,8 @@ class DefaultRootComponent(
     private fun gallerySearchComponent(componentContext: ComponentContext): GallerySearchComponent =
         DefaultGallerySearchComponent(
             componentContext = componentContext,
+            dispatchers = get(),
             pager = get(),
-            fetcher = get(),
             onNavigateGallery = { id -> navigation.pushNew(Config.GalleryDetails(id)) },
         )
 
@@ -111,10 +111,6 @@ class DefaultRootComponent(
             },
             applicationContext = get(),
             galleryFetcher = get(),
-            galleryObserver = get(),
-            pagesObserver = get(),
-            tagsObserver = get(),
-            relatedObserver = get()
         )
 
     private fun galleryPagerComponent(
@@ -123,10 +119,11 @@ class DefaultRootComponent(
     ): GalleryPagerComponent =
         DefaultGalleryPagerComponent(
             componentContext = componentContext,
+            dispatchers = get(),
             config = config,
             onNavigateBack = { navigation.pop() },
-            detailsObserver = get(),
             pagesFetcher = get(),
+            galleryRepository = get(),
             pageSaver = get(),
             pageSharer = get(),
         )
@@ -137,10 +134,10 @@ class DefaultRootComponent(
     ): CommentsComponent =
         DefaultCommentsComponent(
             componentContext = componentContext,
+            dispatchers = get(),
             galleryId = config.id,
             onNavigateBack = { navigation.pop() },
             fetcher = get(),
-            observer = get(),
             webPageOpener = get()
         )
 

@@ -51,5 +51,5 @@ val httpModule = module {
         }
     }
 
-    single { ScrapperNHentaiHttpClient(get(), get()) } bind NHentaiHttpClient::class
+    single { ScrapperNHentaiHttpClient(get(), get(), get()) } bind NHentaiHttpClient::class
 }

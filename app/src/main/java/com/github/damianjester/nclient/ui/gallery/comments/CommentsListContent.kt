@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,7 +16,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,20 +39,33 @@ import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
 private const val MAX_COMMENT_LINES = 7
 
 @Composable
-fun CommentsList(
+@OptIn(ExperimentalMaterial3Api::class)
+fun CommentsListContent(
     modifier: Modifier = Modifier,
     comments: List<Comment>,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
 ) {
-    LazyColumn(
-        modifier = modifier,
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(comments, key = { it.id.value }) { comment ->
-            CommentItem(
-                modifier = Modifier.fillMaxWidth(),
-                comment = comment
-            )
+    if (comments.isEmpty()) {
+        NoCommentsFoundContent(modifier)
+    } else {
+        PullToRefreshBox(
+            isRefreshing,
+            onRefresh = onRefresh,
+            modifier = modifier
+        ) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(comments, key = { it.id.value }) { comment ->
+                    CommentItem(
+                        modifier = Modifier.fillMaxWidth(),
+                        comment = comment
+                    )
+                }
+            }
         }
     }
 }
@@ -79,7 +95,6 @@ fun CommentItem(
                 )
                 Spacer(Modifier.size(8.dp))
                 SelectionContainer {
-
                     var showAll by remember { mutableStateOf(false) }
 
                     Text(
@@ -114,8 +129,10 @@ private fun CommentsListPreview(
     @PreviewParameter(CommentsPreviewParameterProvider::class) comments: List<Comment>,
 ) {
     NClientPreviewTheme {
-        CommentsList(
-            comments = comments
+        CommentsListContent(
+            comments = comments,
+            isRefreshing = false,
+            onRefresh = {}
         )
     }
 }

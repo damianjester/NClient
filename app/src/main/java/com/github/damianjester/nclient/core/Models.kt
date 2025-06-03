@@ -6,6 +6,12 @@ import kotlinx.serialization.Serializable
 import java.io.File
 import kotlin.time.Duration
 
+sealed interface Result<out T, out E> {
+    data class Ok<T>(val value: T) : Result<T, Nothing>
+
+    data class Err<E>(val cause: E) : Result<Nothing, E>
+}
+
 @JvmInline
 @Serializable
 value class GalleryId(val value: Long) {
@@ -87,9 +93,9 @@ data class RelatedGallery(
 )
 
 data class GalleryTitle(
+    val pretty: String,
     val english: String?,
     val japanese: String?,
-    val pretty: String,
 )
 
 data class GalleryCover(
@@ -214,6 +220,24 @@ data class Gallery(
     val cover: GalleryCover,
     val updated: LocalDateTime,
     val favoriteCount: Int,
+)
+
+data class GalleryDetails(
+    val gallery: Gallery,
+    val pages: List<GalleryPage>,
+    val tags: GalleryTags,
+    val related: List<RelatedGallery>,
+)
+
+data class GalleryTags(
+    val all: List<GalleryTag>,
+    val parody: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Parody) },
+    val character: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Character) },
+    val general: List<GalleryTag> = all.filter { (it.type == GalleryTagType.General) },
+    val artist: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Artist) },
+    val group: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Group) },
+    val language: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Language) },
+    val category: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Category) },
 )
 
 @JvmInline

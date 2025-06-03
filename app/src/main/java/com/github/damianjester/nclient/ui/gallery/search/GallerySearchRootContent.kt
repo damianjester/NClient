@@ -1,6 +1,5 @@
 package com.github.damianjester.nclient.ui.gallery.search
 
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -14,10 +13,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.github.damianjester.nclient.R
+import com.github.damianjester.nclient.ui.common.LoadingContent
+import com.github.damianjester.nclient.ui.gallery.search.GallerySearchComponent.GalleriesState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -29,7 +31,8 @@ fun GallerySearchRootContent(
     // TODO: Pager controls
     // TODO: Drawer
 
-    val state = component.model.subscribeAsState()
+    val state by component.model.subscribeAsState()
+    val galleriesState = state.galleriesState
 
     Scaffold(
         topBar = {
@@ -61,15 +64,21 @@ fun GallerySearchRootContent(
             )
         }
     ) { padding ->
-        Column(
-            modifier
-                .padding(padding)
-                .fillMaxSize()
-        ) {
-            GallerySearchGrid(
-                galleries = state.value.galleries,
-                onGalleryClick = component::navigateToGallery
-            )
+
+        val contentModifier = modifier
+            .padding(padding)
+            .fillMaxSize()
+
+        when (galleriesState) {
+            GalleriesState.Loading -> LoadingContent(contentModifier)
+            is GalleriesState.Error -> ErrorContent(contentModifier, galleriesState)
+            is GalleriesState.Loaded ->
+                // TODO: Handle when no galleries have been found
+                GallerySearchContent(
+                    modifier = contentModifier,
+                    galleries = galleriesState.galleries,
+                    onGalleryClick = component::navigateToGallery
+                )
         }
     }
 }

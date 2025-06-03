@@ -5,6 +5,7 @@ CREATE TABLE commentEntity (
     posterId INTEGER NOT NULL,
     date INTEGER NOT NULL,
     body TEXT NOT NULL,
+    createdAt INTEGER NOT NULL,
     FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE,
     FOREIGN KEY(posterId) REFERENCES commentPosterEntity(id) ON DELETE CASCADE
 );
@@ -16,16 +17,25 @@ CREATE TABLE commentPosterEntity (
 );
 
 selectCommentsForGallery:
-SELECT gc.id, gc.posterId, gc.date, gc.body, gp.username, gp.avatarPath FROM commentEntity AS gc
+SELECT gc.id, gc.posterId, gc.date, gc.body, gc.createdAt, gp.username, gp.avatarPath FROM commentEntity AS gc
     INNER JOIN gallerySummaryEntity AS g ON gc.galleryId = g.id
     INNER JOIN commentPosterEntity AS gp ON gc.posterId = gp.id
 WHERE g.id = ?
 ORDER BY gc.date DESC;
 
+selectCreatedAt:
+SELECT createdAt FROM commentEntity
+WHERE galleryId = ?
+ORDER BY createdAt DESC
+LIMIT 1;
+
 insertComment:
-INSERT OR REPLACE INTO commentEntity(id, galleryId, posterId, date, body)
+INSERT OR REPLACE INTO commentEntity(id, galleryId, posterId, date, body, createdAt)
 VALUES ?;
 
 insertCommentPoster:
 INSERT OR REPLACE INTO commentPosterEntity(id, username, avatarPath)
 VALUES ?;
+
+deleteComments:
+DELETE FROM commentEntity WHERE galleryId = ?;

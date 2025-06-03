@@ -21,13 +21,14 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.core.ScreenCaffeinater
+import com.github.damianjester.nclient.ui.common.LoadingContent
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.koinInject
 
 @Composable
 fun GalleryPagerRootContent(
     component: GalleryPagerComponent,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     GalleryPagerScreen(
         modifier = modifier,
@@ -50,7 +51,7 @@ fun GalleryPagerScreen(
     onSharePage: (GalleryPage, Boolean) -> Unit,
 ) {
     val state by component.model.subscribeAsState()
-    val galleryState = state.gallery
+    val pagesState = state.pages
 
     val context = LocalContext.current
     val windowInsetsController = rememberWindowInsetsController()
@@ -96,17 +97,8 @@ fun GalleryPagerScreen(
         }
     }
 
-    val galleryTitle = when (galleryState) {
-        is GalleryPagerComponent.GalleryState.Loaded -> galleryState.gallery.title.pretty
-        else -> null
-    }
-
     val pagerState = rememberPagerState(initialPage = initialPage) {
-        if (galleryState is GalleryPagerComponent.GalleryState.Loaded) {
-            galleryState.pages.size
-        } else {
-            0
-        }
+        pagesState.pagesOrNull?.size ?: 0
     }
 
     GalleryPagerScaffold(
@@ -115,15 +107,13 @@ fun GalleryPagerScreen(
         topBar = {
             TopAppBar(
                 modifier = Modifier.fillMaxWidth(),
-                galleryTitle = galleryTitle,
+                galleryTitle = state.galleryTitle?.pretty ?: "",
                 visible = uiVisible,
                 onBack = onBack,
                 onDownloadPage = {
-                    val page =
-                        (if (galleryState is GalleryPagerComponent.GalleryState.Loaded) galleryState else null)
-                            ?.let { it.pages[pagerState.currentPage] }
-                            ?: return@TopAppBar
-                    onDownloadPage(page)
+                    pagesState.pagesOrNull
+                        ?.getOrNull(pagerState.currentPage)
+                        ?.also { page -> onDownloadPage(page) }
                 },
                 onSharePage = {
                     shareDialogVisible = true
@@ -139,17 +129,22 @@ fun GalleryPagerScreen(
         }
     ) { innerPadding ->
 
-        if (galleryState is GalleryPagerComponent.GalleryState.Loaded) {
-            GalleryPager(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
-                pagerState = pagerState,
-                pages = galleryState.pages,
-                onPageClick = {
-                    uiVisible = !uiVisible
-                }
-            )
+        val contentModifier = Modifier
+            .padding(innerPadding)
+            .fillMaxSize()
+
+        when (pagesState) {
+            is GalleryPagerComponent.PagesState.Error -> ErrorContent(contentModifier, pagesState)
+            GalleryPagerComponent.PagesState.Loading -> LoadingContent(contentModifier)
+            is GalleryPagerComponent.PagesState.Loaded ->
+                GalleryPagerContent(
+                    modifier = contentModifier,
+                    pagerState = pagerState,
+                    pagesState = pagesState,
+                    onPageClick = {
+                        uiVisible = !uiVisible
+                    }
+                )
         }
 
         if (jumpToPageDialogVisible) {
@@ -163,11 +158,9 @@ fun GalleryPagerScreen(
             SharePageDialog(
                 onDismissRequest = { shareDialogVisible = false },
                 onShare = { includeUrl ->
-                    val page =
-                        (if (galleryState is GalleryPagerComponent.GalleryState.Loaded) galleryState else null)
-                            ?.let { it.pages[pagerState.currentPage] }
-                            ?: return@SharePageDialog
-                    onSharePage(page, includeUrl)
+                    pagesState.pagesOrNull
+                        ?.getOrNull(pagerState.currentPage)
+                        ?.also { page -> onSharePage(page, includeUrl) }
                     shareDialogVisible = false
                 }
             )

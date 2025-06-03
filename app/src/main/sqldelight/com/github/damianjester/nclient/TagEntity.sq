@@ -14,8 +14,12 @@ CREATE TABLE galleryHasTag (
 );
 
 insertTag:
-INSERT OR REPLACE INTO tagEntity(id, type, name, count, urlPath)
+INSERT OR IGNORE INTO tagEntity(id, type, name, count, urlPath)
 VALUES ?;
+
+updateTag:
+UPDATE tagEntity SET type=?, name=?, count=?, urlPath=?
+WHERE id = ?;
 
 selectTagsForGallery:
 SELECT tagEntity.* FROM tagEntity

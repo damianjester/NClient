@@ -2,29 +2,27 @@ package com.github.damianjester.nclient.ui.gallery.details
 
 import android.content.ClipData
 import android.content.Context
-import android.util.Log
 import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.lifecycle.doOnResume
+import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.github.damianjester.nclient.R
-import com.github.damianjester.nclient.core.Gallery
+import com.github.damianjester.nclient.core.GalleryDetails
 import com.github.damianjester.nclient.core.GalleryDetailsFetcher
-import com.github.damianjester.nclient.core.GalleryDetailsObserver
 import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.GalleryPage
-import com.github.damianjester.nclient.core.GalleryPagesObserver
+import com.github.damianjester.nclient.core.GalleryNotFound
 import com.github.damianjester.nclient.core.GalleryTag
-import com.github.damianjester.nclient.core.GalleryTagType
-import com.github.damianjester.nclient.core.GalleryTagsObserver
-import com.github.damianjester.nclient.core.RelatedGalleriesObserver
-import com.github.damianjester.nclient.core.RelatedGallery
+import com.github.damianjester.nclient.core.Result
+import com.github.damianjester.nclient.net.NHentaiClientConnectionException
+import com.github.damianjester.nclient.net.NHentaiClientException
+import com.github.damianjester.nclient.net.NHentaiClientScrapeException
+import com.github.damianjester.nclient.net.NHentaiClientSerializationException
 import com.github.damianjester.nclient.ui.DefaultRootComponent
+import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsComponent.GalleryState
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.clipboardManager
 import com.github.damianjester.nclient.utils.coroutineScope
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 interface GalleryDetailsComponent {
@@ -47,32 +45,23 @@ interface GalleryDetailsComponent {
 
     data class Model(
         val gridMode: GridMode = GridMode.TWO_COLUMNS,
-        val galleryState: GalleryState = GalleryState.Loading,
+        val gallery: GalleryState = GalleryState.Loading,
+        val isFavorite: Boolean = false,
     )
 
     sealed interface GalleryState {
         data object Loading : GalleryState
 
-        data class Loaded(
-            val gallery: Gallery,
-            val pages: List<GalleryPage>,
-            val tags: GalleryTags,
-            val related: List<RelatedGallery>,
-        ) : GalleryState
+        data class Loaded(val details: GalleryDetails) : GalleryState
 
-        data object NotFound : GalleryState
+        sealed interface Error : GalleryState {
+            data class NotFound(val id: GalleryId) : Error
+
+            data object NetworkConnection : Error
+
+            data object Internal : Error
+        }
     }
-
-    data class GalleryTags(
-        val all: List<GalleryTag>,
-        val parody: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Parody) },
-        val character: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Character) },
-        val general: List<GalleryTag> = all.filter { (it.type == GalleryTagType.General) },
-        val artist: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Artist) },
-        val group: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Group) },
-        val language: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Language) },
-        val category: List<GalleryTag> = all.filter { (it.type == GalleryTagType.Category) },
-    )
 
     sealed interface MetadataCopy {
         data class Id(val id: GalleryId) : MetadataCopy
@@ -97,45 +86,17 @@ class DefaultGalleryDetailsComponent(
     private val onNavigateBack: () -> Unit,
     private val applicationContext: Context,
     private val galleryFetcher: GalleryDetailsFetcher,
-    private val galleryObserver: GalleryDetailsObserver,
-    private val pagesObserver: GalleryPagesObserver,
-    private val tagsObserver: GalleryTagsObserver,
-    private val relatedObserver: RelatedGalleriesObserver,
 ) : GalleryDetailsComponent, ComponentContext by componentContext {
-    private val lifecycleScope = coroutineScope(dispatchers.Default)
     private val _model = MutableValue(GalleryDetailsComponent.Model())
     override val model: Value<GalleryDetailsComponent.Model>
         get() = _model
 
+    private val coroutineScope = coroutineScope(dispatchers.Main.immediate)
+
     init {
-        doOnResume {
-            lifecycleScope.launch {
-
-                val result = galleryFetcher.fetch(config.id)
-                if (result is GalleryDetailsFetcher.Result.Failure) {
-                    Log.e("component", "Failed to load gallery details", result.exception)
-                    // TODO: Update state to reflect error state
-                }
-
-                combine(
-                    galleryObserver.details(config.id),
-                    pagesObserver.pages(config.id),
-                    tagsObserver.tags(config.id),
-                    relatedObserver.galleries(config.id)
-                ) { gallery, pages, tags, related ->
-                    GalleryDetailsComponent.GalleryState.Loaded(
-                        gallery,
-                        pages,
-                        GalleryDetailsComponent.GalleryTags(tags),
-                        related
-                    )
-                }.collect { state ->
-                    _model.update {
-                        it.copy(
-                            galleryState = state
-                        )
-                    }
-                }
+        doOnCreate {
+            coroutineScope.launch {
+                fetchGallery()
             }
         }
     }
@@ -163,7 +124,9 @@ class DefaultGalleryDetailsComponent(
     }
 
     override fun setGalleryFavoriteStatus(favorite: Boolean) {
-        TODO("Not yet implemented")
+        doOnLoaded {
+            TODO("Not yet implemented")
+        }
     }
 
     override fun toggleGridMode() {
@@ -181,9 +144,44 @@ class DefaultGalleryDetailsComponent(
 
     override fun navigateToPage(index: Int) = onNavigatePage(index)
 
-    override fun navigateToComments() = onNavigateComments(config.id)
+    override fun navigateToComments() {
+        doOnLoaded {
+            onNavigateComments(config.id)
+        }
+    }
 
     override fun navigateRelated(id: GalleryId) = onNavigateRelated(id)
 
     override fun navigateBack() = onNavigateBack()
+
+    private suspend fun fetchGallery() {
+        try {
+            val targetState = when (val result = galleryFetcher.fetch(config.id)) {
+                is Result.Err -> {
+                    require(result.cause is GalleryNotFound)
+                    GalleryState.Error.NotFound(config.id)
+                }
+                is Result.Ok -> GalleryState.Loaded(result.value)
+            }
+
+            _model.update { state -> state.copy(gallery = targetState) }
+        } catch (ex: NHentaiClientException) {
+            val error = when (ex) {
+                is NHentaiClientConnectionException -> GalleryState.Error.NetworkConnection
+                is NHentaiClientScrapeException, is NHentaiClientSerializationException ->
+                    GalleryState.Error.Internal
+
+                else -> throw ex
+            }
+
+            _model.update { state -> state.copy(gallery = error) }
+        }
+    }
+
+    private fun doOnLoaded(block: (GalleryState.Loaded) -> Unit) {
+        val state = _model.value.gallery
+        if (state is GalleryState.Loaded) {
+            block(state)
+        }
+    }
 }

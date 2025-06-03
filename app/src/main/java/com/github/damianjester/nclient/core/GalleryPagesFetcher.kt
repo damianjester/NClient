@@ -2,18 +2,18 @@ package com.github.damianjester.nclient.core
 
 import com.github.damianjester.nclient.db.GalleryRepository
 
-interface GalleryDetailsFetcher {
-    suspend fun fetch(id: GalleryId): Result<GalleryDetails, NClientError>
+fun interface GalleryPagesFetcher {
+    suspend fun fetch(id: GalleryId): Result<List<GalleryPage>, NClientError>
 }
 
-class DefaultGalleryDetailsFetcher(
+class DefaultGalleryPagesFetcher(
     private val repository: GalleryRepository,
     private val galleryDetailsCacher: GalleryDetailsCacher,
-) : GalleryDetailsFetcher {
-    override suspend fun fetch(id: GalleryId): Result<GalleryDetails, NClientError> {
+) : GalleryPagesFetcher {
+    override suspend fun fetch(id: GalleryId): Result<List<GalleryPage>, NClientError> {
         return when (val result = galleryDetailsCacher.cache(id)) {
             is Result.Err -> result
-            is Result.Ok -> Result.Ok(repository.selectGalleryDetails(id))
+            is Result.Ok -> Result.Ok(repository.selectGalleryPages(id))
         }
     }
 }

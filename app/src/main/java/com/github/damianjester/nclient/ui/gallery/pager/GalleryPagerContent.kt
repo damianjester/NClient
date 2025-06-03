@@ -20,8 +20,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.request.ImageRequest
-import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.core.GalleryPageImages
+import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerComponent.PagesState
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage
 import me.saket.telephoto.zoomable.rememberZoomableImageState
@@ -29,12 +29,14 @@ import me.saket.telephoto.zoomable.rememberZoomableState
 
 @Composable
 @OptIn(ExperimentalLayoutApi::class)
-fun GalleryPager(
+fun GalleryPagerContent(
     modifier: Modifier = Modifier,
     pagerState: PagerState,
-    pages: List<GalleryPage>,
+    pagesState: PagesState.Loaded,
     onPageClick: () -> Unit,
 ) {
+    val pages = pagesState.pages
+
     Box(
         modifier = modifier
     ) {
@@ -85,12 +87,12 @@ private fun PageIndicator(
 ) {
     Surface(
         modifier = modifier,
-        shape = RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp)
+        shape = RoundedCornerShape(topStart = 8.dp, bottomStart = 8.dp),
+        tonalElevation = 4.dp
     ) {
         Text(
             "${pagerState.currentPage + 1}/${pagerState.pageCount}",
-            modifier = Modifier
-                .padding(8.dp),
+            modifier = Modifier.padding(8.dp),
             textAlign = TextAlign.Center
         )
     }

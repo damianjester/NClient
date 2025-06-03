@@ -13,6 +13,8 @@ CREATE TABLE galleryDetailsEntity (
     englishTitle TEXT,
     japaneseTitle TEXT,
     uploadDate INTEGER NOT NULL,
+    createdAt INTEGER NOT NULL,
+    updatedAt INTEGER NOT NULL,
     FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE
 );
 
@@ -29,16 +31,42 @@ FROM galleryDetailsEntity AS gd
     INNER JOIN gallerySummaryEntity AS gs ON gd.galleryId = gs.id
 WHERE galleryId = ? LIMIT 1;
 
+selectGalleryTitles:
+SELECT gs.prettyTitle, gd.englishTitle, gd.japaneseTitle
+FROM galleryDetailsEntity AS gd
+    INNER JOIN gallerySummaryEntity AS gs ON gd.galleryId = gs.id
+WHERE galleryId = ? LIMIT 1;
+
+selectGalleryUpdatedAt:
+SELECT updatedAt FROM galleryDetailsEntity
+WHERE galleryId = ? LIMIT 1;
+
 insertSummary:
-INSERT OR REPLACE INTO gallerySummaryEntity (id, prettyTitle, mediaId, coverThumbnailFileExtension) VALUES ?;
+INSERT OR IGNORE INTO gallerySummaryEntity (id, prettyTitle, mediaId, coverThumbnailFileExtension) VALUES ?;
+
+updateSummary:
+UPDATE gallerySummaryEntity SET
+    mediaId=?, prettyTitle=?, coverThumbnailFileExtension=?
+WHERE id = ?;
 
 insertDetails:
-INSERT OR REPLACE INTO
-    galleryDetailsEntity (galleryId, coverFileExtension, numFavorites, englishTitle,japaneseTitle, uploadDate)
+INSERT OR IGNORE INTO
+    galleryDetailsEntity (galleryId, coverFileExtension, numFavorites, englishTitle,japaneseTitle, uploadDate, createdAt, updatedAt)
 VALUES ?;
+
+updateDetails:
+UPDATE galleryDetailsEntity SET
+    coverFileExtension=?, numFavorites=?, englishTitle=?, japaneseTitle=?, uploadDate=?, updatedAt=?
+WHERE galleryId = ?;
 
 insertHasTag:
 INSERT OR REPLACE INTO galleryHasTag (galleryId, tagId) VALUES ?;
 
 insertHasRelated:
 INSERT OR REPLACE INTO galleryHasRelated(galleryId, relatedId, orderIndex) VALUES ?;
+
+deleteHasTags:
+DELETE FROM galleryHasTag WHERE galleryId = ?;
+
+deleteHasRelated:
+DELETE FROM galleryHasRelated WHERE galleryId = ?;

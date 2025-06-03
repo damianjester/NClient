@@ -1,24 +1,26 @@
 package com.github.damianjester.nclient.db
 
-import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToList
 import com.github.damianjester.nclient.CommentEntity
 import com.github.damianjester.nclient.CommentPosterEntity
 import com.github.damianjester.nclient.Database
+import com.github.damianjester.nclient.core.Comment
 import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.db.mappers.toComment
+import com.github.damianjester.nclient.db.mappers.toCommentEntity
+import com.github.damianjester.nclient.db.mappers.toCommentPosterEntity
+import com.github.damianjester.nclient.net.CommentResponse
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kotlinx.datetime.Instant
 
 interface CommentRepository {
-    fun selectComments(id: GalleryId): Flow<List<CommentEntityWithPosterEntity>>
+    suspend fun selectComments(id: GalleryId): List<Comment>
 
-    suspend fun insert(
-        comments: List<CommentEntity>,
-        posters: List<CommentPosterEntity>,
-    )
+    suspend fun selectCreatedAt(id: GalleryId): Instant?
+
+    suspend fun replaceAllComments(id: GalleryId, response: List<CommentResponse>)
 }
 
 data class CommentEntityWithPosterEntity(
@@ -34,35 +36,31 @@ class SqlDelightCommentRepository(
     private val queries
         get() = database.commentEntityQueries
 
-    override fun selectComments(id: GalleryId): Flow<List<CommentEntityWithPosterEntity>> {
-        // gc.id, gc.posterId, gc.date, gc.body, gp.username, gp.avatarPath
-        return queries.selectCommentsForGallery(id.value) { commentId, posterId, date, body, username, avatarPath ->
-            CommentEntityWithPosterEntity(
-                comment = CommentEntity(
-                    id = commentId,
-                    galleryId = id.value,
-                    posterId = posterId,
-                    date = date,
-                    body = body
-                ),
-                poster = CommentPosterEntity(
-                    id = posterId,
-                    username = username,
-                    avatarPath = avatarPath
-                )
-            )
-        }
-            .asFlow()
-            .mapToList(dispatchers.IO)
+    override suspend fun selectComments(id: GalleryId) = withContext(dispatchers.IO) {
+        queries.selectCommentsWithPosterEntity(id)
+            .executeAsList()
+            .map { it.toComment() }
     }
 
-    override suspend fun insert(
-        comments: List<CommentEntity>,
-        posters: List<CommentPosterEntity>,
+    override suspend fun selectCreatedAt(id: GalleryId) = withContext(dispatchers.IO) {
+        queries.selectCreatedAt(id.value)
+            .executeAsOneOrNull()
+            ?.let { Instant.fromEpochSeconds(it) }
+    }
+
+    override suspend fun replaceAllComments(
+        id: GalleryId,
+        response: List<CommentResponse>
     ) = withContext(dispatchers.IO) {
-        if (comments.isEmpty()) {
+        if (response.isEmpty()) {
             return@withContext
         }
+
+        val posters = response
+            .distinctBy { poster -> poster.id }
+            .map { comment -> comment.toCommentPosterEntity() }
+
+        val comments = response.map { it.toCommentEntity(id) }
 
         logger.i(
             LogTags.comments,
@@ -71,6 +69,7 @@ class SqlDelightCommentRepository(
         )
 
         database.transaction {
+            queries.deleteComments(id.value)
             posters.forEach { queries.insertCommentPoster(it) }
             comments.forEach { queries.insertComment(it) }
         }

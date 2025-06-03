@@ -7,89 +7,118 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.github.damianjester.nclient.core.Comment
 import com.github.damianjester.nclient.core.CommentsFetcher
-import com.github.damianjester.nclient.core.DefaultCommentsObserver
 import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.core.Result
 import com.github.damianjester.nclient.core.WebPageOpener
+import com.github.damianjester.nclient.net.NHentaiClientConnectionException
+import com.github.damianjester.nclient.net.NHentaiClientException
+import com.github.damianjester.nclient.net.NHentaiClientSerializationException
 import com.github.damianjester.nclient.net.NHentaiUrl
+import com.github.damianjester.nclient.ui.gallery.comments.CommentsComponent.CommentsState
+import com.github.damianjester.nclient.ui.gallery.comments.CommentsComponent.Model
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.coroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
 interface CommentsComponent {
     val model: Value<Model>
 
-    fun loadComments(pullToRefresh: Boolean)
+    fun retryComments()
+
+    fun refreshComments()
 
     fun navigateBack()
 
     fun openCommentsWebpage()
 
     data class Model(
-        val commentsState: CommentsState = CommentsState.Loading(false),
-        val comments: List<Comment> = emptyList(),
-    ) {
-        val isLoading: Boolean
-            get() = commentsState is CommentsState.Loading
-
-        val isRefreshing: Boolean
-            get() = commentsState is CommentsState.Loading && commentsState.userRefresh
-    }
+        val comments: CommentsState = CommentsState.Loading,
+    )
 
     sealed interface CommentsState {
-        data class Loading(val userRefresh: Boolean) : CommentsState
+        data object Loading : CommentsState
 
-        data object Error : CommentsState
+        data class Loaded(
+            val comments: List<Comment>,
+            val refreshing: Boolean,
+        ) : CommentsState
 
-        data object Loaded : CommentsState
+        sealed interface Error : CommentsState {
+            data object NetworkConnection : Error
+
+            data object Internal : Error
+        }
+
+        val isLoading: Boolean
+            get() = this is Loading
+
+        val isRefreshing: Boolean
+            get() = this is Loaded && refreshing
     }
 }
 
 class DefaultCommentsComponent(
     componentContext: ComponentContext,
+    dispatchers: NClientDispatchers,
     private val galleryId: GalleryId,
     private val onNavigateBack: () -> Unit,
     private val fetcher: CommentsFetcher,
-    private val observer: DefaultCommentsObserver,
     private val webPageOpener: WebPageOpener,
 ) : CommentsComponent, ComponentContext by componentContext, KoinComponent {
-    private val _model = MutableValue(CommentsComponent.Model())
-    private val coroutineScope = coroutineScope(Dispatchers.IO)
+    private val _model = MutableValue<Model>(Model())
+    override val model: Value<Model> = _model
 
-    override val model: Value<CommentsComponent.Model> = _model
+    private val coroutineScope = coroutineScope(dispatchers.Main.immediate)
 
     init {
         doOnCreate {
-            coroutineScope.launch {
-                val state = when (fetcher.fetch(galleryId)) {
-                    CommentsFetcher.Result.Success -> CommentsComponent.CommentsState.Loaded
-                    is CommentsFetcher.Result.Failure -> CommentsComponent.CommentsState.Error
-                }
-                _model.update { it.copy(commentsState = state) }
-            }
-
-            coroutineScope.launch {
-                observer.comments(galleryId)
-                    .collect { comments ->
-                        _model.update {
-                            it.copy(
-                                comments = comments
-                            )
-                        }
-                    }
-            }
+            fetchComments()
         }
     }
 
-    override fun loadComments(pullToRefresh: Boolean) {
-        _model.update { it.copy(CommentsComponent.CommentsState.Loading(pullToRefresh)) }
-        coroutineScope.launch {
-            val state = when (fetcher.fetch(galleryId)) {
-                CommentsFetcher.Result.Success -> CommentsComponent.CommentsState.Loaded
-                is CommentsFetcher.Result.Failure -> CommentsComponent.CommentsState.Error
-            }
+    override fun retryComments() {
+        val currentState = _model.value.comments
+        if (currentState.isLoading || currentState.isRefreshing) {
+            return
+        }
 
-            _model.update { it.copy(state) }
+        fetchComments()
+    }
+
+    override fun refreshComments() {
+        val currentState = _model.value.comments
+        if (currentState.isLoading || currentState.isRefreshing) {
+            return
+        }
+        doOnLoaded { loaded ->
+            fetchComments(loaded)
+        }
+    }
+
+    private fun fetchComments(loaded: CommentsState.Loaded? = null) {
+        _model.update { state ->
+            val loadingOrRefreshing = loaded?.copy(refreshing = true) ?: CommentsState.Loading
+            state.copy(comments = loadingOrRefreshing)
+        }
+
+        coroutineScope.launch {
+            try {
+                val targetState = when (val result = fetcher.fetch(galleryId, loaded != null)) {
+                    is Result.Err -> error(result.cause)
+                    is Result.Ok -> CommentsState.Loaded(result.value, refreshing = false)
+                }
+
+                _model.update { state -> state.copy(comments = targetState) }
+            } catch (ex: NHentaiClientException) {
+                val targetState = when (ex) {
+                    is NHentaiClientConnectionException -> CommentsState.Error.NetworkConnection
+                    is NHentaiClientSerializationException -> CommentsState.Error.Internal
+                    else -> throw ex
+                }
+
+                _model.update { state -> state.copy(comments = targetState) }
+            }
         }
     }
 
@@ -98,6 +127,13 @@ class DefaultCommentsComponent(
     override fun openCommentsWebpage() {
         coroutineScope.launch {
             webPageOpener.open(NHentaiUrl.galleryWebPage(galleryId, commentsSection = true))
+        }
+    }
+
+    private fun doOnLoaded(block: (state: CommentsState.Loaded) -> Unit) {
+        val state = _model.value.comments
+        if (state is CommentsState.Loaded) {
+            block(state)
         }
     }
 }

@@ -6,18 +6,28 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
-import com.github.damianjester.nclient.core.Gallery
-import com.github.damianjester.nclient.core.GalleryDetailsObserver
+import com.arkivanov.essenty.lifecycle.doOnResume
+import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.core.GalleryNotFound
 import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.core.GalleryPageSaver
 import com.github.damianjester.nclient.core.GalleryPageSharer
-import com.github.damianjester.nclient.core.GalleryPagesObserver
+import com.github.damianjester.nclient.core.GalleryPagesFetcher
+import com.github.damianjester.nclient.core.GalleryTitle
+import com.github.damianjester.nclient.core.Result
+import com.github.damianjester.nclient.db.GalleryRepository
+import com.github.damianjester.nclient.net.NHentaiClientConnectionException
+import com.github.damianjester.nclient.net.NHentaiClientException
+import com.github.damianjester.nclient.net.NHentaiClientScrapeException
+import com.github.damianjester.nclient.net.NHentaiClientSerializationException
 import com.github.damianjester.nclient.ui.DefaultRootComponent
+import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerComponent.PagesState
+import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.coroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 
@@ -33,16 +43,29 @@ interface GalleryPagerComponent {
     fun navigateBack()
 
     data class Model(
+        val pages: PagesState = PagesState.Loading,
+        val galleryTitle: GalleryTitle? = null,
         val loading: Boolean = true,
-        val gallery: GalleryState = GalleryState.Loading,
     )
 
-    sealed interface GalleryState {
-        data object Loading : GalleryState
+    sealed interface PagesState {
+        data object Loading : PagesState
 
-        data class Loaded(val gallery: Gallery, val pages: List<GalleryPage>) : GalleryState
+        data class Loaded(val pages: List<GalleryPage>) : PagesState
 
-        data object NotFound : GalleryState
+        sealed interface Error : PagesState {
+            data class GalleryNotFound(val id: GalleryId) : Error
+
+            data object NetworkConnection : Error
+
+            data object Internal : Error
+        }
+
+        val pagesOrNull: List<GalleryPage>?
+            get() = when (this) {
+                is Loaded -> pages
+                else -> null
+            }
     }
 
     sealed interface SnackbarMessage {
@@ -56,14 +79,15 @@ interface GalleryPagerComponent {
 
 class DefaultGalleryPagerComponent(
     componentContext: ComponentContext,
+    dispatchers: NClientDispatchers,
     override val config: DefaultRootComponent.Config.GalleryPager,
     private val onNavigateBack: () -> Unit,
-    private val detailsObserver: GalleryDetailsObserver,
-    private val pagesFetcher: GalleryPagesObserver,
+    private val pagesFetcher: GalleryPagesFetcher,
+    private val galleryRepository: GalleryRepository,
     private val pageSaver: GalleryPageSaver,
     private val pageSharer: GalleryPageSharer,
 ) : GalleryPagerComponent, ComponentContext by componentContext, KoinComponent {
-    private val scope = coroutineScope(Dispatchers.Default)
+    private val coroutineScope = coroutineScope(dispatchers.Main.immediate)
     private val _snackbarMessage = MutableSharedFlow<GalleryPagerComponent.SnackbarMessage>()
     override val snackbarMessage: Flow<GalleryPagerComponent.SnackbarMessage> = _snackbarMessage
 
@@ -73,38 +97,20 @@ class DefaultGalleryPagerComponent(
 
     init {
         doOnCreate {
-            scope.launch {
-                combine(
-                    detailsObserver.details(config.id),
-                    pagesFetcher.pages(config.id)
-                ) { gallery, pages ->
-                    GalleryPagerComponent.GalleryState.Loaded(
-                        gallery = gallery,
-                        pages = pages
-                    )
-                }.collect { state ->
-                    _model.update { value ->
-                        value.copy(
-                            loading = false,
-                            gallery = state
-                        )
-                    }
-                }
+            coroutineScope.launch {
+                fetchGalleryPages()
             }
+        }
+        doOnResume {
+            galleryRepository.selectGalleryTitle(config.id)
+                .onEach { title -> _model.update { state -> state.copy(galleryTitle = title) } }
+                .launchIn(coroutineScope)
         }
     }
 
     override fun savePageToGallery(page: GalleryPage) {
-        val gallery = when (val galleryState = model.value.gallery) {
-            is GalleryPagerComponent.GalleryState.Loaded -> galleryState.gallery
-            else -> {
-                Log.w("component", "Can't download gallery page when gallery hasn't loaded yet.")
-                return
-            }
-        }
-
-        scope.launch {
-            val message = when (pageSaver.save(gallery.id, page)) {
+        coroutineScope.launch {
+            val message = when (pageSaver.save(config.id, page)) {
                 is GalleryPageSaver.Result.Success -> GalleryPagerComponent.SnackbarMessage.PageDownloaded
                 is GalleryPageSaver.Result.Failure -> GalleryPagerComponent.SnackbarMessage.PageDownloadFailed
             }
@@ -113,16 +119,8 @@ class DefaultGalleryPagerComponent(
     }
 
     override fun sharePage(page: GalleryPage, withUrl: Boolean) {
-        val gallery = when (val states = model.value.gallery) {
-            is GalleryPagerComponent.GalleryState.Loaded -> states.gallery
-            else -> {
-                Log.w("component", "Can't share gallery page when gallery hasn't loaded yet.")
-                return
-            }
-        }
-
-        scope.launch {
-            val result = pageSharer.share(gallery.id, page, withUrl)
+        coroutineScope.launch {
+            val result = pageSharer.share(config.id, page, withUrl)
 
             if (result is GalleryPageSharer.Result.Failure) {
                 Log.e("component", "Failed to share gallery page: $result")
@@ -131,7 +129,26 @@ class DefaultGalleryPagerComponent(
         }
     }
 
-    override fun navigateBack() {
-        onNavigateBack()
+    override fun navigateBack() = onNavigateBack()
+
+    private suspend fun fetchGalleryPages() {
+        try {
+            val targetState = when (val result = pagesFetcher.fetch(config.id)) {
+                is Result.Err -> {
+                    require(result.cause is GalleryNotFound)
+                    PagesState.Error.GalleryNotFound(config.id)
+                }
+                is Result.Ok -> PagesState.Loaded(result.value)
+            }
+            _model.update { state -> state.copy(pages = targetState) }
+        } catch (ex: NHentaiClientException) {
+            val error = when (ex) {
+                is NHentaiClientConnectionException -> PagesState.Error.NetworkConnection
+                is NHentaiClientScrapeException, is NHentaiClientSerializationException -> PagesState.Error.Internal
+                else -> throw ex
+            }
+
+            _model.update { state -> state.copy(pages = error) }
+        }
     }
 }

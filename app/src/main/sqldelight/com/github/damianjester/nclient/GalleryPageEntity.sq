@@ -19,3 +19,6 @@ WHERE galleryId = (?) ORDER BY pageIndex;
 
 countPagesForGallery:
 SELECT COUNT(galleryId) AS amount FROM galleryPageEntity WHERE galleryId = (?);
+
+deletePages:
+DELETE FROM galleryPageEntity WHERE galleryId = ?;

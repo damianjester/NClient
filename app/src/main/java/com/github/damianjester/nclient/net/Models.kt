@@ -61,12 +61,18 @@ data class GalleriesResponse(
     val galleries: List<ListGallery>,
 )
 
-data class GalleryResponse(
-    val gallery: DetailsGallery,
-    val coverUrl: Url?,
-    val related: List<ListGallery>,
-    val isUserFavorite: Boolean,
-)
+sealed interface GalleryResponse {
+    data class Success(
+        val gallery: DetailsGallery,
+        val coverUrl: Url?,
+        val related: List<ListGallery>,
+        val isUserFavorite: Boolean,
+    ) : GalleryResponse
+
+    sealed interface Failure : GalleryResponse {
+        data object NotFound : Failure
+    }
+}
 
 @Serializable
 data class CommentResponse(

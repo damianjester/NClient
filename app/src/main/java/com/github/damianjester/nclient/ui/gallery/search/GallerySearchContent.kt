@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.github.damianjester.nclient.core.GallerySearchItem
 
 @Composable
-fun GallerySearchGrid(
+fun GallerySearchContent(
     modifier: Modifier = Modifier,
     galleries: List<GallerySearchItem>,
     onGalleryClick: (GallerySearchItem) -> Unit
