@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import coil3.compose.AsyncImage
 import com.github.damianjester.nclient.core.models.GalleryImage
 import com.github.damianjester.nclient.core.models.GalleryLanguage
-import com.github.damianjester.nclient.core.models.GallerySearchItemImages
+import com.github.damianjester.nclient.core.models.GallerySummaryImages
 import com.github.damianjester.nclient.ui.gallery.grid.GalleryGridItem
 import com.github.damianjester.nclient.ui.gallery.grid.LanguageIndicator
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
@@ -22,7 +22,7 @@ fun GallerySearchGridItem(
     modifier: Modifier = Modifier,
     title: String,
     language: GalleryLanguage,
-    image: GallerySearchItemImages,
+    image: GallerySummaryImages,
     showHighRes: Boolean = false,
 ) {
     GalleryGridItem(
@@ -52,18 +52,18 @@ fun GallerySearchGridItem(
 @Composable
 private fun Image(
     modifier: Modifier = Modifier,
-    image: GallerySearchItemImages,
+    image: GallerySummaryImages,
     showHighRes: Boolean,
 ) {
     val model: Any = when (image) {
-        is GallerySearchItemImages.Local -> {
+        is GallerySummaryImages.Local -> {
             if (showHighRes) {
                 image.cover
             } else {
                 image.thumbnail
             }
         }
-        is GallerySearchItemImages.Remote -> image.thumbnail.url.toString()
+        is GallerySummaryImages.Remote -> image.thumbnail.url.toString()
     }
 
     AsyncImage(
@@ -82,7 +82,7 @@ private fun GallerySearchGridItemPreview() {
             onClick = {},
             title = "Title",
             language = GalleryLanguage.English,
-            image = GallerySearchItemImages.Remote(
+            image = GallerySummaryImages.Remote(
                 thumbnail = GalleryImage.Remote(Url("https://t1.nhentai.net/galleries/{galleryId}/thumb.jpg")),
             ),
         )

@@ -7,7 +7,7 @@ import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.github.damianjester.nclient.core.GallerySearchPager
 import com.github.damianjester.nclient.core.models.GalleryId
-import com.github.damianjester.nclient.core.models.GallerySearchItem
+import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.core.models.Result
 import com.github.damianjester.nclient.net.NHentaiClientConnectionException
 import com.github.damianjester.nclient.net.NHentaiClientException
@@ -21,7 +21,7 @@ import org.koin.core.component.KoinComponent
 interface GallerySearchComponent {
     val model: Value<Model>
 
-    fun navigateToGallery(gallery: GallerySearchItem)
+    fun navigateToGallery(gallery: GallerySummary)
 
     data class Model(
         val galleriesState: GalleriesState = GalleriesState.Loading,
@@ -31,7 +31,7 @@ interface GallerySearchComponent {
         data object Loading : GalleriesState
 
         data class Loaded(
-            val galleries: List<GallerySearchItem> = emptyList(),
+            val galleries: List<GallerySummary> = emptyList(),
         ) : GalleriesState
 
         sealed interface Error : GalleriesState {
@@ -80,7 +80,7 @@ class DefaultGallerySearchComponent(
         }
     }
 
-    override fun navigateToGallery(gallery: GallerySearchItem) {
+    override fun navigateToGallery(gallery: GallerySummary) {
         onNavigateGallery(gallery.id)
     }
 }

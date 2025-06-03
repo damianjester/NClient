@@ -42,20 +42,20 @@ data class GalleryDetails(
     val related: List<RelatedGallery>,
 )
 
-data class GallerySearchItem(
+data class GallerySummary(
     val id: GalleryId,
     val title: String,
     val language: GalleryLanguage,
-    val images: GallerySearchItemImages,
+    val images: GallerySummaryImages,
 )
 
-sealed interface GallerySearchItemImages {
-    data class Remote(val thumbnail: GalleryImage.Remote) : GallerySearchItemImages
+sealed interface GallerySummaryImages {
+    data class Remote(val thumbnail: GalleryImage.Remote) : GallerySummaryImages
 
     data class Local(
         val cover: GalleryImage.Local,
         val thumbnail: GalleryImage.Local,
-    ) : GallerySearchItemImages
+    ) : GallerySummaryImages
 }
 
 data class RelatedGallery(

@@ -7,8 +7,8 @@ import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GalleryImage
 import com.github.damianjester.nclient.core.models.GalleryImageFileType
 import com.github.damianjester.nclient.core.models.GalleryLanguage
-import com.github.damianjester.nclient.core.models.GallerySearchItem
-import com.github.damianjester.nclient.core.models.GallerySearchItemImages
+import com.github.damianjester.nclient.core.models.GallerySummary
+import com.github.damianjester.nclient.core.models.GallerySummaryImages
 import com.github.damianjester.nclient.core.models.MediaId
 import com.github.damianjester.nclient.db.GalleryWithTagIds
 import com.github.damianjester.nclient.net.GalleriesResponse
@@ -45,12 +45,12 @@ fun List<SelectSummariesFoQuery>.toGalleriesWithTagIds() =
             )
         }
 
-fun GalleryWithTagIds.toGallerySearchItem() =
-    GallerySearchItem(
+fun GalleryWithTagIds.toGallerySummary() =
+    GallerySummary(
         id = GalleryId(id),
         title = title,
         language = GalleryLanguage.fromLongTagId(tagIds),
-        images = GallerySearchItemImages.Remote(
+        images = GallerySummaryImages.Remote(
             thumbnail = GalleryImage.Remote(
                 NHentaiUrl.galleryCoverThumbnail(
                     mediaId = MediaId(mediaId),

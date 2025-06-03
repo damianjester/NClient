@@ -15,7 +15,7 @@ import com.github.damianjester.nclient.TagEntityQueries
 import com.github.damianjester.nclient.core.models.GalleryDetails
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GalleryPage
-import com.github.damianjester.nclient.core.models.GallerySearchItem
+import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.core.models.GalleryTitle
 import com.github.damianjester.nclient.db.mappers.toGalleriesWithTagIds
 import com.github.damianjester.nclient.db.mappers.toGallery
@@ -23,7 +23,6 @@ import com.github.damianjester.nclient.db.mappers.toGalleryDetailsEntity
 import com.github.damianjester.nclient.db.mappers.toGalleryDetailsPages
 import com.github.damianjester.nclient.db.mappers.toGalleryDetailsTags
 import com.github.damianjester.nclient.db.mappers.toGalleryPage
-import com.github.damianjester.nclient.db.mappers.toGallerySearchItem
 import com.github.damianjester.nclient.db.mappers.toGallerySummary
 import com.github.damianjester.nclient.db.mappers.toGallerySummaryEntityWithHasTags
 import com.github.damianjester.nclient.db.mappers.toRelatedGalleries
@@ -40,7 +39,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
 
 interface GalleryRepository {
-    suspend fun selectSummariesForQuery(query: GalleryQueryEntity): List<GallerySearchItem>
+    suspend fun selectSummariesForQuery(query: GalleryQueryEntity): List<GallerySummary>
 
     suspend fun selectGalleryDetails(id: GalleryId): GalleryDetails
 
@@ -94,7 +93,7 @@ class SqlDelightGalleryRepository(
         galleryQueries.selectSummariesFoQuery(query.id)
             .executeAsList()
             .toGalleriesWithTagIds()
-            .map { it.toGallerySearchItem() }
+            .map { it.toGallerySummary() }
     }
 
     override suspend fun selectGalleryDetails(id: GalleryId) = withContext(dispatchers.IO) {
