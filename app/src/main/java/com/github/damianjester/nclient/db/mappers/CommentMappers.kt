@@ -4,7 +4,7 @@ import com.github.damianjester.nclient.core.models.Comment
 import com.github.damianjester.nclient.core.models.CommentId
 import com.github.damianjester.nclient.core.models.CommentPoster
 import com.github.damianjester.nclient.core.models.UserId
-import com.github.damianjester.nclient.db.CommentEntityWithPosterEntity
+import com.github.damianjester.nclient.db.models.CommentEntityWithPosterEntity
 import com.github.damianjester.nclient.net.NHentaiUrl
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant

@@ -11,6 +11,8 @@ import com.github.damianjester.nclient.GallerySummaryEntity
 import com.github.damianjester.nclient.TagEntity
 import com.github.damianjester.nclient.TagEntityQueries
 import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.db.models.CommentEntityWithPosterEntity
+import com.github.damianjester.nclient.db.models.GalleryPageWithMediaId
 
 inline fun QueryResult<Long>.orUpdate(block: () -> QueryResult<Long>): QueryResult<Long> {
     return if (value == 0L) {

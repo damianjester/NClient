@@ -14,8 +14,8 @@ import com.github.damianjester.nclient.core.models.GalleryTitle
 import com.github.damianjester.nclient.core.models.MediaId
 import com.github.damianjester.nclient.core.models.RelatedGallery
 import com.github.damianjester.nclient.core.models.Resolution
-import com.github.damianjester.nclient.db.GalleryPageWithMediaId
-import com.github.damianjester.nclient.db.GalleryWithTagIds
+import com.github.damianjester.nclient.db.models.GalleryPageWithMediaId
+import com.github.damianjester.nclient.db.models.GalleryWithTagIds
 import com.github.damianjester.nclient.net.NHentaiUrl
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone

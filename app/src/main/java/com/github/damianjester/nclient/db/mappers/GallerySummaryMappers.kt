@@ -8,7 +8,7 @@ import com.github.damianjester.nclient.core.models.GalleryLanguage
 import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.core.models.GallerySummaryImages
 import com.github.damianjester.nclient.core.models.MediaId
-import com.github.damianjester.nclient.db.GalleryWithTagIds
+import com.github.damianjester.nclient.db.models.GalleryWithTagIds
 import com.github.damianjester.nclient.net.NHentaiUrl
 
 fun List<SelectSummariesFoQuery>.toGalleriesWithTagIds() =

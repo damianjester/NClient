@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.db
+package com.github.damianjester.nclient.repo
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOne
@@ -14,8 +14,6 @@ import com.github.damianjester.nclient.QueryHasGallery
 import com.github.damianjester.nclient.TagEntityQueries
 import com.github.damianjester.nclient.core.models.GalleryDetails
 import com.github.damianjester.nclient.core.models.GalleryId
-import com.github.damianjester.nclient.core.models.GalleryPage
-import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.core.models.GalleryTitle
 import com.github.damianjester.nclient.db.mappers.toGalleriesWithTagIds
 import com.github.damianjester.nclient.db.mappers.toGallery
@@ -29,49 +27,18 @@ import com.github.damianjester.nclient.db.mappers.toRelatedGalleries
 import com.github.damianjester.nclient.db.mappers.toRelatedGallery
 import com.github.damianjester.nclient.db.mappers.toTag
 import com.github.damianjester.nclient.db.mappers.toTags
-import com.github.damianjester.nclient.net.models.GallerySummariesResponse
+import com.github.damianjester.nclient.db.orUpdate
+import com.github.damianjester.nclient.db.selectPagesWithMediaIdForGallery
+import com.github.damianjester.nclient.db.updateDetails
+import com.github.damianjester.nclient.db.updateSummary
+import com.github.damianjester.nclient.db.updateTag
 import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
+import com.github.damianjester.nclient.net.models.GallerySummariesResponse
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
-
-interface GalleryRepository {
-    suspend fun selectSummariesForQuery(query: GalleryQueryEntity): List<GallerySummary>
-
-    suspend fun selectGalleryDetails(id: GalleryId): GalleryDetails
-
-    suspend fun selectGalleryPages(id: GalleryId): List<GalleryPage>
-
-    fun selectGalleryTitle(id: GalleryId): Flow<GalleryTitle>
-
-    suspend fun selectGalleryUpdatedAt(id: GalleryId): Instant?
-
-    suspend fun countPagesForGallery(id: GalleryId): Int
-
-    suspend fun replaceAllGallerySummaries(query: GalleryQueryEntity, response: GallerySummariesResponse)
-
-    suspend fun upsertGalleryDetails(response: GalleryDetailsResponse)
-}
-
-data class GalleryWithTagIds(
-    val id: Long,
-    val title: String,
-    val mediaId: Long,
-    val coverThumbnailFileExtension: String?,
-    val tagIds: List<Long>,
-)
-
-data class GalleryPageWithMediaId(
-    val galleryId: Long,
-    val pageIndex: Long,
-    val fileExtension: String,
-    val width: Long,
-    val height: Long,
-    val mediaId: Long,
-)
 
 class SqlDelightGalleryRepository(
     private val database: Database,
@@ -134,7 +101,7 @@ class SqlDelightGalleryRepository(
 
     override suspend fun selectGalleryUpdatedAt(id: GalleryId) = withContext(dispatchers.IO) {
         galleryQueries.selectGalleryUpdatedAt(id.value).executeAsOneOrNull()
-            ?.let { Instant.fromEpochSeconds(it) }
+            ?.let { Instant.Companion.fromEpochSeconds(it) }
     }
 
     override suspend fun countPagesForGallery(id: GalleryId) = withContext(dispatchers.IO) {
@@ -156,7 +123,7 @@ class SqlDelightGalleryRepository(
         logger.i(
             LogTags.gallery,
             "Inserting ${galleriesWithTags.size} gallery entities and " +
-                "${galleriesWithTags.map { it.second }.flatten().size} has-tag associations for query $query."
+                    "${galleriesWithTags.map { it.second }.flatten().size} has-tag associations for query $query."
         )
 
         database.transaction {
@@ -183,7 +150,7 @@ class SqlDelightGalleryRepository(
         logger.i(
             LogTags.gallery,
             "Inserting details for gallery #${summary.id} with " +
-                "${pages.size} pages, ${tags.size} tags and ${related.size} related galleries."
+                    "${pages.size} pages, ${tags.size} tags and ${related.size} related galleries."
         )
 
         database.transaction {

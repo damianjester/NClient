@@ -3,7 +3,7 @@ package com.github.damianjester.nclient.core
 import com.github.damianjester.nclient.core.models.Comment
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.Result
-import com.github.damianjester.nclient.db.CommentRepository
+import com.github.damianjester.nclient.repo.CommentRepository
 import com.github.damianjester.nclient.net.NHentaiHttpClient
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger

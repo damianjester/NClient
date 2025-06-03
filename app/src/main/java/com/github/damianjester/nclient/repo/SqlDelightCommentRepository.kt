@@ -1,32 +1,17 @@
-package com.github.damianjester.nclient.db
+package com.github.damianjester.nclient.repo
 
-import com.github.damianjester.nclient.CommentEntity
-import com.github.damianjester.nclient.CommentPosterEntity
 import com.github.damianjester.nclient.Database
-import com.github.damianjester.nclient.core.models.Comment
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.db.mappers.toComment
 import com.github.damianjester.nclient.db.mappers.toCommentEntity
 import com.github.damianjester.nclient.db.mappers.toCommentPosterEntity
+import com.github.damianjester.nclient.db.selectCommentsWithPosterEntity
 import com.github.damianjester.nclient.net.models.CommentsResponse
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
-
-interface CommentRepository {
-    suspend fun selectComments(id: GalleryId): List<Comment>
-
-    suspend fun selectCreatedAt(id: GalleryId): Instant?
-
-    suspend fun replaceAllComments(id: GalleryId, response: CommentsResponse)
-}
-
-data class CommentEntityWithPosterEntity(
-    val comment: CommentEntity,
-    val poster: CommentPosterEntity,
-)
 
 class SqlDelightCommentRepository(
     private val database: Database,
@@ -45,7 +30,7 @@ class SqlDelightCommentRepository(
     override suspend fun selectCreatedAt(id: GalleryId) = withContext(dispatchers.IO) {
         queries.selectCreatedAt(id.value)
             .executeAsOneOrNull()
-            ?.let { Instant.fromEpochSeconds(it) }
+            ?.let { Instant.Companion.fromEpochSeconds(it) }
     }
 
     override suspend fun replaceAllComments(
@@ -65,7 +50,7 @@ class SqlDelightCommentRepository(
         logger.i(
             LogTags.comments,
             "Inserting ${comments.size} comments for gallery #${comments.first().galleryId} and " +
-                "${posters.size} posters."
+                    "${posters.size} posters."
         )
 
         database.transaction {
