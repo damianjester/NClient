@@ -73,4 +73,3 @@ fun GalleryDetailsResponse.toRelatedGalleries() =
 
         gallery to gal.tagIds
     }
-

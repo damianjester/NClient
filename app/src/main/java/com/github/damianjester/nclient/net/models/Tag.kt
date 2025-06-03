@@ -11,4 +11,3 @@ data class Tag(
     val url: String, // Actually path, e.g. /tag/big-breasts/
     val count: Int,
 )
-

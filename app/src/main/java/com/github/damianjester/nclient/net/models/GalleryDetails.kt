@@ -6,9 +6,9 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 data class GalleryDetailsResponse(
-        val gallery: GalleryDetails,
-        val coverUrl: Url?,
-        val related: List<GallerySummary>,
+    val gallery: GalleryDetails,
+    val coverUrl: Url?,
+    val related: List<GallerySummary>,
 )
 
 @Serializable
@@ -44,4 +44,3 @@ data class GalleryImage(
     val w: Int,
     val h: Int,
 )
-

@@ -2,10 +2,10 @@ package com.github.damianjester.nclient.repo
 
 import com.github.damianjester.nclient.Database
 import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.db.selectCommentsWithPosterEntity
 import com.github.damianjester.nclient.mappers.toComment
 import com.github.damianjester.nclient.mappers.toCommentEntity
 import com.github.damianjester.nclient.mappers.toCommentPosterEntity
-import com.github.damianjester.nclient.db.selectCommentsWithPosterEntity
 import com.github.damianjester.nclient.net.models.CommentsResponse
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
@@ -50,7 +50,7 @@ class SqlDelightCommentRepository(
         logger.i(
             LogTags.comments,
             "Inserting ${comments.size} comments for gallery #${comments.first().galleryId} and " +
-                    "${posters.size} posters."
+                "${posters.size} posters."
         )
 
         database.transaction {

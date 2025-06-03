@@ -15,11 +15,11 @@ import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GalleryPage
 import com.github.damianjester.nclient.core.models.GalleryTitle
 import com.github.damianjester.nclient.core.models.Result
-import com.github.damianjester.nclient.repo.GalleryRepository
 import com.github.damianjester.nclient.net.NHentaiClientConnectionException
 import com.github.damianjester.nclient.net.NHentaiClientException
 import com.github.damianjester.nclient.net.NHentaiClientScrapeException
 import com.github.damianjester.nclient.net.NHentaiClientSerializationException
+import com.github.damianjester.nclient.repo.GalleryRepository
 import com.github.damianjester.nclient.ui.DefaultRootComponent
 import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerComponent.PagesState
 import com.github.damianjester.nclient.utils.NClientDispatchers

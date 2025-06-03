@@ -1,25 +1,27 @@
 package com.github.damianjester.nclient.net
 
-import com.github.damianjester.nclient.net.models.GalleryDetails
-import com.github.damianjester.nclient.net.models.GallerySummary
-import org.jsoup.nodes.Document
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GalleryTagId
+import com.github.damianjester.nclient.net.models.GalleryDetails
+import com.github.damianjester.nclient.net.models.GallerySummary
 import io.ktor.http.Url
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import org.apache.commons.text.StringEscapeUtils
+import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 
 interface NHentaiScrapper {
     fun scrapeGallerySummaries(document: Document): List<GallerySummary>
+
     fun scrapeGalleryDetails(document: Document): GalleryDetails
+
     fun scrapeGalleryDetailsCover(document: Document): Url?
+
     fun scrapeRelatedGalleries(document: Document): List<GallerySummary>
 }
 
 class DefaultNHentaiScrapper : NHentaiScrapper {
-
     override fun scrapeGallerySummaries(document: Document): List<GallerySummary> {
         return document
             .getElementsByClass("gallery")
@@ -27,7 +29,6 @@ class DefaultNHentaiScrapper : NHentaiScrapper {
     }
 
     override fun scrapeGalleryDetails(document: Document): GalleryDetails {
-
         val script = document.getElementsByTag("script").lastOrNull()
             ?: scrapeError("Failed to find last script tag in document.")
 
@@ -42,7 +43,6 @@ class DefaultNHentaiScrapper : NHentaiScrapper {
     }
 
     override fun scrapeGalleryDetailsCover(document: Document): Url? {
-
         val coverImage = document
             .getElementById("cover")
             ?.getElementsByTag("img")
@@ -111,5 +111,4 @@ class DefaultNHentaiScrapper : NHentaiScrapper {
 
         return json
     }
-
 }

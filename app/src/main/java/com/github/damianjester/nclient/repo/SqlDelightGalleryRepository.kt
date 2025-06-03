@@ -15,6 +15,11 @@ import com.github.damianjester.nclient.TagEntityQueries
 import com.github.damianjester.nclient.core.models.GalleryDetails
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GalleryTitle
+import com.github.damianjester.nclient.db.orUpdate
+import com.github.damianjester.nclient.db.selectPagesWithMediaIdForGallery
+import com.github.damianjester.nclient.db.updateDetails
+import com.github.damianjester.nclient.db.updateSummary
+import com.github.damianjester.nclient.db.updateTag
 import com.github.damianjester.nclient.mappers.toGalleriesWithTagIds
 import com.github.damianjester.nclient.mappers.toGallery
 import com.github.damianjester.nclient.mappers.toGalleryDetailsEntity
@@ -27,11 +32,6 @@ import com.github.damianjester.nclient.mappers.toRelatedGalleries
 import com.github.damianjester.nclient.mappers.toRelatedGallery
 import com.github.damianjester.nclient.mappers.toTag
 import com.github.damianjester.nclient.mappers.toTags
-import com.github.damianjester.nclient.db.orUpdate
-import com.github.damianjester.nclient.db.selectPagesWithMediaIdForGallery
-import com.github.damianjester.nclient.db.updateDetails
-import com.github.damianjester.nclient.db.updateSummary
-import com.github.damianjester.nclient.db.updateTag
 import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
 import com.github.damianjester.nclient.net.models.GallerySummariesResponse
 import com.github.damianjester.nclient.utils.NClientDispatchers
@@ -123,7 +123,7 @@ class SqlDelightGalleryRepository(
         logger.i(
             LogTags.gallery,
             "Inserting ${galleriesWithTags.size} gallery entities and " +
-                    "${galleriesWithTags.map { it.second }.flatten().size} has-tag associations for query $query."
+                "${galleriesWithTags.map { it.second }.flatten().size} has-tag associations for query $query."
         )
 
         database.transaction {
@@ -150,7 +150,7 @@ class SqlDelightGalleryRepository(
         logger.i(
             LogTags.gallery,
             "Inserting details for gallery #${summary.id} with " +
-                    "${pages.size} pages, ${tags.size} tags and ${related.size} related galleries."
+                "${pages.size} pages, ${tags.size} tags and ${related.size} related galleries."
         )
 
         database.transaction {

@@ -17,5 +17,4 @@ val dbModule = module {
     single(createdAtStart = true) {
         Database(get())
     }
-
 }

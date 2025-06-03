@@ -3,8 +3,8 @@ package com.github.damianjester.nclient.core
 import com.github.damianjester.nclient.GalleryQueryEntity
 import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.core.models.Result
-import com.github.damianjester.nclient.repo.GalleryRepository
 import com.github.damianjester.nclient.net.NHentaiHttpClient
+import com.github.damianjester.nclient.repo.GalleryRepository
 
 interface GallerySearchPager {
     suspend fun fetch(page: Int): Result<List<GallerySummary>, NClientError>

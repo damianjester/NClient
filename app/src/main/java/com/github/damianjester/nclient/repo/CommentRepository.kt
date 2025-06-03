@@ -12,4 +12,3 @@ interface CommentRepository {
 
     suspend fun replaceAllComments(id: GalleryId, response: CommentsResponse)
 }
-

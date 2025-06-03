@@ -6,8 +6,8 @@ import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GalleryPage
 import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.core.models.GalleryTitle
-import com.github.damianjester.nclient.net.models.GallerySummariesResponse
 import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
+import com.github.damianjester.nclient.net.models.GallerySummariesResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 
@@ -28,4 +28,3 @@ interface GalleryRepository {
 
     suspend fun upsertGalleryDetails(response: GalleryDetailsResponse)
 }
-

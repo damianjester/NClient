@@ -20,4 +20,3 @@ fun GallerySummary.toGallerySummaryEntity() =
         mediaId = mediaId,
         coverThumbnailFileExtension = coverThumbnailUrl.lastSegmentFileExtension,
     )
-
