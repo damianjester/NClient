@@ -11,19 +11,19 @@ import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.core.models.GallerySummaryImages
 import com.github.damianjester.nclient.core.models.MediaId
 import com.github.damianjester.nclient.db.GalleryWithTagIds
-import com.github.damianjester.nclient.net.GalleriesResponse
-import com.github.damianjester.nclient.net.ListGallery
+import com.github.damianjester.nclient.net.GallerySummariesResponse
+import com.github.damianjester.nclient.net.GallerySummary
 import com.github.damianjester.nclient.net.NHentaiUrl
 import com.github.damianjester.nclient.net.NHentaiUrl.lastSegmentFileExtension
 
-fun GalleriesResponse.toGallerySummaryEntityWithHasTags(): List<Pair<GallerySummaryEntity, List<GalleryHasTag>>> =
+fun GallerySummariesResponse.toGallerySummaryEntityWithHasTags(): List<Pair<GallerySummaryEntity, List<GalleryHasTag>>> =
     galleries.map { gal ->
         val gallery = gal.toGallerySummaryEntity()
         val hasTags = gal.tagIds.map { tagId -> GalleryHasTag(gal.id.value, tagId.value) }
         gallery to hasTags
     }
 
-fun ListGallery.toGallerySummaryEntity() =
+fun com.github.damianjester.nclient.net.GallerySummary.toGallerySummaryEntity() =
     GallerySummaryEntity(
         id = id.value,
         prettyTitle = title,

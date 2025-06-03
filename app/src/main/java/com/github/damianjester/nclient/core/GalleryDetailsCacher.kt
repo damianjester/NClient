@@ -4,7 +4,7 @@ import com.github.damianjester.nclient.core.GalleryDetailsCacher.CacheResult
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.Result
 import com.github.damianjester.nclient.db.GalleryRepository
-import com.github.damianjester.nclient.net.GalleryResponse
+import com.github.damianjester.nclient.net.GalleryDetailsResponse
 import com.github.damianjester.nclient.net.NHentaiHttpClient
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
@@ -36,9 +36,9 @@ class DefaultGalleryDetailsCacher(
             return Result.Ok(CacheResult.CacheValid)
         }
 
-        val response: GalleryResponse.Success = when (val result = client.getGallery(id)) {
-            GalleryResponse.Failure.NotFound -> return Result.Err(GalleryNotFound(id))
-            is GalleryResponse.Success -> result
+        val response: GalleryDetailsResponse.Success = when (val result = client.getGallery(id)) {
+            GalleryDetailsResponse.Failure.NotFound -> return Result.Err(GalleryNotFound(id))
+            is GalleryDetailsResponse.Success -> result
         }
 
         repository.upsertGalleryDetails(response)

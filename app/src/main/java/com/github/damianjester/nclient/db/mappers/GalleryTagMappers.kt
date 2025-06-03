@@ -5,10 +5,10 @@ import com.github.damianjester.nclient.core.models.GalleryTag
 import com.github.damianjester.nclient.core.models.GalleryTagId
 import com.github.damianjester.nclient.core.models.GalleryTagType
 import com.github.damianjester.nclient.core.models.GalleryTags
-import com.github.damianjester.nclient.net.GalleryResponse
+import com.github.damianjester.nclient.net.GalleryDetailsResponse
 import io.ktor.http.Url
 
-fun GalleryResponse.Success.toGalleryDetailsTags() =
+fun GalleryDetailsResponse.Success.toGalleryDetailsTags() =
     gallery.tags
         .map { t ->
             TagEntity(

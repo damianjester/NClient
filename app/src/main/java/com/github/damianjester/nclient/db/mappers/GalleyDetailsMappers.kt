@@ -19,7 +19,7 @@ import com.github.damianjester.nclient.core.models.RelatedGallery
 import com.github.damianjester.nclient.core.models.Resolution
 import com.github.damianjester.nclient.db.GalleryPageWithMediaId
 import com.github.damianjester.nclient.db.GalleryWithTagIds
-import com.github.damianjester.nclient.net.GalleryResponse
+import com.github.damianjester.nclient.net.GalleryDetailsResponse
 import com.github.damianjester.nclient.net.NHentaiUrl
 import com.github.damianjester.nclient.net.NHentaiUrl.lastSegmentFileExtension
 import kotlinx.datetime.Clock
@@ -27,7 +27,7 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-fun GalleryResponse.Success.toGallerySummary() =
+fun GalleryDetailsResponse.Success.toGallerySummary() =
     GallerySummaryEntity(
         id = gallery.id.value,
         mediaId = gallery.mediaId,
@@ -38,7 +38,7 @@ fun GalleryResponse.Success.toGallerySummary() =
                 .toFileExtension()
     )
 
-fun GalleryResponse.Success.toGalleryDetailsEntity(): GalleryDetailsEntity {
+fun GalleryDetailsResponse.Success.toGalleryDetailsEntity(): GalleryDetailsEntity {
     val now = Clock.System.now()
     return GalleryDetailsEntity(
         galleryId = gallery.id.value,
@@ -55,7 +55,7 @@ fun GalleryResponse.Success.toGalleryDetailsEntity(): GalleryDetailsEntity {
     )
 }
 
-fun GalleryResponse.Success.toGalleryDetailsPages() =
+fun GalleryDetailsResponse.Success.toGalleryDetailsPages() =
     gallery.images.pages
         .mapIndexed { i, p ->
             GalleryPageEntity(
@@ -67,7 +67,7 @@ fun GalleryResponse.Success.toGalleryDetailsPages() =
             )
         }
 
-fun GalleryResponse.Success.toRelatedGalleries() =
+fun GalleryDetailsResponse.Success.toRelatedGalleries() =
     related.map { gal ->
 
         val gallery = GallerySummaryEntity(

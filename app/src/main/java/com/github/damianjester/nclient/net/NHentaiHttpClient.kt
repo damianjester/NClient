@@ -22,11 +22,11 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
 interface NHentaiHttpClient {
-    suspend fun getGalleries(page: Int): GalleriesResponse
+    suspend fun getGalleries(page: Int): GallerySummariesResponse
 
-    suspend fun getGallery(id: GalleryId): GalleryResponse
+    suspend fun getGallery(id: GalleryId): GalleryDetailsResponse
 
-    suspend fun getComments(id: GalleryId): List<CommentResponse>
+    suspend fun getComments(id: GalleryId): List<Comment>
 }
 
 class ScrapperNHentaiHttpClient(
@@ -34,7 +34,7 @@ class ScrapperNHentaiHttpClient(
     private val logger: Logger,
     private val dispatchers: NClientDispatchers,
 ) : NHentaiHttpClient {
-    override suspend fun getGalleries(page: Int): GalleriesResponse = withContext(dispatchers.IO) {
+    override suspend fun getGalleries(page: Int): GallerySummariesResponse = withContext(dispatchers.IO) {
         // https://nhentai.net/?page={page}
         val response = client.catchingGet(NHentaiUrl.galleriesWebpage(page))
 
@@ -47,15 +47,15 @@ class ScrapperNHentaiHttpClient(
             .getElementsByClass("gallery")
             .map { element -> scrapeListGallery(element) }
 
-        GalleriesResponse(galleries)
+        GallerySummariesResponse(galleries)
     }
 
-    override suspend fun getGallery(id: GalleryId): GalleryResponse = withContext(dispatchers.IO) {
+    override suspend fun getGallery(id: GalleryId): GalleryDetailsResponse = withContext(dispatchers.IO) {
         // https://nhentai.net/g/{gallery_id}
         val response = client.catchingGet(NHentaiUrl.galleryWebpage(id))
 
         if (response.status == HttpStatusCode.NotFound) {
-            return@withContext GalleryResponse.Failure.NotFound
+            return@withContext GalleryDetailsResponse.Failure.NotFound
         }
 
         val document = response
@@ -67,8 +67,8 @@ class ScrapperNHentaiHttpClient(
             ?: scrapeError("Failed to find last script tag in document.")
 
         val galleryJson = StringEscapeUtils.unescapeJava(substringGalleryJson(script.html()))
-        val detailsGallery = try {
-            Json.Default.decodeFromString<DetailsGallery>(galleryJson)
+        val galleryDetails = try {
+            Json.Default.decodeFromString<GalleryDetails>(galleryJson)
         } catch (ex: SerializationException) {
             val ex = NHentaiClientSerializationException(ex)
             logger.e(LogTags.http, "Failed to decode gallery details JSON.", ex)
@@ -105,20 +105,20 @@ class ScrapperNHentaiHttpClient(
             false
         }
 
-        GalleryResponse.Success(
-            gallery = detailsGallery,
+        GalleryDetailsResponse.Success(
+            gallery = galleryDetails,
             coverUrl = coverUrl,
             related = related,
             isUserFavorite = isFavorite
         )
     }
 
-    override suspend fun getComments(id: GalleryId): List<CommentResponse> {
+    override suspend fun getComments(id: GalleryId): List<Comment> {
         return client.catchingGet(NHentaiUrl.comments(id))
-            .catchingBody<List<CommentResponse>>()
+            .catchingBody<List<Comment>>()
     }
 
-    private fun scrapeListGallery(element: Element): ListGallery {
+    private fun scrapeListGallery(element: Element): GallerySummary {
         val anchor = element.getElementsByTag("a").firstOrNull()
             ?: scrapeError("Unable to find first anchor element.")
         val image = element.getElementsByTag("img").firstOrNull()
@@ -153,7 +153,7 @@ class ScrapperNHentaiHttpClient(
                 GalleryTagId(id)
             }
 
-        return ListGallery(
+        return GallerySummary(
             id = id,
             title = title,
             mediaId = mediaId,

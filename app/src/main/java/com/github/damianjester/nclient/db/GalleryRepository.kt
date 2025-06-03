@@ -29,8 +29,8 @@ import com.github.damianjester.nclient.db.mappers.toRelatedGalleries
 import com.github.damianjester.nclient.db.mappers.toRelatedGallery
 import com.github.damianjester.nclient.db.mappers.toTag
 import com.github.damianjester.nclient.db.mappers.toTags
-import com.github.damianjester.nclient.net.GalleriesResponse
-import com.github.damianjester.nclient.net.GalleryResponse
+import com.github.damianjester.nclient.net.GallerySummariesResponse
+import com.github.damianjester.nclient.net.GalleryDetailsResponse
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
@@ -51,9 +51,9 @@ interface GalleryRepository {
 
     suspend fun countPagesForGallery(id: GalleryId): Int
 
-    suspend fun replaceAllGallerySummaries(query: GalleryQueryEntity, response: GalleriesResponse)
+    suspend fun replaceAllGallerySummaries(query: GalleryQueryEntity, response: GallerySummariesResponse)
 
-    suspend fun upsertGalleryDetails(response: GalleryResponse.Success)
+    suspend fun upsertGalleryDetails(response: GalleryDetailsResponse.Success)
 }
 
 data class GalleryWithTagIds(
@@ -145,7 +145,7 @@ class SqlDelightGalleryRepository(
 
     override suspend fun replaceAllGallerySummaries(
         query: GalleryQueryEntity,
-        response: GalleriesResponse,
+        response: GallerySummariesResponse,
     ) = withContext(dispatchers.IO) {
         val galleriesWithTags = response.toGallerySummaryEntityWithHasTags()
 
@@ -172,7 +172,7 @@ class SqlDelightGalleryRepository(
     }
 
     override suspend fun upsertGalleryDetails(
-        response: GalleryResponse.Success,
+        response: GalleryDetailsResponse.Success,
     ) = withContext(dispatchers.IO) {
         val summary = response.toGallerySummary()
         val details = response.toGalleryDetailsEntity()

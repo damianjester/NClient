@@ -8,7 +8,7 @@ import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.db.mappers.toComment
 import com.github.damianjester.nclient.db.mappers.toCommentEntity
 import com.github.damianjester.nclient.db.mappers.toCommentPosterEntity
-import com.github.damianjester.nclient.net.CommentResponse
+import com.github.damianjester.nclient.net.Comment
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
@@ -20,7 +20,7 @@ interface CommentRepository {
 
     suspend fun selectCreatedAt(id: GalleryId): Instant?
 
-    suspend fun replaceAllComments(id: GalleryId, response: List<CommentResponse>)
+    suspend fun replaceAllComments(id: GalleryId, response: List<com.github.damianjester.nclient.net.Comment>)
 }
 
 data class CommentEntityWithPosterEntity(
@@ -50,7 +50,7 @@ class SqlDelightCommentRepository(
 
     override suspend fun replaceAllComments(
         id: GalleryId,
-        response: List<CommentResponse>
+        response: List<com.github.damianjester.nclient.net.Comment>
     ) = withContext(dispatchers.IO) {
         if (response.isEmpty()) {
             return@withContext

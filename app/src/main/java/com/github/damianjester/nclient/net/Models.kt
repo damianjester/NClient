@@ -6,7 +6,7 @@ import io.ktor.http.Url
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-data class ListGallery(
+data class GallerySummary(
     val id: GalleryId,
     val title: String,
     val mediaId: Long,
@@ -15,14 +15,14 @@ data class ListGallery(
 )
 
 @Serializable
-data class DetailsGallery(
+data class GalleryDetails(
     val id: GalleryId,
     @SerialName("media_id") val mediaId: Long,
     val title: GalleryTitle,
     val images: GalleryImages,
     val scanlator: String,
     @SerialName("upload_date") val uploadDate: Long,
-    val tags: List<GalleryTag>,
+    val tags: List<Tag>,
     @SerialName("num_pages") val numPages: Int,
     @SerialName("num_favorites") val numFavorites: Int,
 )
@@ -49,7 +49,7 @@ data class GalleryImage(
 )
 
 @Serializable
-data class GalleryTag(
+data class Tag(
     val id: GalleryTagId,
     val type: String, // "tag", "language", "category", "parody", "character"
     val name: String,
@@ -57,33 +57,33 @@ data class GalleryTag(
     val count: Int,
 )
 
-data class GalleriesResponse(
-    val galleries: List<ListGallery>,
+data class GallerySummariesResponse(
+    val galleries: List<GallerySummary>,
 )
 
-sealed interface GalleryResponse {
+sealed interface GalleryDetailsResponse {
     data class Success(
-        val gallery: DetailsGallery,
+        val gallery: GalleryDetails,
         val coverUrl: Url?,
-        val related: List<ListGallery>,
+        val related: List<GallerySummary>,
         val isUserFavorite: Boolean,
-    ) : GalleryResponse
+    ) : GalleryDetailsResponse
 
-    sealed interface Failure : GalleryResponse {
+    sealed interface Failure : GalleryDetailsResponse {
         data object NotFound : Failure
     }
 }
 
 @Serializable
-data class CommentResponse(
+data class Comment(
     val id: Long,
-    val poster: PosterResponse,
+    val poster: Poster,
     @SerialName("post_date") val postDate: Long,
     val body: String,
 )
 
 @Serializable
-data class PosterResponse(
+data class Poster(
     val id: Long,
     val username: String,
     @SerialName("avatar_url") val avatarUrl: String,
