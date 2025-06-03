@@ -1,7 +1,7 @@
 package com.github.damianjester.nclient.net
 
-import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.GalleryTagId
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryTagId
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger

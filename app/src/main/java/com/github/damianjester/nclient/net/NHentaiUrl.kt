@@ -1,9 +1,9 @@
 package com.github.damianjester.nclient.net
 
-import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.GalleryImageFileType
-import com.github.damianjester.nclient.core.GalleryPage
-import com.github.damianjester.nclient.core.MediaId
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryImageFileType
+import com.github.damianjester.nclient.core.models.GalleryPage
+import com.github.damianjester.nclient.core.models.MediaId
 import io.ktor.http.URLBuilder
 import io.ktor.http.URLProtocol
 import io.ktor.http.Url

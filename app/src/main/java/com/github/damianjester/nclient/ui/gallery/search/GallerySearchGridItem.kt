@@ -8,9 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import coil3.compose.AsyncImage
-import com.github.damianjester.nclient.core.GalleryImage
-import com.github.damianjester.nclient.core.GalleryLanguage
-import com.github.damianjester.nclient.core.GallerySearchItemImages
+import com.github.damianjester.nclient.core.models.GalleryImage
+import com.github.damianjester.nclient.core.models.GalleryLanguage
+import com.github.damianjester.nclient.core.models.GallerySearchItemImages
 import com.github.damianjester.nclient.ui.gallery.grid.GalleryGridItem
 import com.github.damianjester.nclient.ui.gallery.grid.LanguageIndicator
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme

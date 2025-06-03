@@ -1,7 +1,7 @@
 package com.github.damianjester.nclient.utils
 
-import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.GalleryPage
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryPage
 import java.io.File
 import kotlin.math.abs
 import kotlin.math.log10

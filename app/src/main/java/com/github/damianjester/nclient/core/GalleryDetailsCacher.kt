@@ -1,6 +1,8 @@
 package com.github.damianjester.nclient.core
 
 import com.github.damianjester.nclient.core.GalleryDetailsCacher.CacheResult
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.Result
 import com.github.damianjester.nclient.db.GalleryRepository
 import com.github.damianjester.nclient.net.GalleryResponse
 import com.github.damianjester.nclient.net.NHentaiHttpClient

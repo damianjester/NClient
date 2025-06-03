@@ -2,11 +2,11 @@ package com.github.damianjester.nclient.db.mappers
 
 import com.github.damianjester.nclient.CommentEntity
 import com.github.damianjester.nclient.CommentPosterEntity
-import com.github.damianjester.nclient.core.Comment
-import com.github.damianjester.nclient.core.CommentId
-import com.github.damianjester.nclient.core.CommentPoster
-import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.UserId
+import com.github.damianjester.nclient.core.models.Comment
+import com.github.damianjester.nclient.core.models.CommentId
+import com.github.damianjester.nclient.core.models.CommentPoster
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.UserId
 import com.github.damianjester.nclient.db.CommentEntityWithPosterEntity
 import com.github.damianjester.nclient.net.CommentResponse
 import com.github.damianjester.nclient.net.NHentaiUrl

@@ -7,6 +7,9 @@ import androidx.core.content.FileProvider
 import com.github.damianjester.nclient.core.GalleryPageSharer.GalleryPageShare
 import com.github.damianjester.nclient.core.GalleryPageSharer.Result.Failure
 import com.github.damianjester.nclient.core.GalleryPageSharer.Result.Success
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryPage
+import com.github.damianjester.nclient.core.models.GalleryPageImages
 import com.github.damianjester.nclient.db.GalleryRepository
 import com.github.damianjester.nclient.net.NHentaiUrl
 import com.github.damianjester.nclient.utils.fileExtension

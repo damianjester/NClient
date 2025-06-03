@@ -1,7 +1,7 @@
 package com.github.damianjester.nclient.net
 
-import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.GalleryTagId
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryTagId
 import io.ktor.http.Url
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

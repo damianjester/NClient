@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.damianjester.nclient.core.Comment
+import com.github.damianjester.nclient.core.models.Comment
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
 
 private const val MAX_COMMENT_LINES = 7

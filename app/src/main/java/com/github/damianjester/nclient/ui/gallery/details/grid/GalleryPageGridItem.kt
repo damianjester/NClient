@@ -6,10 +6,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import coil3.compose.AsyncImage
-import com.github.damianjester.nclient.core.GalleryImage
-import com.github.damianjester.nclient.core.GalleryPage
-import com.github.damianjester.nclient.core.GalleryPageImages
-import com.github.damianjester.nclient.core.Resolution
+import com.github.damianjester.nclient.core.models.GalleryImage
+import com.github.damianjester.nclient.core.models.GalleryPage
+import com.github.damianjester.nclient.core.models.GalleryPageImages
+import com.github.damianjester.nclient.core.models.Resolution
 import com.github.damianjester.nclient.ui.gallery.grid.GalleryGridItem
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
 import io.ktor.http.Url

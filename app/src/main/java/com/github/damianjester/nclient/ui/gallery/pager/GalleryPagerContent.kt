@@ -20,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.request.ImageRequest
-import com.github.damianjester.nclient.core.GalleryPageImages
+import com.github.damianjester.nclient.core.models.GalleryPageImages
 import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerComponent.PagesState
 import me.saket.telephoto.zoomable.ZoomSpec
 import me.saket.telephoto.zoomable.coil3.ZoomableAsyncImage

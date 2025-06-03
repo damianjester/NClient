@@ -27,9 +27,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.GalleryLanguage
-import com.github.damianjester.nclient.core.RelatedGallery
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryLanguage
+import com.github.damianjester.nclient.core.models.RelatedGallery
 import io.ktor.http.Url
 
 @Composable

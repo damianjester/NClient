@@ -28,7 +28,7 @@ import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.github.damianjester.nclient.R
-import com.github.damianjester.nclient.core.Comment
+import com.github.damianjester.nclient.core.models.Comment
 import com.github.damianjester.nclient.ui.common.LoadingContent
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
 

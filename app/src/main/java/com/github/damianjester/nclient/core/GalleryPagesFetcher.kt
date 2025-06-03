@@ -1,5 +1,8 @@
 package com.github.damianjester.nclient.core
 
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryPage
+import com.github.damianjester.nclient.core.models.Result
 import com.github.damianjester.nclient.db.GalleryRepository
 
 fun interface GalleryPagesFetcher {

@@ -4,6 +4,9 @@ import android.content.Context
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result.Failure
 import com.github.damianjester.nclient.core.GalleryPageDownloader.Result.Success
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryPage
+import com.github.damianjester.nclient.core.models.GalleryPageImages
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger

@@ -3,8 +3,8 @@ package com.github.damianjester.nclient.db
 import com.github.damianjester.nclient.CommentEntity
 import com.github.damianjester.nclient.CommentPosterEntity
 import com.github.damianjester.nclient.Database
-import com.github.damianjester.nclient.core.Comment
-import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.core.models.Comment
+import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.db.mappers.toComment
 import com.github.damianjester.nclient.db.mappers.toCommentEntity
 import com.github.damianjester.nclient.db.mappers.toCommentPosterEntity

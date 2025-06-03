@@ -19,8 +19,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.github.damianjester.nclient.R
-import com.github.damianjester.nclient.core.GalleryPage
 import com.github.damianjester.nclient.core.ScreenCaffeinater
+import com.github.damianjester.nclient.core.models.GalleryPage
 import com.github.damianjester.nclient.ui.common.LoadingContent
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.koinInject

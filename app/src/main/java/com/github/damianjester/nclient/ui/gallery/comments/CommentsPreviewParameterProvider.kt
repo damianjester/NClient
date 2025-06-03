@@ -1,10 +1,10 @@
 package com.github.damianjester.nclient.ui.gallery.comments
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.github.damianjester.nclient.core.Comment
-import com.github.damianjester.nclient.core.CommentId
-import com.github.damianjester.nclient.core.CommentPoster
-import com.github.damianjester.nclient.core.UserId
+import com.github.damianjester.nclient.core.models.Comment
+import com.github.damianjester.nclient.core.models.CommentId
+import com.github.damianjester.nclient.core.models.CommentPoster
+import com.github.damianjester.nclient.core.models.UserId
 import io.ktor.http.Url
 import kotlinx.datetime.LocalDateTime
 import kotlin.time.Duration.Companion.hours

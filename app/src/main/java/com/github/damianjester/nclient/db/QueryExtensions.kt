@@ -10,7 +10,7 @@ import com.github.damianjester.nclient.GalleryQueries
 import com.github.damianjester.nclient.GallerySummaryEntity
 import com.github.damianjester.nclient.TagEntity
 import com.github.damianjester.nclient.TagEntityQueries
-import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryId
 
 inline fun QueryResult<Long>.orUpdate(block: () -> QueryResult<Long>): QueryResult<Long> {
     return if (value == 0L) {

@@ -12,7 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.github.damianjester.nclient.R
-import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryId
 
 @Composable
 fun ErrorText(

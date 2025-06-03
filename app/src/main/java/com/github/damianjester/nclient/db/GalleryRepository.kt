@@ -12,11 +12,11 @@ import com.github.damianjester.nclient.GalleryQueryEntity
 import com.github.damianjester.nclient.GalleryQueryQueries
 import com.github.damianjester.nclient.QueryHasGallery
 import com.github.damianjester.nclient.TagEntityQueries
-import com.github.damianjester.nclient.core.GalleryDetails
-import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.GalleryPage
-import com.github.damianjester.nclient.core.GallerySearchItem
-import com.github.damianjester.nclient.core.GalleryTitle
+import com.github.damianjester.nclient.core.models.GalleryDetails
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryPage
+import com.github.damianjester.nclient.core.models.GallerySearchItem
+import com.github.damianjester.nclient.core.models.GalleryTitle
 import com.github.damianjester.nclient.db.mappers.toGalleriesWithTagIds
 import com.github.damianjester.nclient.db.mappers.toGallery
 import com.github.damianjester.nclient.db.mappers.toGalleryDetailsEntity

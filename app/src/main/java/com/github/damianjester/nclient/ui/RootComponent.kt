@@ -9,7 +9,7 @@ import com.arkivanov.decompose.router.stack.pop
 import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.value.Value
-import com.github.damianjester.nclient.core.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.ui.RootComponent.Child
 import com.github.damianjester.nclient.ui.csrf.CsrfTokenComponent
 import com.github.damianjester.nclient.ui.csrf.DefaultCsrfTokenComponent

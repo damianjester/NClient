@@ -7,9 +7,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
-import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.GalleryPage
-import com.github.damianjester.nclient.core.GalleryTag
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryPage
+import com.github.damianjester.nclient.core.models.GalleryTag
 import com.github.damianjester.nclient.ui.common.LoadingContent
 import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsComponent.GalleryState
 import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsComponent.MetadataCopy

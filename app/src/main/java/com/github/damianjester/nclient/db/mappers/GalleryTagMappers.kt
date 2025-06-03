@@ -1,10 +1,10 @@
 package com.github.damianjester.nclient.db.mappers
 
 import com.github.damianjester.nclient.TagEntity
-import com.github.damianjester.nclient.core.GalleryTag
-import com.github.damianjester.nclient.core.GalleryTagId
-import com.github.damianjester.nclient.core.GalleryTagType
-import com.github.damianjester.nclient.core.GalleryTags
+import com.github.damianjester.nclient.core.models.GalleryTag
+import com.github.damianjester.nclient.core.models.GalleryTagId
+import com.github.damianjester.nclient.core.models.GalleryTagType
+import com.github.damianjester.nclient.core.models.GalleryTags
 import com.github.damianjester.nclient.net.GalleryResponse
 import io.ktor.http.Url
 

@@ -27,11 +27,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.github.damianjester.nclient.core.GalleryId
-import com.github.damianjester.nclient.core.GalleryPage
-import com.github.damianjester.nclient.core.GalleryTag
-import com.github.damianjester.nclient.core.GalleryTagType
-import com.github.damianjester.nclient.core.GalleryTags
+import com.github.damianjester.nclient.core.models.GalleryId
+import com.github.damianjester.nclient.core.models.GalleryPage
+import com.github.damianjester.nclient.core.models.GalleryTag
+import com.github.damianjester.nclient.core.models.GalleryTagType
+import com.github.damianjester.nclient.core.models.GalleryTags
 import com.github.damianjester.nclient.ui.gallery.details.grid.GalleryPageGridItem
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.format.MonthNames
