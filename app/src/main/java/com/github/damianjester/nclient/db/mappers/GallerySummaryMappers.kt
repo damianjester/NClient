@@ -1,7 +1,5 @@
 package com.github.damianjester.nclient.db.mappers
 
-import com.github.damianjester.nclient.GalleryHasTag
-import com.github.damianjester.nclient.GallerySummaryEntity
 import com.github.damianjester.nclient.SelectSummariesFoQuery
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GalleryImage
@@ -11,24 +9,7 @@ import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.core.models.GallerySummaryImages
 import com.github.damianjester.nclient.core.models.MediaId
 import com.github.damianjester.nclient.db.GalleryWithTagIds
-import com.github.damianjester.nclient.net.models.GallerySummariesResponse
 import com.github.damianjester.nclient.net.NHentaiUrl
-import com.github.damianjester.nclient.net.NHentaiUrl.lastSegmentFileExtension
-
-fun GallerySummariesResponse.toGallerySummaryEntityWithHasTags(): List<Pair<GallerySummaryEntity, List<GalleryHasTag>>> =
-    galleries.map { gal ->
-        val gallery = gal.toGallerySummaryEntity()
-        val hasTags = gal.tagIds.map { tagId -> GalleryHasTag(gal.id.value, tagId.value) }
-        gallery to hasTags
-    }
-
-fun com.github.damianjester.nclient.net.models.GallerySummary.toGallerySummaryEntity() =
-    GallerySummaryEntity(
-        id = id.value,
-        prettyTitle = title,
-        mediaId = mediaId,
-        coverThumbnailFileExtension = coverThumbnailUrl.lastSegmentFileExtension,
-    )
 
 fun List<SelectSummariesFoQuery>.toGalleriesWithTagIds() =
     groupBy { it.galleryId }

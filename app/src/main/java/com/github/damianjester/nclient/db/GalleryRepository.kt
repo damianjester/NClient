@@ -53,7 +53,7 @@ interface GalleryRepository {
 
     suspend fun replaceAllGallerySummaries(query: GalleryQueryEntity, response: GallerySummariesResponse)
 
-    suspend fun upsertGalleryDetails(response: GalleryDetailsResponse.Success)
+    suspend fun upsertGalleryDetails(response: GalleryDetailsResponse)
 }
 
 data class GalleryWithTagIds(
@@ -172,7 +172,7 @@ class SqlDelightGalleryRepository(
     }
 
     override suspend fun upsertGalleryDetails(
-        response: GalleryDetailsResponse.Success,
+        response: GalleryDetailsResponse,
     ) = withContext(dispatchers.IO) {
         val summary = response.toGallerySummary()
         val details = response.toGalleryDetailsEntity()

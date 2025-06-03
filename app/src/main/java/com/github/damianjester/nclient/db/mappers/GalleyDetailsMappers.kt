@@ -1,8 +1,5 @@
 package com.github.damianjester.nclient.db.mappers
 
-import com.github.damianjester.nclient.GalleryDetailsEntity
-import com.github.damianjester.nclient.GalleryPageEntity
-import com.github.damianjester.nclient.GallerySummaryEntity
 import com.github.damianjester.nclient.SelectRelatedForGallery
 import com.github.damianjester.nclient.SelectSummaryWithDetails
 import com.github.damianjester.nclient.core.models.Gallery
@@ -19,66 +16,10 @@ import com.github.damianjester.nclient.core.models.RelatedGallery
 import com.github.damianjester.nclient.core.models.Resolution
 import com.github.damianjester.nclient.db.GalleryPageWithMediaId
 import com.github.damianjester.nclient.db.GalleryWithTagIds
-import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
 import com.github.damianjester.nclient.net.NHentaiUrl
-import com.github.damianjester.nclient.net.NHentaiUrl.lastSegmentFileExtension
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
-
-fun GalleryDetailsResponse.Success.toGallerySummary() =
-    GallerySummaryEntity(
-        id = gallery.id.value,
-        mediaId = gallery.mediaId,
-        prettyTitle = gallery.title.pretty,
-        coverThumbnailFileExtension = coverUrl?.lastSegmentFileExtension
-            ?: GalleryImageFileType
-                .fromType(gallery.images.thumbnail.t)
-                .toFileExtension()
-    )
-
-fun GalleryDetailsResponse.Success.toGalleryDetailsEntity(): GalleryDetailsEntity {
-    val now = Clock.System.now()
-    return GalleryDetailsEntity(
-        galleryId = gallery.id.value,
-        coverFileExtension = coverUrl?.lastSegmentFileExtension
-            ?: GalleryImageFileType
-                .fromType(gallery.images.cover.t)
-                .toFileExtension(),
-        numFavorites = gallery.numFavorites.toLong(),
-        englishTitle = gallery.title.english,
-        japaneseTitle = gallery.title.japanese,
-        uploadDate = gallery.uploadDate,
-        createdAt = now.epochSeconds,
-        updatedAt = now.epochSeconds
-    )
-}
-
-fun GalleryDetailsResponse.Success.toGalleryDetailsPages() =
-    gallery.images.pages
-        .mapIndexed { i, p ->
-            GalleryPageEntity(
-                galleryId = gallery.id.value,
-                pageIndex = i.toLong(),
-                fileExtension = GalleryImageFileType.fromType(p.t).toFileExtension(),
-                width = p.w.toLong(),
-                height = p.h.toLong()
-            )
-        }
-
-fun GalleryDetailsResponse.Success.toRelatedGalleries() =
-    related.map { gal ->
-
-        val gallery = GallerySummaryEntity(
-            id = gal.id.value,
-            prettyTitle = gal.title,
-            mediaId = gal.mediaId,
-            coverThumbnailFileExtension = gal.coverThumbnailUrl.lastSegmentFileExtension,
-        )
-
-        gallery to gal.tagIds
-    }
 
 fun List<SelectRelatedForGallery>.toGalleriesWithTagIds() =
     groupBy { it.id }

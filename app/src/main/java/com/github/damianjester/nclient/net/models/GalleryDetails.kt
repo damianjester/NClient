@@ -5,18 +5,12 @@ import io.ktor.http.Url
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-sealed interface GalleryDetailsResponse {
-    data class Success(
+data class GalleryDetailsResponse(
         val gallery: GalleryDetails,
         val coverUrl: Url?,
         val related: List<GallerySummary>,
         val isUserFavorite: Boolean,
-    ) : GalleryDetailsResponse
-
-    sealed interface Failure : GalleryDetailsResponse {
-        data object NotFound : Failure
-    }
-}
+)
 
 @Serializable
 data class GalleryDetails(

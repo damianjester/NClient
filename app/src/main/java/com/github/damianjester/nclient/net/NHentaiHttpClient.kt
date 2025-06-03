@@ -1,8 +1,11 @@
 package com.github.damianjester.nclient.net
 
+import com.github.damianjester.nclient.core.GalleryNotFound
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GalleryTagId
+import com.github.damianjester.nclient.core.models.Result
 import com.github.damianjester.nclient.net.models.Comment
+import com.github.damianjester.nclient.net.models.CommentsResponse
 import com.github.damianjester.nclient.net.models.GalleryDetails
 import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
 import com.github.damianjester.nclient.net.models.GallerySummariesResponse
@@ -27,11 +30,11 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
 interface NHentaiHttpClient {
-    suspend fun getGalleries(page: Int): GallerySummariesResponse
+    suspend fun getGallerySummaries(page: Int): GallerySummariesResponse
 
-    suspend fun getGallery(id: GalleryId): GalleryDetailsResponse
+    suspend fun getGalleryDetails(id: GalleryId): Result<GalleryDetailsResponse, GalleryNotFound>
 
-    suspend fun getComments(id: GalleryId): List<Comment>
+    suspend fun getComments(id: GalleryId): CommentsResponse
 }
 
 class ScrapperNHentaiHttpClient(
@@ -39,7 +42,7 @@ class ScrapperNHentaiHttpClient(
     private val logger: Logger,
     private val dispatchers: NClientDispatchers,
 ) : NHentaiHttpClient {
-    override suspend fun getGalleries(page: Int): GallerySummariesResponse = withContext(dispatchers.IO) {
+    override suspend fun getGallerySummaries(page: Int): GallerySummariesResponse = withContext(dispatchers.IO) {
         // https://nhentai.net/?page={page}
         val response = client.catchingGet(NHentaiUrl.galleriesWebpage(page))
 
@@ -55,12 +58,12 @@ class ScrapperNHentaiHttpClient(
         GallerySummariesResponse(galleries)
     }
 
-    override suspend fun getGallery(id: GalleryId): GalleryDetailsResponse = withContext(dispatchers.IO) {
+    override suspend fun getGalleryDetails(id: GalleryId): Result<GalleryDetailsResponse, GalleryNotFound> = withContext(dispatchers.IO) {
         // https://nhentai.net/g/{gallery_id}
         val response = client.catchingGet(NHentaiUrl.galleryWebpage(id))
 
         if (response.status == HttpStatusCode.NotFound) {
-            return@withContext GalleryDetailsResponse.Failure.NotFound
+            return@withContext Result.Err(GalleryNotFound(id))
         }
 
         val document = response
@@ -110,17 +113,20 @@ class ScrapperNHentaiHttpClient(
             false
         }
 
-        GalleryDetailsResponse.Success(
-            gallery = galleryDetails,
-            coverUrl = coverUrl,
-            related = related,
-            isUserFavorite = isFavorite
+        Result.Ok(
+            GalleryDetailsResponse(
+                gallery = galleryDetails,
+                coverUrl = coverUrl,
+                related = related,
+                isUserFavorite = isFavorite
+            )
         )
     }
 
-    override suspend fun getComments(id: GalleryId): List<Comment> {
-        return client.catchingGet(NHentaiUrl.comments(id))
+    override suspend fun getComments(id: GalleryId): CommentsResponse = withContext(dispatchers.IO) {
+        client.catchingGet(NHentaiUrl.comments(id))
             .catchingBody<List<Comment>>()
+            .let { CommentsResponse(it) }
     }
 
     private fun scrapeListGallery(element: Element): GallerySummary {

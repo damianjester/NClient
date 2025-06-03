@@ -8,6 +8,7 @@ import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.db.mappers.toComment
 import com.github.damianjester.nclient.db.mappers.toCommentEntity
 import com.github.damianjester.nclient.db.mappers.toCommentPosterEntity
+import com.github.damianjester.nclient.net.models.CommentsResponse
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
@@ -19,7 +20,7 @@ interface CommentRepository {
 
     suspend fun selectCreatedAt(id: GalleryId): Instant?
 
-    suspend fun replaceAllComments(id: GalleryId, response: List<com.github.damianjester.nclient.net.models.Comment>)
+    suspend fun replaceAllComments(id: GalleryId, response: CommentsResponse)
 }
 
 data class CommentEntityWithPosterEntity(
@@ -49,17 +50,17 @@ class SqlDelightCommentRepository(
 
     override suspend fun replaceAllComments(
         id: GalleryId,
-        response: List<com.github.damianjester.nclient.net.models.Comment>
+        response: CommentsResponse
     ) = withContext(dispatchers.IO) {
-        if (response.isEmpty()) {
+        if (response.comments.isEmpty()) {
             return@withContext
         }
 
-        val posters = response
+        val posters = response.comments
             .distinctBy { poster -> poster.id }
             .map { comment -> comment.toCommentPosterEntity() }
 
-        val comments = response.map { it.toCommentEntity(id) }
+        val comments = response.comments.map { it.toCommentEntity(id) }
 
         logger.i(
             LogTags.comments,

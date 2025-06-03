@@ -36,9 +36,9 @@ class DefaultGalleryDetailsCacher(
             return Result.Ok(CacheResult.CacheValid)
         }
 
-        val response: GalleryDetailsResponse.Success = when (val result = client.getGallery(id)) {
-            GalleryDetailsResponse.Failure.NotFound -> return Result.Err(GalleryNotFound(id))
-            is GalleryDetailsResponse.Success -> result
+        val response: GalleryDetailsResponse = when (val result = client.getGalleryDetails(id)) {
+            is Result.Err -> return Result.Err(result.cause)
+            is Result.Ok -> result.value
         }
 
         repository.upsertGalleryDetails(response)

@@ -15,7 +15,7 @@ class DefaultGallerySearchPager(
     private val galleryRepository: GalleryRepository,
 ) : GallerySearchPager {
     override suspend fun fetch(page: Int): Result<List<GallerySummary>, NClientError> {
-        val response = client.getGalleries(page)
+        val response = client.getGallerySummaries(page)
         galleryRepository.replaceAllGallerySummaries(defaultHomeQuery, response)
 
         val galleries = galleryRepository.selectSummariesForQuery(defaultHomeQuery)
