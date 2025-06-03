@@ -8,6 +8,7 @@ import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
 import com.github.damianjester.nclient.repo.GalleryRepository
 import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
+import com.github.damianjester.nclient.utils.logger.i
 import kotlinx.datetime.Clock
 import kotlin.time.Duration.Companion.days
 
@@ -29,10 +30,10 @@ class DefaultGalleryDetailsCacher(
     override suspend fun cache(id: GalleryId): Result<CacheResult, NClientError> {
         val updatedAt = repository.selectGalleryUpdatedAt(id)
         if (updatedAt != null && Clock.System.now() - updatedAt <= 7.days) {
-            logger.i(
-                LogTags.gallery,
-                "Gallery details ($id) from local cache still valid (last update: ${Clock.System.now() - updatedAt})."
-            )
+            logger.i(LogTags.gallery) {
+                val diff = Clock.System.now() - updatedAt
+                "Gallery details ($id) from local cache still valid (last update: ${diff})."
+            }
             return Result.Ok(CacheResult.CacheValid)
         }
 
