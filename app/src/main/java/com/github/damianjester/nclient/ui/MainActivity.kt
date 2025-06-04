@@ -37,6 +37,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
     private val sharer by inject<GalleryPageSharer>()
     private val webPageOpener by inject<WebPageOpener>()
     private val screenCaffeinater by inject<ScreenCaffeinater>()
+    private val deepLinker by inject<DeepLinker>()
     private val logger by inject<Logger>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +46,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
 
         val rootComponent = DefaultRootComponent(
             componentContext = defaultComponentContext(),
-            initialConfig = initialConfig(intent),
+            initialConfig = deepLinker.link(intent),
             onFinish = ::finish
         )
 
@@ -64,43 +65,6 @@ class MainActivity : ComponentActivity(), KoinComponent {
         super.onPause()
         logger.i(LogTags.caffeine, "Clearing window FLAG_KEEP_SCREEN_ON flag (onPause).")
         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-    }
-
-    private fun initialConfig(intent: Intent?): DefaultRootComponent.Config {
-        val action: String? = intent?.action
-        val data: Uri? = intent?.data
-
-        if (action != Intent.ACTION_VIEW || data == null) {
-            logger.i(
-                LogTags.deeplink,
-                "Intent isn't a deeplink intent (action=$action, data=$data)."
-            )
-            return DefaultRootComponent.Config.GallerySearch
-        }
-
-        val url = try {
-            Url(data.toString())
-        } catch (ex: IllegalArgumentException) {
-            logger.i(LogTags.deeplink, "Received an invalid URL in MainActivity intent.", ex)
-            return DefaultRootComponent.Config.GallerySearch
-        }
-
-        // Gallery details
-        // https://nhentai.net/g/[galleryId]/
-        val galleryId = url.isGalleryDetailUrl()
-        if (galleryId != null) {
-            logger.i(
-                LogTags.deeplink,
-                "Setting initial configuration to gallery details ($galleryId)."
-            )
-            return DefaultRootComponent.Config.GalleryDetails(galleryId)
-        }
-
-        logger.i(
-            LogTags.deeplink,
-            "Unsure how to map intent data to an initial configuration (action=$action, data=$data)."
-        )
-        return DefaultRootComponent.Config.GallerySearch
     }
 
     private fun collectFlows() {
