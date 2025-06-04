@@ -32,7 +32,7 @@ class DefaultGalleryDetailsCacher(
         if (updatedAt != null && Clock.System.now() - updatedAt <= 7.days) {
             logger.i(LogTags.gallery) {
                 val diff = Clock.System.now() - updatedAt
-                "Gallery details ($id) from local cache still valid (last update: ${diff})."
+                "Gallery details ($id) from local cache still valid (last update: $diff)."
             }
             return Result.Ok(CacheResult.CacheValid)
         }

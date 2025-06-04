@@ -46,7 +46,6 @@ fun GalleryPagerContent(
     Box(
         modifier = modifier
     ) {
-
         var userScrollEnabled by remember { mutableStateOf(true) }
         val currentPage by remember { derivedStateOf { pagerState.currentPage } }
 

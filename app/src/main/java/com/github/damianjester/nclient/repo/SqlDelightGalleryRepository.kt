@@ -1,7 +1,6 @@
 package com.github.damianjester.nclient.repo
 
 import app.cash.sqldelight.coroutines.asFlow
-import app.cash.sqldelight.coroutines.mapToOne
 import app.cash.sqldelight.coroutines.mapToOneNotNull
 import com.github.damianjester.nclient.Database
 import com.github.damianjester.nclient.GalleryHasRelated
