@@ -13,6 +13,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -41,10 +47,19 @@ fun GalleryPagerContent(
         modifier = modifier
     ) {
 
+        var userScrollEnabled by remember { mutableStateOf(true) }
+        val currentPage by remember { derivedStateOf { pagerState.currentPage } }
+
+        LaunchedEffect(currentPage) {
+            // When the pager's current page changes, enabled user scrolling, regardless of
+            // whether the image is zoomed in or not
+            userScrollEnabled = true
+        }
+
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
+            userScrollEnabled = userScrollEnabled
         ) { i ->
 
             val model: Any = when (val model = pages[i].image) {
@@ -52,22 +67,40 @@ fun GalleryPagerContent(
                 is GalleryPageImages.Remote -> model.remoteOriginal.url.toString()
             }
 
+            val zoomState = rememberZoomableState(
+                ZoomSpec(
+                    maxZoomFactor = 2.5f
+                )
+            )
+
+            val zoomedOut by remember {
+                derivedStateOf {
+                    zoomState.zoomFraction?.let { it < 0.01f } != false
+                }
+            }
+
+            LaunchedEffect(zoomedOut, currentPage) {
+                if (currentPage == i) {
+                    // Toggle user scrolling on the pager based on:
+                    // - image zoomed level (zoomed in = off, zoomed out = on)
+                    // - the page of the pager, checking that this page is the current page,
+                    //   i.e. the user has fully scrolled to it
+                    //
+                    // The last check is particularly important because otherwise other off-screen pages
+                    // will prevent the user from scrolling the pager
+                    userScrollEnabled = zoomedOut
+                }
+            }
+
             ZoomableAsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
                     .data(model)
                     .build(),
                 contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize(),
-                state = rememberZoomableImageState(
-                    rememberZoomableState(
-                        ZoomSpec(
-                            maxZoomFactor = 2.5f
-                        )
-                    )
-                ),
+                modifier = Modifier.fillMaxSize(),
+                state = rememberZoomableImageState(zoomState),
                 contentScale = ContentScale.Fit,
-                onClick = { onPageClick() }
+                onClick = { onPageClick() },
             )
         }
 
