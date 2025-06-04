@@ -40,13 +40,6 @@ fun GalleryPagerContent(
     Box(
         modifier = modifier
     ) {
-        PageIndicator(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(top = 8.dp)
-                .windowInsetsPadding(WindowInsets.statusBarsIgnoringVisibility),
-            pagerState = pagerState
-        )
 
         HorizontalPager(
             state = pagerState,
@@ -77,6 +70,14 @@ fun GalleryPagerContent(
                 onClick = { onPageClick() }
             )
         }
+
+        PageIndicator(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 8.dp)
+                .windowInsetsPadding(WindowInsets.statusBarsIgnoringVisibility),
+            pagerState = pagerState
+        )
     }
 }
 
