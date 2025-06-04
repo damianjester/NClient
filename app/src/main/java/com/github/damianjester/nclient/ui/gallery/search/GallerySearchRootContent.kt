@@ -25,12 +25,9 @@ import com.github.damianjester.nclient.ui.gallery.search.GallerySearchComponent.
 @Composable
 fun GallerySearchRootContent(
     component: GallerySearchComponent,
+    onDrawerClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    // TODO: Gallery list
-    // TODO: Pager controls
-    // TODO: Drawer
-
     val state by component.model.subscribeAsState()
     val galleriesState = state.galleriesState
 
@@ -43,7 +40,7 @@ fun GallerySearchRootContent(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { TODO("Open navigation drawer") }) {
+                    IconButton(onClick = onDrawerClick) {
                         Icon(Icons.Default.Menu, contentDescription = "Menu")
                     }
                 },

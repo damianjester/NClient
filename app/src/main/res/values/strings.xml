@@ -367,6 +367,13 @@
     <string name="hide">Hide</string>
     <string name="title_user_agent">Change User-Agent</string>
 
+    <string name="galleries">Galleries</string>
+    <string name="downloads">Downloads</string>
+    <string name="random_gallery">Random gallery</string>
+    <string name="favorites">Favorites</string>
+    <string name="bookmarks">Bookmarks</string>
+    <string name="about">About</string>
+
     <string name="internal_error_title">Internal Error</string>
     <string name="internal_error_body">Failed to parse/scrape…</string>
     <string name="network_connection_error_title">Network Failed</string>
