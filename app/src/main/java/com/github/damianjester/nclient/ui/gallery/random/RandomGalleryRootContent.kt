@@ -1,9 +1,8 @@
-package com.github.damianjester.nclient.ui.about
+package com.github.damianjester.nclient.ui.gallery.random
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.github.damianjester.nclient.ui.common.PlaceholderDrawerRootContent
-import com.github.damianjester.nclient.ui.gallery.random.RandomGalleryComponent
 
 @Composable
 fun RandomGalleryRootContent(
