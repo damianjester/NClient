@@ -4,7 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.lifecycle.doOnCreate
+import com.arkivanov.essenty.lifecycle.doOnStart
 import com.github.damianjester.nclient.core.GallerySearchPager
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GallerySummary
@@ -54,7 +54,7 @@ class DefaultGallerySearchComponent(
     private val coroutineScope = coroutineScope(dispatchers.Main.immediate)
 
     init {
-        lifecycle.doOnCreate {
+        lifecycle.doOnStart(isOneTime = true) {
             // TODO: Preload tags? Refresh tags?
             coroutineScope.launch {
                 fetch()

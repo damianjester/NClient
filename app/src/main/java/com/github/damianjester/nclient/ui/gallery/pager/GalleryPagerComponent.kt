@@ -5,8 +5,8 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.lifecycle.doOnCreate
 import com.arkivanov.essenty.lifecycle.doOnResume
+import com.arkivanov.essenty.lifecycle.doOnStart
 import com.github.damianjester.nclient.core.GalleryNotFound
 import com.github.damianjester.nclient.core.GalleryPageSaver
 import com.github.damianjester.nclient.core.GalleryPageSharer
@@ -96,7 +96,7 @@ class DefaultGalleryPagerComponent(
         get() = _model
 
     init {
-        doOnCreate {
+        doOnStart(isOneTime = true) {
             coroutineScope.launch {
                 fetchGalleryPages()
             }

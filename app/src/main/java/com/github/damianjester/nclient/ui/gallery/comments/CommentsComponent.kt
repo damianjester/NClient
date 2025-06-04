@@ -4,7 +4,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
-import com.arkivanov.essenty.lifecycle.doOnCreate
+import com.arkivanov.essenty.lifecycle.doOnStart
 import com.github.damianjester.nclient.core.CommentsFetcher
 import com.github.damianjester.nclient.core.WebPageOpener
 import com.github.damianjester.nclient.core.models.Comment
@@ -72,7 +72,7 @@ class DefaultCommentsComponent(
     private val coroutineScope = coroutineScope(dispatchers.Main.immediate)
 
     init {
-        doOnCreate {
+        doOnStart(isOneTime = true) {
             fetchComments()
         }
     }
