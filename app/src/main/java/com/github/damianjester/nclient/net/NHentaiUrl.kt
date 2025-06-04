@@ -156,12 +156,32 @@ object NHentaiUrl {
     fun Url.isGalleryDetailUrl(): GalleryId? {
         // https://nhentai.net/g/[galleryId]/
         if ((protocol == URLProtocol.HTTP || protocol == URLProtocol.HTTPS) && host == HOST &&
-            segments.first() == G_PATH_SEGMENT
+            segments.size == 2 && segments.first() == G_PATH_SEGMENT
         ) {
             return segments
                 .getOrNull(1)
                 ?.toLongOrNull()
                 ?.let { GalleryId(it) }
+        }
+
+        return null
+    }
+
+    fun Url.isGalleryPageUrl(): Pair<GalleryId, Int>? {
+        // https://nhentai.net/g/[gallery_id]/[page_number]/
+        if ((protocol == URLProtocol.HTTP || protocol == URLProtocol.HTTPS) && host == HOST &&
+            segments.size == 3 && segments.first() == G_PATH_SEGMENT
+        ) {
+            val id = segments[1]
+                .toLongOrNull()
+                ?.let { GalleryId(it) }
+
+            val page = segments[2]
+                .toIntOrNull()
+
+            if (id != null && page != null) {
+                return id to page
+            }
         }
 
         return null

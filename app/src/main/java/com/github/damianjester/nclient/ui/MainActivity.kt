@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
 
         val rootComponent = DefaultRootComponent(
             componentContext = defaultComponentContext(),
-            initialConfig = deepLinker.link(intent),
+            initialStack = deepLinker.link(intent),
             onFinish = ::finish
         )
 

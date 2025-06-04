@@ -43,7 +43,7 @@ interface RootComponent {
 
 class DefaultRootComponent(
     componentContext: ComponentContext,
-    initialConfig: Config = Config.GallerySearch,
+    private val initialStack: List<Config> = listOf(Config.GallerySearch),
     private val onFinish: () -> Unit
 ) : RootComponent, ComponentContext by componentContext, KoinComponent {
     private val navigation = StackNavigation<Config>()
@@ -52,7 +52,7 @@ class DefaultRootComponent(
         childStack(
             source = navigation,
             serializer = Config.serializer(),
-            initialConfiguration = initialConfig,
+            initialStack = { initialStack },
             handleBackButton = true,
             childFactory = ::child,
         )
