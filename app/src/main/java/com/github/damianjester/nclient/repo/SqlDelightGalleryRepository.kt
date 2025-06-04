@@ -2,6 +2,7 @@ package com.github.damianjester.nclient.repo
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToOne
+import app.cash.sqldelight.coroutines.mapToOneNotNull
 import com.github.damianjester.nclient.Database
 import com.github.damianjester.nclient.GalleryHasRelated
 import com.github.damianjester.nclient.GalleryHasRelatedQueries
@@ -97,7 +98,7 @@ class SqlDelightGalleryRepository(
                 english = english,
                 japanese = japanese
             )
-        }.asFlow().mapToOne(dispatchers.IO)
+        }.asFlow().mapToOneNotNull(dispatchers.IO)
 
     override suspend fun selectGalleryUpdatedAt(id: GalleryId) = withContext(dispatchers.IO) {
         galleryQueries.selectGalleryUpdatedAt(id.value).executeAsOneOrNull()
