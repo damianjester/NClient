@@ -10,6 +10,7 @@ import com.github.damianjester.nclient.core.models.GalleryImageFileType
 import com.github.damianjester.nclient.core.models.GalleryLanguage
 import com.github.damianjester.nclient.core.models.GalleryPage
 import com.github.damianjester.nclient.core.models.GalleryPageImages
+import com.github.damianjester.nclient.core.models.GalleryTagId
 import com.github.damianjester.nclient.core.models.GalleryTitle
 import com.github.damianjester.nclient.core.models.MediaId
 import com.github.damianjester.nclient.core.models.RelatedGallery
@@ -50,7 +51,7 @@ fun GalleryWithTagIds.toRelatedGallery() =
         )
     )
 
-fun SelectSummaryWithDetails.toGallery() =
+fun SelectSummaryWithDetails.toGallery(tagIds: List<GalleryTagId>) =
     Gallery(
         id = GalleryId(id),
         title = GalleryTitle(
@@ -72,6 +73,7 @@ fun SelectSummaryWithDetails.toGallery() =
                     ?: GalleryImageFileType.WEBP(hasWebpExtension = false) // Cover image file type unknown, make a best guess
             )
         ),
+        language = GalleryLanguage.fromTagId(tagIds),
         updated = Instant.fromEpochSeconds(uploadDate).toLocalDateTime(TimeZone.UTC),
         favoriteCount = numFavorites.toInt()
     )

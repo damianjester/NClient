@@ -64,17 +64,17 @@ class SqlDelightGalleryRepository(
     }
 
     override suspend fun selectGalleryDetails(id: GalleryId) = withContext(dispatchers.IO) {
+        val tags = tagQueries.selectTagsForGallery(id.value).executeAsList()
+            .map { it.toTag() }
+            .toTags()
+
         val gallery = galleryQueries.selectSummaryWithDetails(id.value)
             .executeAsOne()
-            .toGallery()
+            .toGallery(tags.all.map { it.id })
 
         val pages = galleryPageQueries.selectPagesWithMediaIdForGallery(id)
             .executeAsList()
             .map { it.toGalleryPage() }
-
-        val tags = tagQueries.selectTagsForGallery(id.value).executeAsList()
-            .map { it.toTag() }
-            .toTags()
 
         val related = galleryHasRelatedQueries.selectRelatedForGallery(id.value)
             .executeAsList()

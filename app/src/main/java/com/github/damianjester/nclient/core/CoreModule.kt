@@ -9,6 +9,7 @@ val coreModule = module {
     single { DefaultGalleryDetailsCacher(get(), get(), get()) } bind GalleryDetailsCacher::class
     single { DefaultGalleryDetailsFetcher(get(), get()) } bind GalleryDetailsFetcher::class
     single { DefaultGalleryPagesFetcher(get(), get()) } bind GalleryPagesFetcher::class
+    single { DefaultRandomGalleryFetcher(get(), get()) } bind RandomGalleryFetcher::class
 
     single { DefaultGalleryPageDownloader(get(), get(), get(), get()) } bind GalleryPageDownloader::class
     single { DefaultGalleryPageSaver(get(), get(), get(), get(), get()) } bind GalleryPageSaver::class

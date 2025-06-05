@@ -11,7 +11,6 @@ import com.arkivanov.decompose.extensions.compose.stack.animation.fade
 import com.arkivanov.decompose.extensions.compose.stack.animation.stackAnimation
 import com.github.damianjester.nclient.ui.RootComponent.Child
 import com.github.damianjester.nclient.ui.about.AboutRootContent
-import com.github.damianjester.nclient.ui.gallery.random.RandomGalleryRootContent
 import com.github.damianjester.nclient.ui.csrf.CsrfTokenRootContent
 import com.github.damianjester.nclient.ui.drawer.NClientModalNavigationDrawer
 import com.github.damianjester.nclient.ui.gallery.bookmarks.BookmarksRootContent
@@ -21,6 +20,7 @@ import com.github.damianjester.nclient.ui.gallery.downloads.DownloadsRootContent
 import com.github.damianjester.nclient.ui.gallery.favorites.FavoritesRootContent
 import com.github.damianjester.nclient.ui.gallery.history.HistoryRootContent
 import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerRootContent
+import com.github.damianjester.nclient.ui.gallery.random.RandomGalleryRootContent
 import com.github.damianjester.nclient.ui.gallery.search.GallerySearchRootContent
 import com.github.damianjester.nclient.ui.settings.SettingsRootContent
 import kotlinx.coroutines.launch

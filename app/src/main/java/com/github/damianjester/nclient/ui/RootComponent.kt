@@ -203,7 +203,12 @@ class DefaultRootComponent(
         DefaultDownloadsComponent(componentContext)
 
     private fun randomGalleryComponent(componentContext: ComponentContext): RandomGalleryComponent =
-        DefaultRandomGalleryComponent(componentContext)
+        DefaultRandomGalleryComponent(
+            componentContext = componentContext,
+            onNavigateGallery = { id -> navigation.pushNew(Config.GalleryDetails(id)) },
+            dispatchers = get(),
+            fetcher = get(),
+        )
 
     private fun favoritesComponent(componentContext: ComponentContext): FavoritesComponent =
         DefaultFavoritesComponent(componentContext)

@@ -9,9 +9,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.core.models.GalleryLanguage
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
 
@@ -21,8 +25,18 @@ fun BoxScope.LanguageIndicator(
     language: GalleryLanguage,
     backgroundColor: Color = MaterialTheme.colorScheme.surface
 ) {
+    val flagContentDescription = when (language) {
+        GalleryLanguage.Chinese -> stringResource(R.string.language_chinese)
+        GalleryLanguage.English -> stringResource(R.string.language_english)
+        GalleryLanguage.Japanese -> stringResource(R.string.language_japanese)
+        else -> stringResource(R.string.language_unknown)
+    }
+
     GridItemIndicator(
-        modifier = modifier,
+        modifier = modifier
+            .clearAndSetSemantics {
+                contentDescription = flagContentDescription
+            },
         backgroundColor = backgroundColor
     ) {
         val flag = when (language) {

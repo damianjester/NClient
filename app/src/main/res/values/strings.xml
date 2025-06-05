@@ -369,7 +369,21 @@
 
     <string name="galleries">Galleries</string>
     <string name="downloads">Downloads</string>
-    <string name="random_gallery">Random gallery</string>
+
+    <string name="menu">Menu</string>
+
+    <string name="random_gallery">Random Gallery</string>
+    <string name="next_random_gallery_button">Next gallery</string>
+    <string name="previous_random_gallery_button">Previous gallery</string>
+    <string name="favorite_gallery_button">Favorite gallery</string>
+    <string name="open_gallery">Open gallery</string>
+    <string name="gallery_cover">Gallery cover</string>
+
+    <string name="language_english">Language: English</string>
+    <string name="language_japanese">Language: Japanese</string>
+    <string name="language_chinese">Language: Chinese</string>
+    <string name="language_unknown">Language: unknown</string>
+
     <string name="favorites">Favorites</string>
     <string name="bookmarks">Bookmarks</string>
     <string name="about">About</string>

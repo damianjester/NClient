@@ -137,6 +137,17 @@ object NHentaiUrl {
             .build()
 
     /**
+     * Return:
+     * https://nhentai.net/random/
+     */
+    fun randomGallery(): Url =
+        URLBuilder(baseUrl())
+            .apply {
+                path("random")
+            }
+            .build()
+
+    /**
      * Returns:
      * https://nhentai.net/g/$galleryId/$pageNumber/
      */

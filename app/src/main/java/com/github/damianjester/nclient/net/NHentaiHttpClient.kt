@@ -28,6 +28,8 @@ interface NHentaiHttpClient {
 
     suspend fun getGalleryDetails(id: GalleryId): Result<GalleryDetailsResponse, GalleryNotFound>
 
+    suspend fun getRandomGalleryDetails(): GalleryDetailsResponse
+
     suspend fun getComments(id: GalleryId): CommentsResponse
 }
 
@@ -70,6 +72,22 @@ class ScrapperNHentaiHttpClient(
                 coverUrl = scrapper.scrapeGalleryDetailsCover(document),
                 related = scrapper.scrapeRelatedGalleries(document),
             )
+        )
+    }
+
+    override suspend fun getRandomGalleryDetails() = withContext(dispatchers.IO) {
+        // https://nhentai.net/random/
+        val response = client.catchingGet(NHentaiUrl.randomGallery())
+
+        val document = response
+            .bodyAsChannel()
+            .toInputStream()
+            .let { Jsoup.parse(it, "UTF-8", NHentaiUrl.baseUrl().toString()) }
+
+        GalleryDetailsResponse(
+            gallery = scrapper.scrapeGalleryDetails(document),
+            coverUrl = scrapper.scrapeGalleryDetailsCover(document),
+            related = scrapper.scrapeRelatedGalleries(document),
         )
     }
 

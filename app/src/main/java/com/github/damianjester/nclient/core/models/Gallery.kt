@@ -16,21 +16,25 @@ value class GalleryId(val value: Long) {
 @Serializable
 value class MediaId(val value: Long)
 
+@Serializable
 data class GalleryTitle(
     val pretty: String,
     val english: String?,
     val japanese: String?,
 )
 
+@Serializable
 data class GalleryCover(
     val thumbnailUrl: Url,
     val originalUrl: Url,
 )
 
+@Serializable
 data class Gallery(
     val id: GalleryId,
     val title: GalleryTitle,
     val cover: GalleryCover,
+    val language: GalleryLanguage,
     val updated: LocalDateTime,
     val favoriteCount: Int,
 )
