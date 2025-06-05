@@ -1,22 +1,31 @@
 package com.github.damianjester.nclient.core.models
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 sealed interface GalleryLanguage {
-    interface KnownLanguage {
+
+    @Serializable
+    sealed interface KnownLanguage : GalleryLanguage {
         val id: GalleryTagId
     }
 
-    data object English : GalleryLanguage, KnownLanguage {
+    @Serializable
+    data object English : KnownLanguage {
         override val id = GalleryTagId(12227L)
     }
 
-    data object Chinese : GalleryLanguage, KnownLanguage {
+    @Serializable
+    data object Chinese : KnownLanguage {
         override val id = GalleryTagId(29963L)
     }
 
-    data object Japanese : GalleryLanguage, KnownLanguage {
+    @Serializable
+    data object Japanese : KnownLanguage {
         override val id = GalleryTagId(6346L)
     }
 
+    @Serializable
     data object Unknown : GalleryLanguage
 
     companion object {
