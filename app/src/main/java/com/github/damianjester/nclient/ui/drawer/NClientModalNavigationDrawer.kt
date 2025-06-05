@@ -84,7 +84,7 @@ fun NClientModalNavigationDrawer(
 private val firstSection = listOf(
     Galleries to false,
     Downloads to true,
-    RandomGallery to true,
+    RandomGallery to false,
     Favorites to true,
     Bookmarks to true,
     History to true,
