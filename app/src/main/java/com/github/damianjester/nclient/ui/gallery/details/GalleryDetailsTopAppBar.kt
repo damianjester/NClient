@@ -10,6 +10,7 @@ import androidx.compose.material.icons.automirrored.filled.Comment
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,6 +47,7 @@ fun GalleryDetailsTopAppBar(
     onFavoriteClick: (Boolean) -> Unit,
     onGridModeClick: () -> Unit,
     onCommentsClick: () -> Unit,
+    onShareClick: () -> Unit
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -115,6 +117,16 @@ fun GalleryDetailsTopAppBar(
                         )
                     }
                 )
+                DropdownMenuItem(
+                    text = { Text(stringResource(R.string.share)) },
+                    onClick = onShareClick,
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Share,
+                            contentDescription = null
+                        )
+                    }
+                )
             }
         },
     )
@@ -132,7 +144,8 @@ private fun GalleryDetailsTopAppBarPreview() {
             onTitleLongClick = {},
             onFavoriteClick = {},
             onGridModeClick = {},
-            onCommentsClick = {}
+            onCommentsClick = {},
+            onShareClick = {}
         )
     }
 }

@@ -10,6 +10,7 @@ import com.arkivanov.essenty.lifecycle.doOnStart
 import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.core.GalleryDetailsFetcher
 import com.github.damianjester.nclient.core.GalleryNotFound
+import com.github.damianjester.nclient.core.LinkSharer
 import com.github.damianjester.nclient.core.models.GalleryDetails
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GalleryTag
@@ -18,6 +19,7 @@ import com.github.damianjester.nclient.net.NHentaiClientConnectionException
 import com.github.damianjester.nclient.net.NHentaiClientException
 import com.github.damianjester.nclient.net.NHentaiClientScrapeException
 import com.github.damianjester.nclient.net.NHentaiClientSerializationException
+import com.github.damianjester.nclient.net.NHentaiUrl
 import com.github.damianjester.nclient.ui.DefaultRootComponent
 import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsComponent.GalleryState
 import com.github.damianjester.nclient.utils.NClientDispatchers
@@ -34,6 +36,8 @@ interface GalleryDetailsComponent {
     fun setGalleryFavoriteStatus(favorite: Boolean)
 
     fun toggleGridMode()
+
+    fun shareGallery()
 
     fun navigateToPage(index: Int)
 
@@ -86,6 +90,7 @@ class DefaultGalleryDetailsComponent(
     private val onNavigateBack: () -> Unit,
     private val applicationContext: Context,
     private val galleryFetcher: GalleryDetailsFetcher,
+    private val linkSharer: LinkSharer,
 ) : GalleryDetailsComponent, ComponentContext by componentContext {
     private val _model = MutableValue(GalleryDetailsComponent.Model())
     override val model: Value<GalleryDetailsComponent.Model>
@@ -139,6 +144,14 @@ class DefaultGalleryDetailsComponent(
             }
 
             state.copy(gridMode = newGridMode)
+        }
+    }
+
+    override fun shareGallery() = doOnLoaded { loaded ->
+        coroutineScope.launch {
+            val gallery = loaded.details.gallery
+            val url = NHentaiUrl.galleryWebPage(gallery.id)
+            linkSharer.share(url)
         }
     }
 

@@ -4,7 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 sealed interface GalleryLanguage {
-
     @Serializable
     sealed interface KnownLanguage : GalleryLanguage {
         val id: GalleryTagId

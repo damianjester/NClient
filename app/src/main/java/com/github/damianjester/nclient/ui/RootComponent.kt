@@ -162,6 +162,7 @@ class DefaultRootComponent(
             },
             applicationContext = get(),
             galleryFetcher = get(),
+            linkSharer = get()
         )
 
     private fun galleryPagerComponent(

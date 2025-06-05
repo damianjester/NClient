@@ -61,7 +61,8 @@ fun GalleryDetailsScreen(
                 onFavoriteClick = component::setGalleryFavoriteStatus,
                 gridMode = model.gridMode,
                 onGridModeClick = component::toggleGridMode,
-                onCommentsClick = component::navigateToComments
+                onCommentsClick = component::navigateToComments,
+                onShareClick = component::shareGallery
             )
         }
     ) { innerPadding ->

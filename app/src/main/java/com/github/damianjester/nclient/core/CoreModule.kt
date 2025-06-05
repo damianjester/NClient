@@ -19,4 +19,5 @@ val coreModule = module {
 
     single { DefaultWebPageOpener(get()) } bind WebPageOpener::class
     single { DefaultScreenCaffeinater(get()) } bind ScreenCaffeinater::class
+    single { DefaultLinkSharer() } bind LinkSharer::class
 }

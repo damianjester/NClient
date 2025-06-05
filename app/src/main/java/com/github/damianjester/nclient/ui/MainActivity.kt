@@ -16,6 +16,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.arkivanov.decompose.defaultComponentContext
 import com.github.damianjester.nclient.core.GalleryPageSharer
+import com.github.damianjester.nclient.core.LinkSharer
 import com.github.damianjester.nclient.core.ScreenCaffeinater
 import com.github.damianjester.nclient.core.WebPageOpener
 import com.github.damianjester.nclient.ui.theme.NClientTheme
@@ -24,6 +25,7 @@ import com.github.damianjester.nclient.utils.logger.LogTags
 import com.github.damianjester.nclient.utils.logger.Logger
 import com.github.damianjester.nclient.utils.logger.e
 import com.github.damianjester.nclient.utils.logger.i
+import io.ktor.http.Url
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
@@ -35,6 +37,7 @@ class MainActivity : ComponentActivity(), KoinComponent {
     private val webPageOpener by inject<WebPageOpener>()
     private val screenCaffeinater by inject<ScreenCaffeinater>()
     private val deepLinker by inject<DeepLinker>()
+    private val linkSharer by inject<LinkSharer>()
     private val logger by inject<Logger>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,6 +83,11 @@ class MainActivity : ComponentActivity(), KoinComponent {
                 screenCaffeinater.keepScreenOn.collect(::setKeepScreenOnFlag)
             }
         }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                linkSharer.links.collect(::shareLink)
+            }
+        }
     }
 
     private suspend fun startShareActivity(share: GalleryPageSharer.GalleryPageShare) =
@@ -111,6 +119,18 @@ class MainActivity : ComponentActivity(), KoinComponent {
             startActivity(weblinkIntent)
         } catch (ex: ActivityNotFoundException) {
             logger.e("Unable to start web page intent (data = ${weblinkIntent.data}).", ex)
+        }
+    }
+
+    private suspend fun shareLink(url: Url) {
+        withContext(dispatchers.Main) {
+            val shareIntent: Intent = Intent().apply {
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, url.toString())
+                type = "text/plain"
+            }
+
+            startActivity(Intent.createChooser(shareIntent, null))
         }
     }
 }
