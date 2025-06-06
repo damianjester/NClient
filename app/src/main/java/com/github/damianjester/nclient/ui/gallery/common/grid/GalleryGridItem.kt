@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.ui.gallery.grid
+package com.github.damianjester.nclient.ui.gallery.common.grid
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
