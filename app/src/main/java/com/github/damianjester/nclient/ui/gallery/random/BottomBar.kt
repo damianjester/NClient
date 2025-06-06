@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import com.github.damianjester.nclient.R
 
 @Composable
-fun RandomButtonBar(
+fun BottomBar(
     modifier: Modifier = Modifier,
     model: RandomGalleryComponent.Model,
     onPreviousGalleryClick: () -> Unit,

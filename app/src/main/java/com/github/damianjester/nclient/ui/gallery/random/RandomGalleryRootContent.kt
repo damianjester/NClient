@@ -73,7 +73,7 @@ fun RandomGalleryRootContent(
                 }
             }
 
-            RandomButtonBar(
+            BottomBar(
                 modifier = Modifier.fillMaxWidth(),
                 model = model,
                 onPreviousGalleryClick = component::previousGallery,
