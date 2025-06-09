@@ -21,7 +21,7 @@ import org.koin.core.component.KoinComponent
 interface GallerySearchComponent {
     val model: Value<Model>
 
-    fun navigateToGallery(gallery: GallerySummary)
+    fun navigateToGallery(id: GalleryId)
 
     data class Model(
         val galleriesState: GalleriesState = GalleriesState.Loading,
@@ -80,7 +80,7 @@ class DefaultGallerySearchComponent(
         }
     }
 
-    override fun navigateToGallery(gallery: GallerySummary) {
-        onNavigateGallery(gallery.id)
+    override fun navigateToGallery(id: GalleryId) {
+        onNavigateGallery(id)
     }
 }

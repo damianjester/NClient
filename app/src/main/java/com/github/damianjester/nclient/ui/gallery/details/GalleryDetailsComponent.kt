@@ -6,6 +6,7 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
+import com.arkivanov.essenty.instancekeeper.getOrCreate
 import com.arkivanov.essenty.lifecycle.doOnStart
 import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.core.GalleryDetailsFetcher
@@ -22,10 +23,16 @@ import com.github.damianjester.nclient.net.NHentaiClientSerializationException
 import com.github.damianjester.nclient.net.NHentaiUrl
 import com.github.damianjester.nclient.ui.DefaultRootComponent
 import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsComponent.GalleryState
+import com.github.damianjester.nclient.ui.gallery.history.HistoryTrackerComponent
+import com.github.damianjester.nclient.ui.gallery.history.HistoryTrackerState
+import com.github.damianjester.nclient.ui.gallery.history.HistoryTrackerStateEntity
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.clipboardManager
 import com.github.damianjester.nclient.utils.coroutineScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+
+private const val HISTORY_SAVED_STATE_KEY = "HISTORY_SAVED_STATE"
 
 interface GalleryDetailsComponent {
     val config: DefaultRootComponent.Config.GalleryDetails
@@ -91,18 +98,28 @@ class DefaultGalleryDetailsComponent(
     private val applicationContext: Context,
     private val galleryFetcher: GalleryDetailsFetcher,
     private val linkSharer: LinkSharer,
-) : GalleryDetailsComponent, ComponentContext by componentContext {
+) : GalleryDetailsComponent, HistoryTrackerComponent, ComponentContext by componentContext {
+    override val trackerStateEntity: HistoryTrackerStateEntity =
+        instanceKeeper.getOrCreate {
+            stateKeeper.consume(key = HISTORY_SAVED_STATE_KEY, strategy = HistoryTrackerState.serializer())
+                ?.let { savedState -> HistoryTrackerStateEntity(savedState) }
+                ?: HistoryTrackerStateEntity(config.id)
+        }
+
     private val _model = MutableValue(GalleryDetailsComponent.Model())
     override val model: Value<GalleryDetailsComponent.Model>
         get() = _model
 
-    private val coroutineScope = coroutineScope(dispatchers.Main.immediate)
+    private val coroutineScope = coroutineScope(dispatchers.Main.immediate + SupervisorJob())
 
     init {
+        stateKeeper.register(
+            key = HISTORY_SAVED_STATE_KEY,
+            strategy = HistoryTrackerState.serializer(),
+            supplier = trackerStateEntity::state
+        )
         doOnStart(isOneTime = true) {
-            coroutineScope.launch {
-                fetchGallery()
-            }
+            coroutineScope.launch { fetchGallery() }
         }
     }
 
@@ -174,6 +191,7 @@ class DefaultGalleryDetailsComponent(
                     require(result.cause is GalleryNotFound)
                     GalleryState.Error.NotFound(config.id)
                 }
+
                 is Result.Ok -> GalleryState.Loaded(result.value)
             }
 

@@ -11,6 +11,7 @@ import com.arkivanov.decompose.router.stack.pushNew
 import com.arkivanov.decompose.router.stack.pushToFront
 import com.arkivanov.decompose.router.stack.replaceAll
 import com.arkivanov.decompose.value.Value
+import com.github.damianjester.nclient.core.GalleryHistoryTracker
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.ui.RootComponent.Child
 import com.github.damianjester.nclient.ui.about.AboutComponent
@@ -32,6 +33,7 @@ import com.github.damianjester.nclient.ui.gallery.favorites.DefaultFavoritesComp
 import com.github.damianjester.nclient.ui.gallery.favorites.FavoritesComponent
 import com.github.damianjester.nclient.ui.gallery.history.DefaultHistoryComponent
 import com.github.damianjester.nclient.ui.gallery.history.HistoryComponent
+import com.github.damianjester.nclient.ui.gallery.history.HistoryTrackerComponent
 import com.github.damianjester.nclient.ui.gallery.pager.DefaultGalleryPagerComponent
 import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerComponent
 import com.github.damianjester.nclient.ui.gallery.random.DefaultRandomGalleryComponent
@@ -40,6 +42,10 @@ import com.github.damianjester.nclient.ui.gallery.search.DefaultGallerySearchCom
 import com.github.damianjester.nclient.ui.gallery.search.GallerySearchComponent
 import com.github.damianjester.nclient.ui.settings.DefaultSettingsComponent
 import com.github.damianjester.nclient.ui.settings.SettingsComponent
+import com.github.damianjester.nclient.utils.NClientDispatchers
+import com.github.damianjester.nclient.utils.coroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
@@ -50,37 +56,44 @@ interface RootComponent {
     val drawer: NClientDrawerComponent
 
     sealed class Child {
-        class GallerySearch(val component: GallerySearchComponent) : Child()
+        sealed class ComponentChild<T> : Child() {
+            abstract val component: T
+        }
 
-        class GalleryDetails(val component: GalleryDetailsComponent) : Child()
+        class GallerySearch(override val component: GallerySearchComponent) : ComponentChild<GallerySearchComponent>()
 
-        class GalleryPager(val component: GalleryPagerComponent) : Child()
+        class GalleryDetails(override val component: GalleryDetailsComponent) : ComponentChild<GalleryDetailsComponent>()
 
-        class GalleryComments(val component: CommentsComponent) : Child()
+        class GalleryPager(override val component: GalleryPagerComponent) : ComponentChild<GalleryPagerComponent>()
 
-        class CsrfToken(val component: CsrfTokenComponent) : Child()
+        class GalleryComments(override val component: CommentsComponent) : ComponentChild<CommentsComponent>()
 
-        class Downloads(val component: DownloadsComponent) : Child()
+        class CsrfToken(override val component: CsrfTokenComponent) : ComponentChild<CsrfTokenComponent>()
 
-        class RandomGallery(val component: RandomGalleryComponent) : Child()
+        class Downloads(override val component: DownloadsComponent) : ComponentChild<DownloadsComponent>()
 
-        class Favorites(val component: FavoritesComponent) : Child()
+        class RandomGallery(override val component: RandomGalleryComponent) : ComponentChild<RandomGalleryComponent>()
 
-        class Bookmarks(val component: BookmarksComponent) : Child()
+        class Favorites(override val component: FavoritesComponent) : ComponentChild<FavoritesComponent>()
 
-        class History(val component: HistoryComponent) : Child()
+        class Bookmarks(override val component: BookmarksComponent) : ComponentChild<BookmarksComponent>()
 
-        class Settings(val component: SettingsComponent) : Child()
+        class History(override val component: HistoryComponent) : ComponentChild<HistoryComponent>()
 
-        class About(val component: AboutComponent) : Child()
+        class Settings(override val component: SettingsComponent) : ComponentChild<SettingsComponent>()
+
+        class About(override val component: AboutComponent) : ComponentChild<AboutComponent>()
     }
 }
 
 class DefaultRootComponent(
     componentContext: ComponentContext,
+    dispatchers: NClientDispatchers,
     private val initialStack: List<Config> = listOf(Config.GallerySearch),
-    private val onFinish: () -> Unit
+    private val onFinish: () -> Unit,
+    private val galleryHistoryTracker: GalleryHistoryTracker,
 ) : RootComponent, ComponentContext by componentContext, KoinComponent {
+    private val coroutineScope = coroutineScope(dispatchers.Main.immediate + SupervisorJob())
     private val navigation = StackNavigation<Config>()
 
     override val stack: Value<ChildStack<*, Child>> =
@@ -91,6 +104,31 @@ class DefaultRootComponent(
             handleBackButton = true,
             childFactory = ::child,
         )
+
+    init {
+        var lastActiveConfig: Config? = null
+        stack.subscribe { currentStack ->
+            val activeConfig = currentStack.active.configuration
+
+            if (activeConfig != lastActiveConfig) {
+                lastActiveConfig = activeConfig as? Config
+
+                val activeInstance = currentStack.active.instance
+                if (activeInstance is Child.ComponentChild<*>) {
+                    val component = activeInstance.component
+                    if (component is HistoryTrackerComponent && !component.trackerStateEntity.state.hasTracked) {
+                        component.trackerStateEntity.setAsTracked()
+                        coroutineScope.launch {
+                            galleryHistoryTracker.track(
+                                id = component.trackerStateEntity.state.id,
+                                stack = currentStack
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     private fun child(config: Config, context: ComponentContext): Child =
         when (config) {
@@ -162,7 +200,7 @@ class DefaultRootComponent(
             },
             applicationContext = get(),
             galleryFetcher = get(),
-            linkSharer = get()
+            linkSharer = get(),
         )
 
     private fun galleryPagerComponent(
@@ -218,7 +256,12 @@ class DefaultRootComponent(
         DefaultBookmarksComponent(componentContext)
 
     private fun historyComponent(componentContext: ComponentContext): HistoryComponent =
-        DefaultHistoryComponent(componentContext)
+        DefaultHistoryComponent(
+            componentContext = componentContext,
+            dispatchers = get(),
+            onNavigateGallery = { id -> navigation.pushNew(Config.GalleryDetails(id)) },
+            historyRepository = get(),
+        )
 
     private fun settingsComponent(componentContext: ComponentContext): SettingsComponent =
         DefaultSettingsComponent(componentContext)

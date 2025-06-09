@@ -1,0 +1,51 @@
+
+CREATE TABLE galleryHistoryVisitEntity (
+    galleryId INTEGER PRIMARY KEY NOT NULL,
+    lastVisitInstant INTEGER NOT NULL, -- Epoch second
+    visitCount INTEGER NOT NULL,
+    FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE
+);
+
+selectHistoryVisits:
+SELECT
+    g.id,
+    g.mediaId,
+    g.prettyTitle,
+    g.coverThumbnailFileExtension,
+    gt.tagId,
+    h.lastVisitInstant,
+    h.visitCount
+FROM (
+    SELECT
+        galleryId,
+        lastVisitInstant,
+        visitCount
+    FROM
+        galleryHistoryVisitEntity
+    ORDER BY
+        CASE WHEN :sort == 1 THEN visitCount ELSE '' END ASC,
+        CASE WHEN :sort == 2 THEN visitCount ELSE '' END DESC,
+        CASE WHEN :sort == 3 THEN lastVisitInstant ELSE '' END ASC,
+        CASE WHEN :sort == 4 THEN lastVisitInstant ELSE '' END DESC
+    LIMIT :limit OFFSET :offset
+) AS h
+INNER JOIN gallerySummaryEntity AS g ON h.galleryId = g.id
+INNER JOIN galleryHasTag AS gt ON g.id = gt.galleryId
+ORDER BY
+    CASE WHEN :sort == 1 THEN h.visitCount ELSE '' END ASC,
+    CASE WHEN :sort == 2 THEN h.visitCount ELSE '' END DESC,
+    CASE WHEN :sort == 3 THEN h.lastVisitInstant ELSE '' END ASC,
+    CASE WHEN :sort == 4 THEN h.lastVisitInstant ELSE '' END DESC;
+
+selectVisitCount:
+SELECT visitCount FROM galleryHistoryVisitEntity WHERE galleryId = ? LIMIT 1;
+
+insertVisit:
+INSERT OR IGNORE INTO galleryHistoryVisitEntity (galleryId, lastVisitInstant, visitCount)
+VALUES ?;
+
+updateVisit:
+UPDATE galleryHistoryVisitEntity SET lastVisitInstant=?, visitCount=? WHERE galleryId = ?;
+
+deleteAll:
+DELETE FROM galleryHistoryVisitEntity;

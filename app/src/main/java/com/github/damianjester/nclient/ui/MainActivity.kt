@@ -29,6 +29,7 @@ import io.ktor.http.Url
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.component.inject
 
 class MainActivity : ComponentActivity(), KoinComponent {
@@ -46,8 +47,10 @@ class MainActivity : ComponentActivity(), KoinComponent {
 
         val rootComponent = DefaultRootComponent(
             componentContext = defaultComponentContext(),
+            dispatchers = dispatchers,
             initialStack = deepLinker.link(intent),
-            onFinish = ::finish
+            onFinish = ::finish,
+            galleryHistoryTracker = get(),
         )
 
         collectFlows()

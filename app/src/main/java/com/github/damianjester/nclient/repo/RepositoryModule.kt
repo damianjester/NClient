@@ -8,4 +8,6 @@ val repoModule = module {
     single { SqlDelightGalleryRepository(get(), get(), get()) } bind GalleryRepository::class
 
     single { SqlDelightCommentRepository(get(), get(), get()) } bind CommentRepository::class
+
+    single { SqlDelightGalleryHistoryRepository(get(), get()) } bind GalleryHistoryRepository::class
 }

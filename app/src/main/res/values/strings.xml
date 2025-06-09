@@ -399,6 +399,9 @@
     <string name="download_page">Download page</string>
     <string name="share_page">Share page</string>
     <string name="no_comments">No comments found\n(☉_☉)</string>
+    <string name="no_history">No galleries in history</string>
+    <string name="ascii_koala">ʕ·͡ᴥ·ʔ</string>
+
     <string name="posted_ago">Posted %s ago</string>
     <string name="just_now">just now</string>
     <string name="seconds">%d seconds</string>
@@ -437,6 +440,17 @@
     <string name="clipboard_gallery_id">gallery ID</string>
     <string name="clipboard_gallery_tag">gallery tag</string>
     <string name="clipboard_gallery_title">gallery title</string>
+    <string name="clear">Clear</string>
+    <string name="clear_history_title">Clear History</string>
+    <string name="clear_history_body_1">Are you sure you want to clear your gallery view history?</string>
+    <string name="clear_history_body_2">This action cannot be undone.</string>
+    <string name="sort_history">Sort history</string>
+    <string name="sort_history_title">Sort History</string>
+    <string name="sort_type_views">Views</string>
+    <string name="sort_type_date">Last Viewed</string>
+    <string name="sort_order_ascending">Ascending</string>
+    <string name="sort_order_descending">Descending</string>
+    <string name="confirm">Confirm</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>

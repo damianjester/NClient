@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.ui.gallery.search
+package com.github.damianjester.nclient.ui.gallery.common.grid
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,13 +11,12 @@ import coil3.compose.AsyncImage
 import com.github.damianjester.nclient.core.models.GalleryImage
 import com.github.damianjester.nclient.core.models.GalleryLanguage
 import com.github.damianjester.nclient.core.models.GallerySummaryImages
-import com.github.damianjester.nclient.ui.gallery.common.grid.GalleryGridItem
-import com.github.damianjester.nclient.ui.gallery.common.grid.LanguageIndicator
+import com.github.damianjester.nclient.ui.gallery.search.TitleStrip
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
 import io.ktor.http.Url
 
 @Composable
-fun GallerySearchGridItem(
+fun GallerySummaryGridItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     title: String,
@@ -78,7 +77,7 @@ private fun Image(
 @Composable
 private fun GallerySearchGridItemPreview() {
     NClientPreviewTheme {
-        GallerySearchGridItem(
+        GallerySummaryGridItem(
             onClick = {},
             title = "Title",
             language = GalleryLanguage.English,

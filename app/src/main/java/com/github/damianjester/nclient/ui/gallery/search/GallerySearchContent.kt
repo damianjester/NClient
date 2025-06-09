@@ -1,41 +1,20 @@
 package com.github.damianjester.nclient.ui.gallery.search
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GallerySummary
+import com.github.damianjester.nclient.ui.gallery.common.grid.GallerySummaryLazyGird
 
 @Composable
 fun GallerySearchContent(
     modifier: Modifier = Modifier,
     galleries: List<GallerySummary>,
-    onGalleryClick: (GallerySummary) -> Unit
+    onGalleryClick: (GalleryId) -> Unit,
 ) {
-    LazyVerticalGrid(
-        columns = GridCells.Fixed(2),
+    GallerySummaryLazyGird(
         modifier = modifier,
-        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(galleries, key = { it.id.value }) { gal ->
-
-            val onClick = remember(gal.id.value) { { onGalleryClick(gal) } }
-
-            GallerySearchGridItem(
-                modifier = Modifier.fillMaxWidth(),
-                title = gal.title,
-                language = gal.language,
-                image = gal.images,
-                onClick = onClick
-            )
-        }
-    }
+        galleries = galleries,
+        onGalleryClick = onGalleryClick
+    )
 }

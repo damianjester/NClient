@@ -87,7 +87,7 @@ private val firstSection = listOf(
     RandomGallery to false,
     Favorites to true,
     Bookmarks to true,
-    History to true,
+    History to false,
 )
 
 private val secondSection = listOf(
