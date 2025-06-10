@@ -77,6 +77,7 @@ fun NClientModalNavigationDrawer(
         },
         modifier = modifier,
         drawerState = drawerState,
+        gesturesEnabled = drawerState.isOpen,
         content = content
     )
 }
