@@ -74,7 +74,7 @@ fun GalleryPagerContent(
 
             val zoomedOut by remember {
                 derivedStateOf {
-                    zoomState.zoomFraction?.let { it < 0.01f } != false
+                    zoomState.contentTransformation.scaleMetadata.userZoom < 1.01f
                 }
             }
 
