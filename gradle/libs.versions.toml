@@ -75,7 +75,7 @@ sqldelight-extensions-coroutines = { group = "app.cash.sqldelight", name = "coro
 # Misc
 
 # https://saket.github.io/telephoto/zoomableimage/#installation
-telescope = { group = "me.saket.telephoto", name = "zoomable-image-coil3", version = "0.14.0" }
+telescope = { group = "me.saket.telephoto", name = "zoomable-image-coil3", version = "0.16.0" }
 
 # https://mvnrepository.com/artifact/org.apache.commons/commons-text
 apache-commons-text = { group = "org.apache.commons", name = "commons-text", version = "1.13.1" }
