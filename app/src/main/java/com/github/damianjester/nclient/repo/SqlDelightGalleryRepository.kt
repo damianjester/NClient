@@ -20,7 +20,8 @@ import com.github.damianjester.nclient.db.selectPagesWithMediaIdForGallery
 import com.github.damianjester.nclient.db.updateDetails
 import com.github.damianjester.nclient.db.updateSummary
 import com.github.damianjester.nclient.db.updateTag
-import com.github.damianjester.nclient.mappers.toGalleriesWithTagIds
+import com.github.damianjester.nclient.mappers.mapRowToGallerySummary
+import com.github.damianjester.nclient.mappers.mapRowToRelatedGallery
 import com.github.damianjester.nclient.mappers.toGallery
 import com.github.damianjester.nclient.mappers.toGalleryDetailsEntity
 import com.github.damianjester.nclient.mappers.toGalleryDetailsPages
@@ -29,7 +30,6 @@ import com.github.damianjester.nclient.mappers.toGalleryPage
 import com.github.damianjester.nclient.mappers.toGallerySummary
 import com.github.damianjester.nclient.mappers.toGallerySummaryEntityWithHasTags
 import com.github.damianjester.nclient.mappers.toRelatedGalleries
-import com.github.damianjester.nclient.mappers.toRelatedGallery
 import com.github.damianjester.nclient.mappers.toTag
 import com.github.damianjester.nclient.mappers.toTags
 import com.github.damianjester.nclient.net.models.GalleryDetailsResponse
@@ -57,10 +57,8 @@ class SqlDelightGalleryRepository(
         get() = database.galleryHasRelatedQueries
 
     override suspend fun selectSummariesForQuery(query: GalleryQueryEntity) = withContext(dispatchers.IO) {
-        galleryQueries.selectSummariesFoQuery(query.id)
+        galleryQueries.selectSummariesFoQuery(query.id, ::mapRowToGallerySummary)
             .executeAsList()
-            .toGalleriesWithTagIds()
-            .map { it.toGallerySummary() }
     }
 
     override suspend fun selectGalleryDetails(id: GalleryId) = withContext(dispatchers.IO) {
@@ -76,10 +74,8 @@ class SqlDelightGalleryRepository(
             .executeAsList()
             .map { it.toGalleryPage() }
 
-        val related = galleryHasRelatedQueries.selectRelatedForGallery(id.value)
+        val related = galleryHasRelatedQueries.selectRelatedForGallery(id.value, ::mapRowToRelatedGallery)
             .executeAsList()
-            .toGalleriesWithTagIds()
-            .map { it.toRelatedGallery() }
 
         GalleryDetails(gallery, pages, tags, related)
     }

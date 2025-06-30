@@ -14,14 +14,9 @@ import com.github.damianjester.nclient.core.models.GalleryCollection
 import com.github.damianjester.nclient.core.models.GalleryCollectionId
 import com.github.damianjester.nclient.core.models.GalleryCollectionQuery
 import com.github.damianjester.nclient.core.models.GalleryId
-import com.github.damianjester.nclient.core.models.GalleryImage
-import com.github.damianjester.nclient.core.models.GalleryImageFileType
-import com.github.damianjester.nclient.core.models.GalleryLanguage
 import com.github.damianjester.nclient.core.models.GallerySummary
-import com.github.damianjester.nclient.core.models.GallerySummaryImages
-import com.github.damianjester.nclient.core.models.MediaId
+import com.github.damianjester.nclient.mappers.mapRowToGallerySummary
 import com.github.damianjester.nclient.mappers.toGalleryCollections
-import com.github.damianjester.nclient.net.NHentaiUrl
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -90,11 +85,11 @@ class SqlDelightGalleryCollectionRepository(
             queries.run {
                 when (type) {
                     CollectionDetailsQuery.SortType.Added ->
-                        selectGalleriesForCollectionByCreatedAt(id.value, order.ordinal.toLong(), limit, offset, ::summary)
+                        selectGalleriesForCollectionByCreatedAt(id.value, order.ordinal.toLong(), limit, offset, ::mapRowToGallerySummary)
                     CollectionDetailsQuery.SortType.Title ->
-                        selectGalleriesForCollectionByTitle(id.value, order.ordinal.toLong(), limit, offset, ::summary)
+                        selectGalleriesForCollectionByTitle(id.value, order.ordinal.toLong(), limit, offset, ::mapRowToGallerySummary)
                     CollectionDetailsQuery.SortType.ID ->
-                        selectGalleriesForCollectionById(id.value, order.ordinal.toLong(), limit, offset, ::summary)
+                        selectGalleriesForCollectionById(id.value, order.ordinal.toLong(), limit, offset, ::mapRowToGallerySummary)
                 }
             }
         }
@@ -211,35 +206,6 @@ class SqlDelightGalleryCollectionRepository(
         }
     }
 }
-
-private fun summary(
-    id: Long,
-    mediaId: Long,
-    prettyTitle: String,
-    coverThumbnailFileExtension: String?,
-    isEnglish: Long?,
-    isJapanese: Long?,
-    isChinese: Long?,
-): GallerySummary = GallerySummary(
-    id = GalleryId(id),
-    title = prettyTitle,
-    language = when {
-        isEnglish == 1L -> GalleryLanguage.English
-        isJapanese == 1L -> GalleryLanguage.Japanese
-        isChinese == 1L -> GalleryLanguage.Chinese
-        else -> GalleryLanguage.Unknown
-    },
-    images = GallerySummaryImages.Remote(
-        thumbnail = GalleryImage.Remote(
-            NHentaiUrl.galleryCoverThumbnail(
-                mediaId = MediaId(mediaId),
-                fileType = coverThumbnailFileExtension
-                    ?.let { GalleryImageFileType.fromFileExtension(it) }
-                    ?: GalleryImageFileType.WEBP(hasWebpExtension = false)
-            )
-        )
-    )
-)
 
 suspend fun GalleryCollectionRepository.favorite(id: GalleryId, instant: Instant) {
     addGallery(id, listOf(GalleryCollectionId(GalleryCollectionId.FAVORITES_ID)), instant)

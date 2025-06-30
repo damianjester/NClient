@@ -1,6 +1,5 @@
 package com.github.damianjester.nclient.ui.gallery.collections.details
 
-import android.os.Parcelable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,18 +14,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.paging.PagingData
-import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.ui.gallery.common.AsciiEmojiMessage
 import com.github.damianjester.nclient.ui.gallery.common.grid.GalleryCard
+import com.github.damianjester.nclient.ui.gallery.common.grid.lazyPagingKey
 import com.github.damianjester.nclient.ui.preview.PreviewData
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.parcelize.Parcelize
 
 @Composable
 fun GalleryCollectionLazyGrid(
@@ -53,10 +51,7 @@ fun GalleryCollectionLazyGrid(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(
-                lazyPagingItems.itemCount,
-                key = { key(it, lazyPagingItems) }
-            ) { index ->
+            items(lazyPagingItems.itemCount, key = { lazyPagingKey(it, lazyPagingItems) }) { index ->
 
                 val summary = lazyPagingItems[index]
                 val itemModifier = Modifier
@@ -84,21 +79,6 @@ fun GalleryCollectionLazyGrid(
             }
         }
     }
-}
-
-private fun key(
-    index: Int,
-    items: LazyPagingItems<GallerySummary>,
-): CollectionGridKey = (items.peek(index)
-    ?.let { CollectionGridKey.Id(it.id.value) }
-    ?: CollectionGridKey.IndexAt(index))
-
-private sealed interface CollectionGridKey {
-    @Parcelize
-    data class Id(val id: Long) : CollectionGridKey, Parcelable
-
-    @Parcelize
-    data class IndexAt(val index: Int) : CollectionGridKey, Parcelable
 }
 
 @PreviewLightDark

@@ -9,9 +9,7 @@ CREATE TABLE galleryHasRelated (
 );
 
 selectRelatedForGallery:
-SELECT gallerySummaryEntity.*, galleryHasTag.tagId
-FROM gallerySummaryEntity
-    INNER JOIN galleryHasRelated ON gallerySummaryEntity.id = galleryHasRelated.relatedId
-    INNER JOIN galleryHasTag ON gallerySummaryEntity.id = galleryHasTag.galleryId
+SELECT gs.* FROM viewGallerySummaryWithLanguage AS gs
+    INNER JOIN galleryHasRelated ON gs.id = galleryHasRelated.relatedId
 WHERE galleryHasRelated.galleryId = ?
 ORDER BY galleryHasRelated.orderIndex ASC;

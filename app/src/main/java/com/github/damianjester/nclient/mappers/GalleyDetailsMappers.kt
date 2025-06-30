@@ -1,6 +1,5 @@
 package com.github.damianjester.nclient.mappers
 
-import com.github.damianjester.nclient.SelectRelatedForGallery
 import com.github.damianjester.nclient.SelectSummaryWithDetails
 import com.github.damianjester.nclient.core.models.Gallery
 import com.github.damianjester.nclient.core.models.GalleryCover
@@ -16,40 +15,32 @@ import com.github.damianjester.nclient.core.models.MediaId
 import com.github.damianjester.nclient.core.models.RelatedGallery
 import com.github.damianjester.nclient.core.models.Resolution
 import com.github.damianjester.nclient.db.models.GalleryPageWithMediaId
-import com.github.damianjester.nclient.db.models.GalleryWithTagIds
 import com.github.damianjester.nclient.net.NHentaiUrl
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-fun List<SelectRelatedForGallery>.toGalleriesWithTagIds() =
-    groupBy { it.id }
-        .map { (id, rows) ->
-            val first = rows.first()
-            val tagIds = rows.map { it.tagId }
-            GalleryWithTagIds(
-                id = id,
-                title = first.prettyTitle,
-                mediaId = first.mediaId,
-                coverThumbnailFileExtension = first.coverThumbnailFileExtension,
-                tagIds = tagIds
-            )
-        }
-
-fun GalleryWithTagIds.toRelatedGallery() =
-    RelatedGallery(
-        id = GalleryId(id),
-        title = title,
-        language = GalleryLanguage.fromLongTagId(tagIds),
-        image = GalleryImage.Remote(
-            NHentaiUrl.galleryCoverThumbnail(
-                MediaId(mediaId),
-                coverThumbnailFileExtension
-                    ?.let { GalleryImageFileType.fromFileExtension(it) }
-                    ?: GalleryImageFileType.WEBP(hasWebpExtension = false) // Cover thumbnail image file type unknown, make a best guess
-            )
+fun mapRowToRelatedGallery(
+    id: Long,
+    mediaId: Long,
+    prettyTitle: String,
+    coverThumbnailFileExtension: String?,
+    isEnglish: Long?,
+    isJapanese: Long?,
+    isChinese: Long?,
+) = RelatedGallery(
+    id = GalleryId(id),
+    title = prettyTitle,
+    language = mapToGalleryLanguage(isEnglish, isJapanese, isChinese),
+    image = GalleryImage.Remote(
+        NHentaiUrl.galleryCoverThumbnail(
+            MediaId(mediaId),
+            coverThumbnailFileExtension
+                ?.let { GalleryImageFileType.fromFileExtension(it) }
+                ?: GalleryImageFileType.WEBP(hasWebpExtension = false) // Cover thumbnail image file type unknown, make a best guess
         )
     )
+)
 
 fun SelectSummaryWithDetails.toGallery(tagIds: List<GalleryTagId>) =
     Gallery(

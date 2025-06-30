@@ -6,36 +6,19 @@ CREATE TABLE galleryHistoryVisitEntity (
     FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE
 );
 
+countHistoryVisits:
+SELECT COUNT(*) FROM viewGallerySummaryWithLanguage gs
+    INNER JOIN galleryHistoryVisitEntity AS ghv ON gs.id = ghv.galleryId;
+
 selectHistoryVisits:
-SELECT
-    g.id,
-    g.mediaId,
-    g.prettyTitle,
-    g.coverThumbnailFileExtension,
-    gt.tagId,
-    h.lastVisitInstant,
-    h.visitCount
-FROM (
-    SELECT
-        galleryId,
-        lastVisitInstant,
-        visitCount
-    FROM
-        galleryHistoryVisitEntity
-    ORDER BY
-        CASE WHEN :sort == 1 THEN visitCount ELSE '' END ASC,
-        CASE WHEN :sort == 2 THEN visitCount ELSE '' END DESC,
-        CASE WHEN :sort == 3 THEN lastVisitInstant ELSE '' END ASC,
-        CASE WHEN :sort == 4 THEN lastVisitInstant ELSE '' END DESC
-    LIMIT :limit OFFSET :offset
-) AS h
-INNER JOIN gallerySummaryEntity AS g ON h.galleryId = g.id
-INNER JOIN galleryHasTag AS gt ON g.id = gt.galleryId
+SELECT gs.*, ghv.lastVisitInstant, ghv.visitCount FROM viewGallerySummaryWithLanguage gs
+    INNER JOIN galleryHistoryVisitEntity AS ghv ON gs.id = ghv.galleryId
 ORDER BY
-    CASE WHEN :sort == 1 THEN h.visitCount ELSE '' END ASC,
-    CASE WHEN :sort == 2 THEN h.visitCount ELSE '' END DESC,
-    CASE WHEN :sort == 3 THEN h.lastVisitInstant ELSE '' END ASC,
-    CASE WHEN :sort == 4 THEN h.lastVisitInstant ELSE '' END DESC;
+    CASE WHEN :sort == 1 THEN ghv.visitCount ELSE '' END ASC,
+    CASE WHEN :sort == 2 THEN ghv.visitCount ELSE '' END DESC,
+    CASE WHEN :sort == 3 THEN ghv.lastVisitInstant ELSE '' END ASC,
+    CASE WHEN :sort == 4 THEN ghv.lastVisitInstant ELSE '' END DESC
+LIMIT :limit OFFSET :offset;
 
 selectVisitCount:
 SELECT visitCount FROM galleryHistoryVisitEntity WHERE galleryId = ? LIMIT 1;

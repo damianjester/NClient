@@ -1,55 +1,44 @@
 package com.github.damianjester.nclient.ui.gallery.history
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.map
 import com.arkivanov.decompose.ComponentContext
-import com.arkivanov.decompose.value.MutableValue
-import com.arkivanov.decompose.value.Value
-import com.arkivanov.decompose.value.getAndUpdate
-import com.arkivanov.decompose.value.update
-import com.arkivanov.decompose.value.updateAndGet
 import com.arkivanov.essenty.instancekeeper.InstanceKeeper
 import com.arkivanov.essenty.instancekeeper.getOrCreate
-import com.arkivanov.essenty.lifecycle.doOnStart
 import com.github.damianjester.nclient.core.models.GalleryHistoryQuery
 import com.github.damianjester.nclient.core.models.GalleryHistoryQuery.SortType
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.core.models.SortOrder
 import com.github.damianjester.nclient.repo.GalleryHistoryRepository
-import com.github.damianjester.nclient.ui.gallery.history.HistoryComponent.GalleriesState
 import com.github.damianjester.nclient.ui.sort.SortChangeListener
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.coroutineScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 private const val SAVED_STATE_KEY = "SAVED_STATE"
-private const val PAGE_LIMIT = 20
 
 interface HistoryComponent : SortChangeListener<SortType> {
-    val model: Value<Model>
+    val galleries: Flow<PagingData<GallerySummary>>
 
     fun clearHistory()
-
-    fun loadNextPage()
 
     fun navigateToGallery(id: GalleryId)
 
     fun activateSortDialog()
-
-    data class Model(
-        val galleriesState: GalleriesState = GalleriesState.Loading,
-        val sort: GalleryHistoryQuery.Sort = GalleryHistoryQuery.Sort(SortType.LastVisit),
-    )
-
-    sealed interface GalleriesState {
-        data object Loading : GalleriesState
-
-        data class Loaded(
-            val galleries: List<GallerySummary>,
-            val loadingNextPage: Boolean,
-        ) : GalleriesState
-    }
 }
 
 class DefaultHistoryComponent(
@@ -59,122 +48,68 @@ class DefaultHistoryComponent(
     private val onActivateSortDialog: (sort: GalleryHistoryQuery.Sort) -> Unit,
     private val historyRepository: GalleryHistoryRepository,
 ) : HistoryComponent, ComponentContext by componentContext {
-    private var savedState = stateKeeper.consume(SAVED_STATE_KEY, SavedState.serializer()) ?: SavedState()
-    private val historyInstance = instanceKeeper.getOrCreate { HistoryInstance(savedState.sort) }
-    private val _model = MutableValue(HistoryComponent.Model(
-        galleriesState = historyInstance.state.value.galleries.takeIf { it.isNotEmpty() }
-            ?.let { GalleriesState.Loaded(it, false) }
-            ?: GalleriesState.Loading,
-        sort = historyInstance.state.value.sort
-    ))
-    override val model: Value<HistoryComponent.Model> = _model
-
     private val coroutineScope = coroutineScope(dispatchers.Main.immediate + SupervisorJob())
 
+    private var state = stateKeeper.consume(SAVED_STATE_KEY, State.serializer()) ?: State()
+    private val instance = instanceKeeper.getOrCreate {
+        HistoryInstance(
+            savedState = state,
+            dispatchers = dispatchers,
+            repository = historyRepository,
+        )
+    }
+
+    override val galleries: Flow<PagingData<GallerySummary>> = instance.galleries
+
     init {
-        stateKeeper.register(SAVED_STATE_KEY, SavedState.serializer()) {
-            savedState = SavedState(model.value.sort)
-            savedState
-        }
-        doOnStart(isOneTime = true) {
-            if (historyInstance.state.value.galleries.isEmpty()) {
-                coroutineScope.launch {
-                    loadPage(model.value.sort)
-                }
-            }
+        stateKeeper.register(SAVED_STATE_KEY, State.serializer()) {
+            state = State(instance.query.value.sort)
+            state
         }
     }
 
     override fun clearHistory() {
-        doOnLoaded {
-            _model.update { it.copy(galleriesState = GalleriesState.Loading) }
-            coroutineScope.launch {
-                historyRepository.deleteAll()
-                historyInstance.state.update { it.copy(galleries = emptyList(), pageOffset = 0, endOfResults = false) }
-                _model.update { it.copy(galleriesState = GalleriesState.Loaded(emptyList(), false)) }
-            }
-        }
-    }
-
-    override fun loadNextPage() {
-        if (model.value.galleriesState is GalleriesState.Loading || historyInstance.state.value.endOfResults) {
-            return
-        }
-
-        doOnLoaded { loaded ->
-            coroutineScope.launch {
-                loadPage(model.value.sort, loaded)
-            }
+        coroutineScope.launch {
+            historyRepository.deleteAll()
         }
     }
 
     override fun navigateToGallery(id: GalleryId) = onNavigateGallery(id)
 
-    override fun activateSortDialog() = onActivateSortDialog(_model.value.sort)
+    override fun activateSortDialog() = onActivateSortDialog(instance.query.value.sort)
 
     override fun onSortChanged(type: SortType, order: SortOrder) {
-        doOnLoaded {
-            coroutineScope.launch {
-                val sort = historyInstance.state
-                    .updateAndGet { HistoryInstance.State(sort = GalleryHistoryQuery.Sort(type, order)) }
-                    .sort
-
-                _model.update { it.copy(sort = sort) }
-                loadPage(sort)
-            }
-        }
-    }
-
-    private suspend fun loadPage(sort: GalleryHistoryQuery.Sort, loaded: GalleriesState.Loaded? = null) {
-        _model.update {
-            it.copy(
-                galleriesState = loaded?.copy(loaded.galleries, loadingNextPage = true) ?: GalleriesState.Loading
-            )
-        }
-
-        val pageOffset = historyInstance.state.getAndUpdate { it.copy(pageOffset = it.pageOffset + 1) }.pageOffset
-
-        val query = GalleryHistoryQuery(
-            limit = PAGE_LIMIT,
-            pageOffset = pageOffset,
-            sort = sort
-        )
-
-        val newGalleries = historyRepository.getVisits(query)
-            .map { it.gallery }
-
-        val galleries = historyInstance.state.updateAndGet {
-            val galleries = loaded?.galleries?.plus(newGalleries) ?: newGalleries
-            it.copy(galleries = galleries, endOfResults = newGalleries.size < PAGE_LIMIT)
-        }.galleries
-
-        _model.update {
-            it.copy(galleriesState = GalleriesState.Loaded(galleries, false))
-        }
-    }
-
-    private fun doOnLoaded(block: (GalleriesState.Loaded) -> Unit) {
-        val state = _model.value
-        if (state.galleriesState is GalleriesState.Loaded) {
-            block(state.galleriesState)
-        }
-    }
-
-    private class HistoryInstance(sort: GalleryHistoryQuery.Sort) : InstanceKeeper.Instance {
-        val state = MutableValue(State(sort))
-
-        override fun onDestroy() = Unit
-
-        data class State(
-            val sort: GalleryHistoryQuery.Sort,
-            val galleries: List<GallerySummary> = emptyList(),
-            val pageOffset: Int = 0,
-            val endOfResults: Boolean = false,
-        )
+        instance.changeSort(GalleryHistoryQuery.Sort(type, order))
     }
 
     @Serializable
-    private class SavedState(
+    private class State(
         val sort: GalleryHistoryQuery.Sort = GalleryHistoryQuery.Sort(SortType.LastVisit),
     )
+
+    private class HistoryInstance(
+        savedState: State,
+        dispatchers: NClientDispatchers,
+        repository: GalleryHistoryRepository,
+    ) : InstanceKeeper.Instance {
+        private val coroutineScope = CoroutineScope(dispatchers.Main.immediate + SupervisorJob())
+
+        private val _query = MutableStateFlow(GalleryHistoryQuery(savedState.sort))
+        val query: StateFlow<GalleryHistoryQuery> = _query
+
+        @OptIn(ExperimentalCoroutinesApi::class)
+        val galleries = query.flatMapLatest { query ->
+            Pager(PagingConfig(pageSize = 20)) {
+                repository.getVisits(query)
+            }.flow.map { data -> data.map { it.gallery } }
+        }.cachedIn(coroutineScope)
+
+        fun changeSort(sort: GalleryHistoryQuery.Sort) {
+            _query.value = query.value.copy(sort = sort)
+        }
+
+        override fun onDestroy() {
+            coroutineScope.cancel()
+        }
+    }
 }

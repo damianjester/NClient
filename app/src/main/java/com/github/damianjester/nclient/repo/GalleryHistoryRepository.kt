@@ -1,5 +1,8 @@
 package com.github.damianjester.nclient.repo
 
+import androidx.paging.PagingSource
+import app.cash.sqldelight.Query
+import app.cash.sqldelight.paging3.QueryPagingSource
 import com.github.damianjester.nclient.Database
 import com.github.damianjester.nclient.GalleryHistoryVisitEntity
 import com.github.damianjester.nclient.core.models.GalleryHistoryQuery
@@ -7,14 +10,13 @@ import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.core.models.GalleryVisit
 import com.github.damianjester.nclient.core.models.SortOrder
 import com.github.damianjester.nclient.db.orUpdate
-import com.github.damianjester.nclient.mappers.toGalleryHistoryWithTagIds
-import com.github.damianjester.nclient.mappers.toGalleryVisit
+import com.github.damianjester.nclient.mappers.mapRowToGalleryVisit
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.datetime.Instant
 
 interface GalleryHistoryRepository {
-    suspend fun getVisits(query: GalleryHistoryQuery): List<GalleryVisit>
+    fun getVisits(query: GalleryHistoryQuery): PagingSource<Int, GalleryVisit>
 
     suspend fun upsert(id: GalleryId, instant: Instant)
 
@@ -28,8 +30,8 @@ class SqlDelightGalleryHistoryRepository(
     private val queries
         get() = database.galleryHistoryVisitEntityQueries
 
-    override suspend fun getVisits(query: GalleryHistoryQuery): List<GalleryVisit> = withContext(dispatchers.IO) {
-        val (limit, pageOffset, sort) = query
+    override fun getVisits(query: GalleryHistoryQuery): PagingSource<Int, GalleryVisit> {
+        val sort = query.sort
 
         val sortNum = when (sort.type) {
             GalleryHistoryQuery.SortType.ViewCount -> when (sort.order) {
@@ -42,10 +44,21 @@ class SqlDelightGalleryHistoryRepository(
             }
         }.toLong()
 
-        queries.selectHistoryVisits(sort = sortNum, limit = limit.toLong(), offset = (limit * pageOffset).toLong())
-            .executeAsList()
-            .toGalleryHistoryWithTagIds()
-            .map { it.toGalleryVisit() }
+        val queryProvider: (limit: Long, offset: Long) -> Query<GalleryVisit> = { limit, offset ->
+            queries.selectHistoryVisits(
+                sort = sortNum,
+                limit = limit,
+                offset = offset,
+                mapper = ::mapRowToGalleryVisit
+            )
+        }
+
+        return QueryPagingSource(
+            countQuery = queries.countHistoryVisits(),
+            transacter = queries,
+            context = dispatchers.IO,
+            queryProvider = queryProvider
+        )
     }
 
     override suspend fun upsert(id: GalleryId, instant: Instant): Unit = withContext(dispatchers.IO) {

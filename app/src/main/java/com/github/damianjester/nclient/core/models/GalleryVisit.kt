@@ -10,8 +10,6 @@ data class GalleryVisit(
 )
 
 data class GalleryHistoryQuery(
-    val limit: Int = 20,
-    val pageOffset: Int = 0,
     val sort: Sort = Sort(SortType.LastVisit, SortOrder.DESC)
 ) {
     @Serializable

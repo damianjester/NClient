@@ -18,11 +18,6 @@ CREATE TABLE galleryDetailsEntity (
     FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE
 );
 
-CREATE VIEW viewGallerySummaryWithTags
-AS
-SELECT gs.*, hasTag.* FROM gallerySummaryEntity AS gs
-    INNER JOIN galleryHasTag AS hasTag ON gs.id = hasTag.galleryId;
-
 CREATE VIEW viewGallerySummaryWithLanguage
 AS
 SELECT
@@ -44,7 +39,7 @@ SELECT
 GROUP BY gs.id;
 
 selectSummariesFoQuery:
-SELECT gs.* FROM viewGallerySummaryWithTags AS gs
+SELECT gs.* FROM viewGallerySummaryWithLanguage AS gs
     INNER JOIN queryHasGallery ON gs.id = queryHasGallery.galleryId
 WHERE queryHasGallery.queryId = ?
 ORDER BY queryHasGallery.orderIndex ASC;

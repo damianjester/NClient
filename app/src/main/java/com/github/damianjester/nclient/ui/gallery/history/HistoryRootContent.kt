@@ -18,11 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.github.damianjester.nclient.R
-import com.github.damianjester.nclient.ui.common.LoadingContent
 import com.github.damianjester.nclient.ui.drawer.DrawerMenuButton
-import com.github.damianjester.nclient.ui.gallery.history.HistoryComponent.GalleriesState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,8 +28,6 @@ fun HistoryRootContent(
     onDrawerClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val model by component.model.subscribeAsState()
-    val galleriesState = model.galleriesState
     var openClearDialog by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -51,13 +46,7 @@ fun HistoryRootContent(
                         )
                     }
 
-                    IconButton(
-                        onClick = { openClearDialog = true },
-                        enabled = when (galleriesState) {
-                            is GalleriesState.Loaded -> galleriesState.galleries.isNotEmpty()
-                            GalleriesState.Loading -> true
-                        }
-                    ) {
+                    IconButton({ openClearDialog = true }) {
                         Icon(
                             Icons.Default.Delete,
                             contentDescription = stringResource(R.string.clear_history)
@@ -68,20 +57,13 @@ fun HistoryRootContent(
         }
     ) { innerPadding ->
 
-        val contentModifier = Modifier
-            .padding(innerPadding)
-            .fillMaxSize()
-
-        when (galleriesState) {
-            GalleriesState.Loading -> LoadingContent(contentModifier)
-            is GalleriesState.Loaded ->
-                LoadedContent(
-                    modifier = contentModifier,
-                    galleriesState = galleriesState,
-                    onGalleryClick = component::navigateToGallery,
-                    onBottomReached = component::loadNextPage
-                )
-        }
+        GalleryVisitLazyGrid(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize(),
+            galleriesState = component.galleries,
+            onGalleryClick = component::navigateToGallery,
+        )
 
         if (openClearDialog) {
             ClearHistoryDialog(
