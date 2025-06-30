@@ -342,6 +342,8 @@ class DefaultRootComponent(
             onNavigateGallery = { id -> navigation.pushNew(Config.GalleryDetails(id)) },
             dispatchers = get(),
             fetcher = get(),
+            collectionRepository = get(),
+            favoriter = get()
         )
 
     private fun collectionsComponent(componentContext: ComponentContext): GalleryCollectionsComponent =

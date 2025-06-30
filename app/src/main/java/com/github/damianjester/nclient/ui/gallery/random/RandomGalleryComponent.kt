@@ -4,16 +4,25 @@ import com.arkivanov.decompose.ComponentContext
 import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
+import com.arkivanov.essenty.lifecycle.doOnResume
 import com.arkivanov.essenty.lifecycle.doOnStart
+import com.github.damianjester.nclient.core.CollectionFavoriter
 import com.github.damianjester.nclient.core.RandomGalleryFetcher
 import com.github.damianjester.nclient.core.models.Gallery
 import com.github.damianjester.nclient.core.models.GalleryId
 import com.github.damianjester.nclient.net.NHentaiClientConnectionException
 import com.github.damianjester.nclient.net.NHentaiClientException
 import com.github.damianjester.nclient.net.NHentaiClientScrapeException
+import com.github.damianjester.nclient.repo.GalleryCollectionRepository
 import com.github.damianjester.nclient.ui.gallery.random.RandomGalleryComponent.RandomGalleryState
+import com.github.damianjester.nclient.ui.utils.asStateFlow
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.coroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
@@ -49,11 +58,14 @@ interface RandomGalleryComponent {
     }
 }
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class DefaultRandomGalleryComponent(
     componentContext: ComponentContext,
     dispatchers: NClientDispatchers,
     private val onNavigateGallery: (GalleryId) -> Unit,
     private val fetcher: RandomGalleryFetcher,
+    private val collectionRepository: GalleryCollectionRepository,
+    private val favoriter: CollectionFavoriter,
 ) : RandomGalleryComponent, ComponentContext by componentContext {
     private var state: State = stateKeeper.consume(key = SAVED_STATE_KEY, strategy = State.serializer()) ?: State()
 
@@ -66,7 +78,7 @@ class DefaultRandomGalleryComponent(
     )
     override val model: Value<RandomGalleryComponent.Model> = _model
 
-    private val scope = coroutineScope(dispatchers.Main.immediate)
+    private val coroutineScope = coroutineScope(dispatchers.Main.immediate)
 
     init {
         stateKeeper.register(key = SAVED_STATE_KEY, strategy = State.serializer()) {
@@ -76,6 +88,17 @@ class DefaultRandomGalleryComponent(
         doOnStart(isOneTime = true) {
             if (_model.value.randoms.isEmpty()) {
                 fetchRandom()
+            }
+        }
+        doOnResume {
+            coroutineScope.launch {
+                _model.asStateFlow()
+                    .mapNotNull { it.randoms.lastOrNull()?.id }
+                    .distinctUntilChanged()
+                    .flatMapLatest { collectionRepository.isFavorite(it) }
+                    .collectLatest { isFavorite ->
+                        _model.update { it.copy(isFavorite = isFavorite) }
+                    }
             }
         }
     }
@@ -103,7 +126,10 @@ class DefaultRandomGalleryComponent(
     }
 
     override fun favoriteGallery() {
-        TODO("Not yet implemented")
+        coroutineScope.launch {
+            val currentGallery = _model.value.randoms.last()
+            favoriter.setFavoriteState(currentGallery.id)
+        }
     }
 
     override fun navigateToGallery() {
@@ -113,9 +139,9 @@ class DefaultRandomGalleryComponent(
     }
 
     private fun fetchRandom() {
-        _model.update { it.copy(galleyState = RandomGalleryState.Loading) }
+        _model.update { it.copy(galleyState = RandomGalleryState.Loading, isFavorite = false) }
 
-        scope.launch {
+        coroutineScope.launch {
             try {
                 val gallery = fetcher.fetch()
                 _model.update {
