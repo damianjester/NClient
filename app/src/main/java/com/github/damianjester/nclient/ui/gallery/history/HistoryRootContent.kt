@@ -13,8 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,8 +26,6 @@ fun HistoryRootContent(
     onDrawerClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var openClearDialog by remember { mutableStateOf(false) }
-
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -46,7 +42,7 @@ fun HistoryRootContent(
                         )
                     }
 
-                    IconButton({ openClearDialog = true }) {
+                    IconButton(component::activateClearHistoryDialog) {
                         Icon(
                             Icons.Default.Delete,
                             contentDescription = stringResource(R.string.clear_history)
@@ -56,7 +52,6 @@ fun HistoryRootContent(
             )
         }
     ) { innerPadding ->
-
         GalleryVisitLazyGrid(
             modifier = Modifier
                 .padding(innerPadding)
@@ -64,15 +59,5 @@ fun HistoryRootContent(
             galleriesState = component.galleries,
             onGalleryClick = component::navigateToGallery,
         )
-
-        if (openClearDialog) {
-            ClearHistoryDialog(
-                onDismissRequest = { openClearDialog = false },
-                onConfirmation = {
-                    openClearDialog = false
-                    component.clearHistory()
-                }
-            )
-        }
     }
 }

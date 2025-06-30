@@ -26,6 +26,8 @@ import com.github.damianjester.nclient.core.models.SortOrder
 import com.github.damianjester.nclient.ui.RootComponent.Child
 import com.github.damianjester.nclient.ui.RootComponent.DialogChild
 import com.github.damianjester.nclient.ui.RootComponent.DialogChild.AddToCollection
+import com.github.damianjester.nclient.ui.RootComponent.DialogChild.ClearHistory
+import com.github.damianjester.nclient.ui.RootComponent.DialogChild.CreateCollection
 import com.github.damianjester.nclient.ui.RootComponent.DialogChild.DeleteCollection
 import com.github.damianjester.nclient.ui.RootComponent.DialogChild.RenameCollection
 import com.github.damianjester.nclient.ui.RootComponent.DialogChild.SortDialog
@@ -61,6 +63,8 @@ import com.github.damianjester.nclient.ui.gallery.downloads.DownloadsComponent
 import com.github.damianjester.nclient.ui.gallery.history.DefaultHistoryComponent
 import com.github.damianjester.nclient.ui.gallery.history.HistoryComponent
 import com.github.damianjester.nclient.ui.gallery.history.HistoryTrackerComponent
+import com.github.damianjester.nclient.ui.gallery.history.clear.ClearHistoryComponent
+import com.github.damianjester.nclient.ui.gallery.history.clear.DefaultClearHistoryComponent
 import com.github.damianjester.nclient.ui.gallery.history.toSortOptions
 import com.github.damianjester.nclient.ui.gallery.pager.DefaultGalleryPagerComponent
 import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerComponent
@@ -101,6 +105,8 @@ interface RootComponent {
         class RenameCollection(val component: RenameCollectionComponent) : DialogChild()
 
         class DeleteCollection(val component: DeleteCollectionComponent) : DialogChild()
+
+        class ClearHistory(val component: ClearHistoryComponent) : DialogChild()
     }
 
     sealed interface Child {
@@ -231,9 +237,10 @@ class DefaultRootComponent(
         when (config) {
             is DialogConfig.AddToCollection -> AddToCollection(addToCollectionComponent(context, config.id))
             is DialogConfig.Sort<*> -> SortDialog(sortDialogComponent(context, config))
-            is DialogConfig.CreateCollection -> DialogChild.CreateCollection(createCollectionComponent(context))
+            is DialogConfig.CreateCollection -> CreateCollection(createCollectionComponent(context))
             is DialogConfig.RenameCollection -> RenameCollection(renameCollectionComponent(context, config))
             is DialogConfig.DeleteCollection -> DeleteCollection(deleteCollectionComponent(context, config))
+            DialogConfig.ClearHistory -> ClearHistory(clearHistoryComponent(context))
         }
 
     override val drawer: NClientDrawerComponent =
@@ -421,6 +428,9 @@ class DefaultRootComponent(
 
                 dialogNavigation.activate(config)
             },
+            onActivateClearHistoryDialog = {
+                dialogNavigation.activate(DialogConfig.ClearHistory)
+            },
             historyRepository = get(),
         )
 
@@ -491,6 +501,13 @@ class DefaultRootComponent(
         deleter = get()
     )
 
+    fun clearHistoryComponent(componentContext: ComponentContext): ClearHistoryComponent =
+        DefaultClearHistoryComponent(
+            componentContext = componentContext,
+            onDismissRequest = { dialogNavigation.dismiss() },
+            repository = get()
+        )
+
     @Serializable
     sealed interface Config {
         @Serializable
@@ -554,5 +571,8 @@ class DefaultRootComponent(
 
         @Serializable
         data class DeleteCollection(val id: GalleryCollectionId, val name: String) : DialogConfig
+
+        @Serializable
+        data object ClearHistory : DialogConfig
     }
 }

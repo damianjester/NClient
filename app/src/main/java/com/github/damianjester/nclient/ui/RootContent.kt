@@ -27,6 +27,7 @@ import com.github.damianjester.nclient.ui.gallery.comments.CommentsRootContent
 import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsRootContent
 import com.github.damianjester.nclient.ui.gallery.downloads.DownloadsRootContent
 import com.github.damianjester.nclient.ui.gallery.history.HistoryRootContent
+import com.github.damianjester.nclient.ui.gallery.history.clear.ClearHistoryDialog
 import com.github.damianjester.nclient.ui.gallery.pager.GalleryPagerRootContent
 import com.github.damianjester.nclient.ui.gallery.random.RandomGalleryRootContent
 import com.github.damianjester.nclient.ui.gallery.search.GallerySearchRootContent
@@ -83,6 +84,7 @@ fun RootContent(component: RootComponent, modifier: Modifier = Modifier) {
                 is DialogChild.CreateCollection -> CreateCollectionDialog(child.component)
                 is DialogChild.RenameCollection -> RenameCollectionDialog(child.component)
                 is DialogChild.DeleteCollection -> DeleteCollectionDialog(child.component)
+                is DialogChild.ClearHistory -> ClearHistoryDialog(child.component)
             }
         }
     }

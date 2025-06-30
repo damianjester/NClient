@@ -1,4 +1,4 @@
-package com.github.damianjester.nclient.ui.gallery.history
+package com.github.damianjester.nclient.ui.gallery.history.clear
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ClearAll
@@ -7,6 +7,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -16,10 +17,22 @@ import com.github.damianjester.nclient.R
 
 @Composable
 fun ClearHistoryDialog(
-    onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit,
+    component: ClearHistoryComponent,
+    modifier: Modifier = Modifier,
 ) {
     AlertDialog(
+        onDismissRequest = component::dismiss,
+        confirmButton = {
+            TextButton(onClick = component::confirm) {
+                Text(stringResource(R.string.clear))
+            }
+        },
+        modifier = modifier,
+        dismissButton = {
+            TextButton(onClick = component::dismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        },
         icon = {
             Icon(Icons.Default.ClearAll, contentDescription = null)
         },
@@ -37,18 +50,5 @@ fun ClearHistoryDialog(
                 }
             )
         },
-        onDismissRequest = {
-            onDismissRequest()
-        },
-        confirmButton = {
-            TextButton(onClick = onConfirmation) {
-                Text(stringResource(R.string.clear))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text(stringResource(R.string.cancel))
-            }
-        }
     )
 }

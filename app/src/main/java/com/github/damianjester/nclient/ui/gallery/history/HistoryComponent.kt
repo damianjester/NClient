@@ -16,7 +16,6 @@ import com.github.damianjester.nclient.core.models.SortOrder
 import com.github.damianjester.nclient.repo.GalleryHistoryRepository
 import com.github.damianjester.nclient.ui.sort.SortChangeListener
 import com.github.damianjester.nclient.utils.NClientDispatchers
-import com.github.damianjester.nclient.utils.coroutineScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
@@ -26,7 +25,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
 
 private const val SAVED_STATE_KEY = "SAVED_STATE"
@@ -34,11 +32,11 @@ private const val SAVED_STATE_KEY = "SAVED_STATE"
 interface HistoryComponent : SortChangeListener<SortType> {
     val galleries: Flow<PagingData<GallerySummary>>
 
-    fun clearHistory()
-
     fun navigateToGallery(id: GalleryId)
 
     fun activateSortDialog()
+
+    fun activateClearHistoryDialog()
 }
 
 class DefaultHistoryComponent(
@@ -46,10 +44,9 @@ class DefaultHistoryComponent(
     dispatchers: NClientDispatchers,
     private val onNavigateGallery: (GalleryId) -> Unit,
     private val onActivateSortDialog: (sort: GalleryHistoryQuery.Sort) -> Unit,
+    private val onActivateClearHistoryDialog: () -> Unit,
     private val historyRepository: GalleryHistoryRepository,
 ) : HistoryComponent, ComponentContext by componentContext {
-    private val coroutineScope = coroutineScope(dispatchers.Main.immediate + SupervisorJob())
-
     private var state = stateKeeper.consume(SAVED_STATE_KEY, State.serializer()) ?: State()
     private val instance = instanceKeeper.getOrCreate {
         HistoryInstance(
@@ -68,15 +65,11 @@ class DefaultHistoryComponent(
         }
     }
 
-    override fun clearHistory() {
-        coroutineScope.launch {
-            historyRepository.deleteAll()
-        }
-    }
-
     override fun navigateToGallery(id: GalleryId) = onNavigateGallery(id)
 
     override fun activateSortDialog() = onActivateSortDialog(instance.query.value.sort)
+
+    override fun activateClearHistoryDialog() = onActivateClearHistoryDialog()
 
     override fun onSortChanged(type: SortType, order: SortOrder) {
         instance.changeSort(GalleryHistoryQuery.Sort(type, order))
