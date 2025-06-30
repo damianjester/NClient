@@ -398,9 +398,8 @@
     <string name="back">Back</string>
     <string name="download_page">Download page</string>
     <string name="share_page">Share page</string>
-    <string name="no_comments">No comments found\n(☉_☉)</string>
+    <string name="no_comments">No comments found</string>
     <string name="no_history">No galleries in history</string>
-    <string name="ascii_koala">ʕ·͡ᴥ·ʔ</string>
 
     <string name="posted_ago">Posted %s ago</string>
     <string name="just_now">just now</string>
@@ -451,6 +450,34 @@
     <string name="sort_order_ascending">Ascending</string>
     <string name="sort_order_descending">Descending</string>
     <string name="confirm">Confirm</string>
+    <string name="create">Create</string>
+    <string name="collections">Collections</string>
+    <string name="add_to_collection_title">Add gallery to…</string>
+    <string name="no_collections">No collections…</string>
+    <string name="add_to">Add to…</string>
+    <string name="remove">Remove</string>
+    <string name="sort_option_last_added">Last added</string>
+    <string name="sort_option_title">Title</string>
+    <string name="sort_option_upload_date">Upload date</string>
+    <string name="sort_galleries">Sort galleries</string>
+    <string name="delete_collection_title">Delete collection</string>
+    <string name="delete_collection_body_1">Are you sure you want to delete \"%s\"?</string>
+    <string name="delete_collection_body_2">This action cannot be undone.</string>
+    <string name="rename">Rename</string>
+    <string name="dropdown_menu">Dropdown menu</string>
+    <string name="collections_sort_last_updated">Last updated</string>
+    <string name="collections_sort_name">Name</string>
+    <string name="collections_sort_size">Size</string>
+    <string name="sort_collections">Sort collections</string>
+    <string name="text_field_collection_name_label">Collection name</string>
+    <string name="text_field_collection_name_placeholder">Enter collection name</string>
+    <string name="dialog_new_collection_name_body">Provide a name for the new gallery collection.</string>
+    <string name="dialog_new_collection_title">New Collection</string>
+    <string name="button_new_collection_label">New Collection</string>
+    <string name="gallery_collection_empty">No galleries in collection</string>
+    <string name="gallery_collections_topbar_title">Collections</string>
+    <string name="gallery_collection_cd_add_collection">Add collection</string>
+    <string name="dialog_rename_collection_title">Rename Collection</string>
 
     <string-array name="scroll_type">
         <item>Horizontal</item>

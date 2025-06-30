@@ -7,8 +7,10 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.arkivanov.decompose.value.update
 import com.arkivanov.essenty.instancekeeper.getOrCreate
+import com.arkivanov.essenty.lifecycle.doOnResume
 import com.arkivanov.essenty.lifecycle.doOnStart
 import com.github.damianjester.nclient.R
+import com.github.damianjester.nclient.core.CollectionFavoriter
 import com.github.damianjester.nclient.core.GalleryDetailsFetcher
 import com.github.damianjester.nclient.core.GalleryNotFound
 import com.github.damianjester.nclient.core.LinkSharer
@@ -21,6 +23,7 @@ import com.github.damianjester.nclient.net.NHentaiClientException
 import com.github.damianjester.nclient.net.NHentaiClientScrapeException
 import com.github.damianjester.nclient.net.NHentaiClientSerializationException
 import com.github.damianjester.nclient.net.NHentaiUrl
+import com.github.damianjester.nclient.repo.GalleryCollectionRepository
 import com.github.damianjester.nclient.ui.DefaultRootComponent
 import com.github.damianjester.nclient.ui.gallery.details.GalleryDetailsComponent.GalleryState
 import com.github.damianjester.nclient.ui.gallery.history.HistoryTrackerComponent
@@ -30,7 +33,9 @@ import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.clipboardManager
 import com.github.damianjester.nclient.utils.coroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
 
 private const val HISTORY_SAVED_STATE_KEY = "HISTORY_SAVED_STATE"
 
@@ -53,6 +58,8 @@ interface GalleryDetailsComponent {
     fun navigateRelated(id: GalleryId)
 
     fun navigateBack()
+
+    fun activateAddToCollection()
 
     data class Model(
         val gridMode: GridMode = GridMode.TWO_COLUMNS,
@@ -95,10 +102,13 @@ class DefaultGalleryDetailsComponent(
     private val onNavigateComments: (GalleryId) -> Unit,
     private val onNavigateRelated: (GalleryId) -> Unit,
     private val onNavigateBack: () -> Unit,
+    private val onActivateAddToCollection: () -> Unit,
     private val applicationContext: Context,
     private val galleryFetcher: GalleryDetailsFetcher,
     private val linkSharer: LinkSharer,
-) : GalleryDetailsComponent, HistoryTrackerComponent, ComponentContext by componentContext {
+    private val collectionRepository: GalleryCollectionRepository,
+    private val favoriter: CollectionFavoriter,
+) : GalleryDetailsComponent, HistoryTrackerComponent, ComponentContext by componentContext, KoinComponent {
     override val trackerStateEntity: HistoryTrackerStateEntity =
         instanceKeeper.getOrCreate {
             stateKeeper.consume(key = HISTORY_SAVED_STATE_KEY, strategy = HistoryTrackerState.serializer())
@@ -120,6 +130,12 @@ class DefaultGalleryDetailsComponent(
         )
         doOnStart(isOneTime = true) {
             coroutineScope.launch { fetchGallery() }
+        }
+        doOnResume {
+            coroutineScope.launch {
+                collectionRepository.isFavorite(config.id)
+                    .collectLatest { isFavorite -> _model.update { it.copy(isFavorite = isFavorite) } }
+            }
         }
     }
 
@@ -147,7 +163,9 @@ class DefaultGalleryDetailsComponent(
 
     override fun setGalleryFavoriteStatus(favorite: Boolean) {
         doOnLoaded {
-            TODO("Not yet implemented")
+            coroutineScope.launch {
+                favoriter.setFavoriteState(config.id, favorite)
+            }
         }
     }
 
@@ -183,6 +201,8 @@ class DefaultGalleryDetailsComponent(
     override fun navigateRelated(id: GalleryId) = onNavigateRelated(id)
 
     override fun navigateBack() = onNavigateBack()
+
+    override fun activateAddToCollection() = onActivateAddToCollection()
 
     private suspend fun fetchGallery() {
         try {

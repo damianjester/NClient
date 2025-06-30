@@ -21,4 +21,11 @@ val coreModule = module {
     single { DefaultScreenCaffeinater(get()) } bind ScreenCaffeinater::class
     single { DefaultLinkSharer() } bind LinkSharer::class
     single { DefaultGalleryHistoryTracker(get(), get()) } bind GalleryHistoryTracker::class
+
+    single { DefaultCollectionCreator(get()) } bind CollectionCreator::class
+    single { DefaultCollectionRenamer(get()) } bind CollectionRenamer::class
+    single { DefaultCollectionDeleter(get()) } bind CollectionDeleter::class
+    single { DefaultCollectionFavoriter(get()) } bind CollectionFavoriter::class
+    single { DefaultCollectionGalleryRemover(get()) } bind CollectionGalleryRemover::class
+    single { DefaultCollectionSelectionUpdater(get()) } bind CollectionSelectionUpdater::class
 }

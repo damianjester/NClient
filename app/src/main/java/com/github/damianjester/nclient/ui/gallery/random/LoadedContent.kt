@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.github.damianjester.nclient.R
-import com.github.damianjester.nclient.ui.gallery.common.grid.GalleryGridItem
+import com.github.damianjester.nclient.ui.gallery.common.grid.GalleryCard
 import com.github.damianjester.nclient.ui.gallery.common.grid.LanguageIndicator
 import com.github.damianjester.nclient.ui.gallery.random.RandomGalleryComponent.RandomGalleryState
 
@@ -45,7 +45,7 @@ fun LoadedContent(
 
         Spacer(Modifier.size(24.dp))
 
-        GalleryGridItem(
+        GalleryCard(
             onClick = onGalleryClick,
             modifier = Modifier.fillMaxWidth()
         ) {

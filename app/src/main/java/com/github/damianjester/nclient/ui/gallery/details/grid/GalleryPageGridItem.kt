@@ -10,7 +10,7 @@ import com.github.damianjester.nclient.core.models.GalleryImage
 import com.github.damianjester.nclient.core.models.GalleryPage
 import com.github.damianjester.nclient.core.models.GalleryPageImages
 import com.github.damianjester.nclient.core.models.Resolution
-import com.github.damianjester.nclient.ui.gallery.common.grid.GalleryGridItem
+import com.github.damianjester.nclient.ui.gallery.common.grid.GalleryCard
 import com.github.damianjester.nclient.ui.theme.NClientPreviewTheme
 import io.ktor.http.Url
 
@@ -21,7 +21,7 @@ fun GalleryPageGridItem(
     showHighRes: Boolean = false,
     onClick: () -> Unit,
 ) {
-    GalleryGridItem(
+    GalleryCard(
         onClick = onClick,
         modifier = modifier
     ) {

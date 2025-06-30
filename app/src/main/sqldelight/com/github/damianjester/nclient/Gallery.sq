@@ -18,10 +18,34 @@ CREATE TABLE galleryDetailsEntity (
     FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE
 );
 
+CREATE VIEW viewGallerySummaryWithTags
+AS
+SELECT gs.*, hasTag.* FROM gallerySummaryEntity AS gs
+    INNER JOIN galleryHasTag AS hasTag ON gs.id = hasTag.galleryId;
+
+CREATE VIEW viewGallerySummaryWithLanguage
+AS
+SELECT
+    gs.*,
+    MAX(CASE
+        WHEN hasTag.tagId = 12227 THEN 1
+        ELSE 0
+    END) AS is_english,
+    MAX(CASE
+        WHEN hasTag.tagId = 6346 THEN 1
+        ELSE 0
+    END) AS is_japanese,
+    MAX(CASE
+        WHEN hasTag.tagId = 29963 THEN 1
+        ELSE 0
+    END) AS is_chinese
+ FROM gallerySummaryEntity AS gs
+    LEFT JOIN galleryHasTag AS hasTag ON gs.id = hasTag.galleryId
+GROUP BY gs.id;
+
 selectSummariesFoQuery:
-SELECT gallerySummaryEntity.*, hasTag.* FROM gallerySummaryEntity
-    INNER JOIN queryHasGallery ON gallerySummaryEntity.id = queryHasGallery.galleryId
-    INNER JOIN galleryHasTag AS hasTag ON gallerySummaryEntity.id = hasTag.galleryId
+SELECT gs.* FROM viewGallerySummaryWithTags AS gs
+    INNER JOIN queryHasGallery ON gs.id = queryHasGallery.galleryId
 WHERE queryHasGallery.queryId = ?
 ORDER BY queryHasGallery.orderIndex ASC;
 

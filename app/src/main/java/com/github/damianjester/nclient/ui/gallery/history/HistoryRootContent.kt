@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,6 +21,7 @@ import androidx.compose.ui.res.stringResource
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.ui.common.LoadingContent
+import com.github.damianjester.nclient.ui.drawer.DrawerMenuButton
 import com.github.damianjester.nclient.ui.gallery.history.HistoryComponent.GalleriesState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -34,7 +34,6 @@ fun HistoryRootContent(
     val model by component.model.subscribeAsState()
     val galleriesState = model.galleriesState
     var openClearDialog by remember { mutableStateOf(false) }
-    var openSortDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = modifier,
@@ -42,15 +41,10 @@ fun HistoryRootContent(
             TopAppBar(
                 title = { Text(stringResource(R.string.history)) },
                 navigationIcon = {
-                    IconButton(onClick = onDrawerClick) {
-                        Icon(
-                            Icons.Default.Menu,
-                            contentDescription = stringResource(R.string.menu)
-                        )
-                    }
+                    DrawerMenuButton(onClick = onDrawerClick)
                 },
                 actions = {
-                    IconButton({ openSortDialog = true }) {
+                    IconButton(component::activateSortDialog) {
                         Icon(
                             Icons.AutoMirrored.Default.Sort,
                             contentDescription = stringResource(R.string.sort_history)
@@ -95,17 +89,6 @@ fun HistoryRootContent(
                 onConfirmation = {
                     openClearDialog = false
                     component.clearHistory()
-                }
-            )
-        }
-
-        if (openSortDialog) {
-            ChangeSortDialog(
-                onDismissRequest = { openSortDialog = false },
-                initialSort = model.sort,
-                onConfirm = { type, order ->
-                    openSortDialog = false
-                    component.changeSort(type, order)
                 }
             )
         }

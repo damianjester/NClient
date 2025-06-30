@@ -61,6 +61,7 @@ fun GalleryDetailsScreen(
                 onFavoriteClick = component::setGalleryFavoriteStatus,
                 gridMode = model.gridMode,
                 onGridModeClick = component::toggleGridMode,
+                onAddToClick = component::activateAddToCollection,
                 onCommentsClick = component::navigateToComments,
                 onShareClick = component::shareGallery
             )

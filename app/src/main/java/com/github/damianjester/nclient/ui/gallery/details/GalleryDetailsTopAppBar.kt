@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Comment
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.MoreVert
@@ -46,6 +47,7 @@ fun GalleryDetailsTopAppBar(
     onTitleLongClick: (String) -> Unit,
     onFavoriteClick: (Boolean) -> Unit,
     onGridModeClick: () -> Unit,
+    onAddToClick: () -> Unit,
     onCommentsClick: () -> Unit,
     onShareClick: () -> Unit
 ) {
@@ -108,6 +110,16 @@ fun GalleryDetailsTopAppBar(
                 onDismissRequest = { showMenu = false }
             ) {
                 DropdownMenuItem(
+                    text = { Text(stringResource(R.string.add_to)) },
+                    onClick = { onAddToClick() },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = null
+                        )
+                    }
+                )
+                DropdownMenuItem(
                     text = { Text("Show comments") },
                     onClick = { onCommentsClick() },
                     leadingIcon = {
@@ -144,6 +156,7 @@ private fun GalleryDetailsTopAppBarPreview() {
             onTitleLongClick = {},
             onFavoriteClick = {},
             onGridModeClick = {},
+            onAddToClick = {},
             onCommentsClick = {},
             onShareClick = {}
         )

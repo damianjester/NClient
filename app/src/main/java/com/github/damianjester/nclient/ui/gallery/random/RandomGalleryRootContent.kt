@@ -6,11 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -21,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.ui.common.LoadingContent
+import com.github.damianjester.nclient.ui.drawer.DrawerMenuButton
 import com.github.damianjester.nclient.ui.gallery.random.RandomGalleryComponent.RandomGalleryState
 
 @Composable
@@ -43,12 +40,7 @@ fun RandomGalleryRootContent(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onDrawerClick) {
-                        Icon(
-                            Icons.Default.Menu,
-                            contentDescription = stringResource(R.string.menu)
-                        )
-                    }
+                    DrawerMenuButton(onClick = onDrawerClick)
                 }
             )
         }

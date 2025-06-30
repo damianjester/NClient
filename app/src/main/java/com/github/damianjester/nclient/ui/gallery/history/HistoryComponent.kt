@@ -16,6 +16,7 @@ import com.github.damianjester.nclient.core.models.GallerySummary
 import com.github.damianjester.nclient.core.models.SortOrder
 import com.github.damianjester.nclient.repo.GalleryHistoryRepository
 import com.github.damianjester.nclient.ui.gallery.history.HistoryComponent.GalleriesState
+import com.github.damianjester.nclient.ui.sort.SortChangeListener
 import com.github.damianjester.nclient.utils.NClientDispatchers
 import com.github.damianjester.nclient.utils.coroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -25,16 +26,16 @@ import kotlinx.serialization.Serializable
 private const val SAVED_STATE_KEY = "SAVED_STATE"
 private const val PAGE_LIMIT = 20
 
-interface HistoryComponent {
+interface HistoryComponent : SortChangeListener<SortType> {
     val model: Value<Model>
-
-    fun changeSort(type: SortType, order: SortOrder)
 
     fun clearHistory()
 
     fun loadNextPage()
 
     fun navigateToGallery(id: GalleryId)
+
+    fun activateSortDialog()
 
     data class Model(
         val galleriesState: GalleriesState = GalleriesState.Loading,
@@ -55,6 +56,7 @@ class DefaultHistoryComponent(
     componentContext: ComponentContext,
     dispatchers: NClientDispatchers,
     private val onNavigateGallery: (GalleryId) -> Unit,
+    private val onActivateSortDialog: (sort: GalleryHistoryQuery.Sort) -> Unit,
     private val historyRepository: GalleryHistoryRepository,
 ) : HistoryComponent, ComponentContext by componentContext {
     private var savedState = stateKeeper.consume(SAVED_STATE_KEY, SavedState.serializer()) ?: SavedState()
@@ -83,19 +85,6 @@ class DefaultHistoryComponent(
         }
     }
 
-    override fun changeSort(type: SortType, order: SortOrder) {
-        doOnLoaded {
-            coroutineScope.launch {
-                val sort = historyInstance.state
-                    .updateAndGet { HistoryInstance.State(sort = GalleryHistoryQuery.Sort(type, order)) }
-                    .sort
-
-                _model.update { it.copy(sort = sort) }
-                loadPage(sort)
-            }
-        }
-    }
-
     override fun clearHistory() {
         doOnLoaded {
             _model.update { it.copy(galleriesState = GalleriesState.Loading) }
@@ -120,6 +109,21 @@ class DefaultHistoryComponent(
     }
 
     override fun navigateToGallery(id: GalleryId) = onNavigateGallery(id)
+
+    override fun activateSortDialog() = onActivateSortDialog(_model.value.sort)
+
+    override fun onSortChanged(type: SortType, order: SortOrder) {
+        doOnLoaded {
+            coroutineScope.launch {
+                val sort = historyInstance.state
+                    .updateAndGet { HistoryInstance.State(sort = GalleryHistoryQuery.Sort(type, order)) }
+                    .sort
+
+                _model.update { it.copy(sort = sort) }
+                loadPage(sort)
+            }
+        }
+    }
 
     private suspend fun loadPage(sort: GalleryHistoryQuery.Sort, loaded: GalleriesState.Loaded? = null) {
         _model.update {
@@ -171,6 +175,6 @@ class DefaultHistoryComponent(
 
     @Serializable
     private class SavedState(
-        val sort: GalleryHistoryQuery.Sort = GalleryHistoryQuery.Sort(SortType.LastVisit)
+        val sort: GalleryHistoryQuery.Sort = GalleryHistoryQuery.Sort(SortType.LastVisit),
     )
 }

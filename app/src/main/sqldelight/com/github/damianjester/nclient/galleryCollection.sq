@@ -1,0 +1,174 @@
+CREATE TABLE galleryCollectionEntity (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    updateAtInstant INTEGER NOT NULL -- epoch seconds
+);
+
+CREATE TABLE collectionHasGallery (
+    collectionId INTEGER NOT NULL,
+    galleryId INTEGER NOT NULL,
+    createdAt INTEGER NOT NULL,  -- epoch seconds
+    PRIMARY KEY(collectionId, galleryId),
+    FOREIGN KEY(collectionId) REFERENCES galleryCollectionEntity(id) ON DELETE CASCADE,
+    FOREIGN KEY(galleryId) REFERENCES gallerySummaryEntity(id) ON DELETE CASCADE
+);
+
+INSERT OR IGNORE INTO galleryCollectionEntity (id, name, updateAtInstant)
+VALUES (1, "Favorites", 0);
+
+CREATE VIEW viewCollections
+AS
+SELECT
+	gce.*,
+	lc.galleryId,
+	lc.mediaId,
+	lc.coverThumbnailFileExtension,
+	gcount.collectionSize
+FROM
+    galleryCollectionEntity gce
+LEFT JOIN
+    (
+        SELECT
+            chg.galleryId,
+            chg.collectionId,
+            gse.mediaId,
+            gse.coverThumbnailFileExtension,
+            ROW_NUMBER() OVER (PARTITION BY chg.galleryId ORDER BY chg.collectionId) AS rn
+        FROM
+            collectionHasGallery chg
+        LEFT JOIN
+            gallerySummaryEntity gse ON chg.galleryId = gse.id
+    ) AS lc ON gce.id = lc.collectionId AND lc.rn <= 3
+LEFT JOIN (SELECT collectionId, COUNT(*) AS collectionSize FROM collectionHasGallery
+			GROUP BY collectionId) gcount ON gce.id = gcount.collectionId;
+
+selectCollectionsByUpdatedAt:
+SELECT * FROM viewCollections vc
+ORDER BY
+    CASE
+        WHEN :order = 1 THEN vc.updateAtInstant
+        ELSE NULL
+    END DESC,
+    CASE
+        WHEN :order = 0 THEN vc.updateAtInstant
+        ELSE NULL
+    END ASC;
+
+selectCollectionsById:
+SELECT * FROM viewCollections vc
+ORDER BY
+    CASE
+        WHEN :order = 1 THEN vc.id
+        ELSE NULL
+    END DESC,
+    CASE
+        WHEN :order = 0 THEN vc.id
+        ELSE NULL
+    END ASC;
+
+selectCollectionsByName:
+SELECT * FROM viewCollections vc
+ORDER BY
+    CASE
+        WHEN :order = 1 THEN vc.name
+        ELSE NULL
+    END DESC,
+    CASE
+        WHEN :order = 0 THEN vc.name
+        ELSE NULL
+    END ASC;
+
+selectCollectionsBySize:
+SELECT * FROM viewCollections vc
+ORDER BY
+    CASE
+        WHEN :order = 1 THEN vc.collectionSize
+        ELSE NULL
+    END DESC,
+    CASE
+        WHEN :order = 0 THEN vc.collectionSize
+        ELSE NULL
+    END ASC;
+
+countGalleriesInCollection:
+SELECT count(*) FROM gallerySummaryEntity AS  gs
+    INNER JOIN collectionHasGallery AS cg ON gs.id = cg.galleryId
+WHERE cg.collectionId = :collectionId;
+
+selectGalleriesForCollectionByCreatedAt:
+SELECT gs.* FROM viewGallerySummaryWithLanguage AS gs
+    INNER JOIN collectionHasGallery AS cg ON gs.id = cg.galleryId
+WHERE cg.collectionId = :collectionId
+ORDER BY
+    CASE
+        WHEN :order = 1 THEN createdAt
+        ELSE NULL
+    END DESC,
+    CASE
+        WHEN :order = 0 THEN createdAt
+        ELSE NULL
+    END ASC
+LIMIT :limit OFFSET :offset;
+
+selectGalleriesForCollectionByTitle:
+SELECT gs.* FROM viewGallerySummaryWithLanguage AS gs
+    INNER JOIN collectionHasGallery AS cg ON gs.id = cg.galleryId
+WHERE cg.collectionId = :collectionId
+ORDER BY
+    CASE
+        WHEN :order = 1 THEN gs.prettyTitle
+        ELSE NULL
+    END DESC,
+    CASE
+        WHEN :order = 0 THEN gs.prettyTitle
+        ELSE NULL
+    END ASC
+LIMIT :limit OFFSET :offset;
+
+selectGalleriesForCollectionById:
+SELECT gs.* FROM viewGallerySummaryWithLanguage AS gs
+    INNER JOIN collectionHasGallery AS cg ON gs.id = cg.galleryId
+WHERE cg.collectionId = :collectionId
+ORDER BY
+    CASE
+        WHEN :order = 1 THEN gs.id
+        ELSE NULL
+    END DESC,
+    CASE
+        WHEN :order = 0 THEN gs.id
+        ELSE NULL
+    END ASC
+LIMIT :limit OFFSET :offset;
+
+selectCollectionIdsForGallery:
+SELECT gce.id FROM galleryCollectionEntity gce
+    JOIN collectionHasGallery chg ON gce.id = chg.collectionId
+WHERE chg.galleryId = :galleryId;
+
+selectCollectionName:
+SELECT name FROM galleryCollectionEntity WHERE id = :id;
+
+isGalleryInFavoritesCollection:
+SELECT COUNT(galleryId) FROM collectionHasGallery
+WHERE collectionId = 1 AND galleryId = :galleryId;
+
+insertCollection {
+INSERT INTO galleryCollectionEntity (name, updateAtInstant)
+VALUES (:name, :updateAt);
+SELECT last_insert_rowid();
+}
+
+setUpdatedAtCollection:
+UPDATE galleryCollectionEntity SET updateAtInstant=:updateAtInstant WHERE id = :id;
+
+renameCollection:
+UPDATE galleryCollectionEntity SET name=:name WHERE id = :id;
+
+addToCollection:
+INSERT INTO collectionHasGallery (collectionId, galleryId, createdAt) VALUES ?;
+
+removeFromCollection:
+DELETE FROM collectionHasGallery WHERE collectionId = :collectionId AND galleryId = :galleryId;
+
+deleteCollection:
+DELETE FROM galleryCollectionEntity WHERE id = :id;

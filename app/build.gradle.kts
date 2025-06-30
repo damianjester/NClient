@@ -84,12 +84,14 @@ dependencies {
     implementation(libs.bundles.decompose)
     implementation(libs.bundles.coil)
     implementation(libs.bundles.sqldelight)
+    implementation(libs.bundles.paging)
 
     implementation(libs.telescope)
     implementation(libs.apache.commons.text)
     implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.coroutines)
     implementation(libs.slf4j.android)
+    implementation(libs.sqlite)
 
     // Legacy
     implementation(libs.okhttp.urlconnection) // Because of min SDK
@@ -108,6 +110,7 @@ sqldelight {
     databases {
         create("Database") {
             packageName.set("com.github.damianjester.nclient")
+             dialect("app.cash.sqldelight:sqlite-3-25-dialect:2.2.0-SNAPSHOT")
         }
     }
 }

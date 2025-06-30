@@ -25,8 +25,8 @@ import com.arkivanov.decompose.value.MutableValue
 import com.arkivanov.decompose.value.Value
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.About
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.Bookmarks
+import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.Collections
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.Downloads
-import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.Favorites
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.Galleries
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.History
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.RandomGallery
@@ -86,7 +86,7 @@ private val firstSection = listOf(
     Galleries to false,
     Downloads to true,
     RandomGallery to false,
-    Favorites to true,
+    Collections to false,
     Bookmarks to true,
     History to false,
 )

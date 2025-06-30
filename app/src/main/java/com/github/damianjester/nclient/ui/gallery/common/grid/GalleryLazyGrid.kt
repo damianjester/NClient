@@ -9,7 +9,6 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -31,16 +30,14 @@ fun GallerySummaryLazyGird(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(galleries, key = { it.id.value }) { gal ->
+        items(galleries, key = { it.id.value }) { summary ->
 
-            val onClick = remember(gal.id.value) { { onGalleryClick(gal.id) } }
+            val onClick = remember(summary.id.value) { { onGalleryClick(summary.id) } }
 
             GallerySummaryGridItem(
+                onClick = onClick,
+                summary = summary,
                 modifier = Modifier.fillMaxWidth(),
-                title = gal.title,
-                language = gal.language,
-                image = gal.images,
-                onClick = onClick
             )
         }
     }

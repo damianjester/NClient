@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -19,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import com.arkivanov.decompose.extensions.compose.subscribeAsState
 import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.ui.common.LoadingContent
+import com.github.damianjester.nclient.ui.drawer.DrawerMenuButton
 import com.github.damianjester.nclient.ui.gallery.search.GallerySearchComponent.GalleriesState
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,9 +40,7 @@ fun GallerySearchRootContent(
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = onDrawerClick) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menu")
-                    }
+                    DrawerMenuButton(onClick = onDrawerClick)
                 },
                 actions = {
                     IconButton({ TODO("Toggle TopAppbar search mode") }) {

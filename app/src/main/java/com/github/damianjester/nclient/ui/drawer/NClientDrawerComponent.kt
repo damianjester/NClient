@@ -10,7 +10,7 @@ import com.github.damianjester.nclient.ui.DefaultRootComponent.Config
 import com.github.damianjester.nclient.ui.RootComponent.Child
 
 enum class NClientDrawerItem {
-    Galleries, Downloads, RandomGallery, Favorites, Bookmarks, History, Settings, About
+    Galleries, Downloads, RandomGallery, Collections, Bookmarks, History, Settings, About
 }
 
 interface NClientDrawerComponent {
@@ -39,7 +39,7 @@ class DefaultNClientDrawerComponent(
                         Config.GallerySearch -> NClientDrawerItem.Galleries
                         Config.Downloads -> NClientDrawerItem.Downloads
                         Config.RandomGallery -> NClientDrawerItem.RandomGallery
-                        Config.Favorites -> NClientDrawerItem.Favorites
+                        Config.Collections -> NClientDrawerItem.Collections
                         Config.Bookmarks -> NClientDrawerItem.Bookmarks
                         Config.History -> NClientDrawerItem.History
                         Config.Settings -> NClientDrawerItem.Settings

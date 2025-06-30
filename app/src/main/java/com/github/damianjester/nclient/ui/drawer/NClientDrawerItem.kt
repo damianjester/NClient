@@ -7,8 +7,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.Collections
 import androidx.compose.material.icons.filled.Download
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Info
@@ -30,8 +30,8 @@ import androidx.compose.ui.unit.dp
 import com.github.damianjester.nclient.R
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.About
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.Bookmarks
+import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.Collections
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.Downloads
-import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.Favorites
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.Galleries
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.History
 import com.github.damianjester.nclient.ui.drawer.NClientDrawerItem.RandomGallery
@@ -69,7 +69,7 @@ fun NClientDrawerItem(
         Galleries -> R.string.galleries
         Downloads -> R.string.downloads
         RandomGallery -> R.string.random_gallery
-        Favorites -> R.string.favorites
+        Collections -> R.string.collections
         Bookmarks -> R.string.bookmarks
         History -> R.string.history
         Settings -> R.string.settings
@@ -80,7 +80,7 @@ fun NClientDrawerItem(
         Galleries -> Icons.Default.GridView
         Downloads -> Icons.Default.Download
         RandomGallery -> Icons.Default.Shuffle
-        Favorites -> Icons.Default.Favorite
+        Collections -> Icons.Default.Collections
         Bookmarks -> Icons.Default.Bookmark
         History -> Icons.Default.History
         Settings -> Icons.Default.Settings
